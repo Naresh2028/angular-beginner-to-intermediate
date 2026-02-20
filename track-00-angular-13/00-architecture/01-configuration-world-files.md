@@ -37,9 +37,9 @@ These are NOT your business logic.
 
 Let’s understand them clearly.
 
-## node_modules
+# node_modules
 
-### What is it?
+## What is it?
 
 The physical folder where all installed packages live.
 
@@ -47,7 +47,7 @@ The physical folder where all installed packages live.
 - RxJS lives here.
 - TypeScript lives here.
 
-### When is it used?
+## When is it used?
 
 Build time AND runtime (indirectly).
 - At build time:
@@ -57,12 +57,12 @@ Bundler reads from node_modules.
 
 Compiled Angular code originates from these packages.
 
-### What problem does it solve?
+## What problem does it solve?
 
 1. Prevents you from manually copying framework code.
 2. Centralizes third-party dependencies.
 
-### What happens if it is missing?
+## What happens if it is missing?
 
 1. Project will not compile.
 2. Run npm install to regenerate.
