@@ -104,7 +104,7 @@ It controls what appears inside <app-root>.
 
 So flow is:
 
-- index.html → <app-root> → AppComponent → UI appears
+- index.html → app-root → AppComponent → UI appears
 
 ## 5️⃣ assets/
 
