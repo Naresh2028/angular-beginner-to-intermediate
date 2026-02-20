@@ -53,13 +53,13 @@ Compiled Angular code originates from these packages.
 
 ### What problem does it solve?
 
-Prevents you from manually copying framework code.
-Centralizes third-party dependencies.
+1. Prevents you from manually copying framework code.
+2. Centralizes third-party dependencies.
 
 ### What happens if it is missing?
 
-Project will not compile.
-Run npm install to regenerate.
+1. Project will not compile.
+2. Run npm install to regenerate.
 
 # package.json
 
