@@ -14,9 +14,7 @@ Code that runs inside the browser to display UI and handle user interaction.
 It includes:
 
 - HTML (structure)
-
 - CSS (style)
-
 - JavaScript (logic
 
 The browser does not understand TypeScript.
@@ -48,37 +46,24 @@ It builds on top of it.
 ### What Does Angular Automate?
 Without Angular, you would manually:
 
-Create DOM elements
-
-Attach event listeners
-
-Manage state
-
-Organize files
-
-Bundle code
-
-Handle routing
-
-Split code
-
-Optimize builds
+- Create DOM elements
+- Attach event listeners
+- Manage state
+- Organize files
+- Bundle code
+- Handle routing
+- Split code
+- Optimize builds
 
 Angular automates:
 
-Application structure
-
-Component rendering
-
-Dependency injection
-
-Routing
-
-Build optimization
-
-Environment switching
-
-Type safety (via TypeScript)
+- Application structure
+- Component rendering
+- Dependency injection
+- Routing
+- Build optimization
+- Environment switching
+- Type safety (via TypeScript)
 
 So Angular is not just a UI library.
 It is a full application framework.
@@ -99,17 +84,17 @@ As an application grows:
 
 If there is no enforced structure:
 
-Developers invent their own organization
-Imports become chaotic
-Build config becomes scattered
-Refactoring becomes dangerous
+1. Developers invent their own organization
+2. Imports become chaotic
+3. Build config becomes scattered
+4. Refactoring becomes dangerous
 
 Angular enforces structure so:
 
-Build system knows where to start
-Compiler knows what to compile
-Teams follow a shared pattern
-Tooling works predictably
+1. Build system knows where to start
+2. Compiler knows what to compile
+3. Teams follow a shared pattern
+4. Tooling works predictably
 
 Structure is not about beauty.
 It is about scalability and reliability.
