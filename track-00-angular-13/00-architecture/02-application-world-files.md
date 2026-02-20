@@ -55,7 +55,7 @@ This is where Angular starts.
 
 Inside you’ll see something like:
 
--- platformBrowserDynamic().bootstrapModule(AppModule)
+- platformBrowserDynamic().bootstrapModule(AppModule)
 
 This line tells Angular:
 
