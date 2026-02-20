@@ -19,8 +19,10 @@ Outside src/ you see:
 
 ```sql
 .angular
-.vscode
 node_modules
+.browserlistrc
+.editorconfig
+.gitignore
 angular.json
 karma.conf.js
 package-lock.json
