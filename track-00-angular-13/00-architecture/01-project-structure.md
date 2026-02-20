@@ -44,10 +44,10 @@ TypeScript lives here.
 ### When is it used?
 
 Build time AND runtime (indirectly).
-At build time:
+- At build time:
 
 Bundler reads from node_modules.
-At runtime:
+- At runtime:
 
 Compiled Angular code originates from these packages.
 
