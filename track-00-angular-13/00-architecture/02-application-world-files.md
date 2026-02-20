@@ -27,9 +27,11 @@ This is the first file the browser loads.
 
 When you run:
 - ng serve
+
 The browser loads index.html.
 
 Inside it, you will see:
+
 - <app-root></app-root>
 
 This tag is critical.
