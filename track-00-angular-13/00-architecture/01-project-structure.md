@@ -22,9 +22,13 @@ Outside src/ you see:
 .vscode
 node_modules
 angular.json
-package.json
-tsconfig.json
 karma.conf.js
+package-lock.json
+package.json
+README.md
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
 ```
 
 These are NOT your business logic.
