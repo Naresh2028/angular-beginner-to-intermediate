@@ -200,7 +200,7 @@ When you run ng serve:
 
 3. AppModule loads AppComponent
 
-4. AppComponent renders inside <app-root>
+4. AppComponent renders inside app-root
 
 5. index.html contains <app-root>
 
