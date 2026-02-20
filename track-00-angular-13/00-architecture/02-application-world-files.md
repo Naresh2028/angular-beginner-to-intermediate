@@ -32,7 +32,9 @@ The browser loads index.html.
 
 Inside it, you will see:
 
-- <app-root></app-root>
+````sql
+<app-root></app-root>
+````
 
 This tag is critical.
 
