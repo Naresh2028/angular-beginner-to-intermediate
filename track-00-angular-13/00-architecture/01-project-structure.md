@@ -37,9 +37,9 @@ Let’s understand them clearly.
 
 The physical folder where all installed packages live.
 
-Angular framework code lives here.
-RxJS lives here.
-TypeScript lives here.
+- Angular framework code lives here.
+- RxJS lives here.
+- TypeScript lives here.
 
 ### When is it used?
 
@@ -66,6 +66,7 @@ Compiled Angular code originates from these packages.
 ## What is it?
 
 A dependency and project configuration file for Node.js.
+
 It defines which libraries your project depends on and what scripts can be executed.
 
 ## When is it used?
@@ -139,15 +140,15 @@ It standardizes build behavior.
 
 If "main": "src/main.ts" is wrong:
 
-Angular fails to bootstrap.
+- Angular fails to bootstrap.
 
 If styles path wrong:
 
-Global styles don’t load.
+- Global styles don’t load.
 
 If assets misconfigured:
 
-Images won’t appear.
+- Images won’t appear.
 
 # tsconfig.json
 
@@ -181,15 +182,15 @@ Ensures:
 
 Wrong target:
 
-Browser incompatibility.
+- Browser incompatibility.
 
 Strict mode off:
 
-Bugs slip through.
+- Bugs slip through.
 
 Path mapping wrong:
 
-Imports break.
+- Imports break.
 
 
 
