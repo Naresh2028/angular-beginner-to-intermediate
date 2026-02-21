@@ -175,7 +175,59 @@ Now Angular understands:
 LoginComponent belongs here.
 
 
+### What is Feature Module:
 
+In Angular 13, there are two main module types:
+
+1. Root Module (AppModule)
+
+2. Feature Module
+
+Root Module
+
+File:
+
+- app.module.ts
+
+There must be exactly ONE.
+
+It bootstraps the app.
+
+It is the entry point.
+
+Feature Module
+
+A Feature Module is:
+
+A module that groups related functionality into a separate unit.
+
+It is not the entry point.
+
+It does not bootstrap.
+
+It is imported into another module.
+
+Why Feature Modules Exist
+
+Imagine putting everything inside AppModule:
+
+All components
+
+All features
+
+All imports
+
+That becomes messy fast.
+
+Feature modules:
+
+Group related components
+
+Improve scalability
+
+Enable lazy loading later
+
+Reduce coupling
 
 
 
