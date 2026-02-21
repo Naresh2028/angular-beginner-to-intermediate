@@ -207,23 +207,18 @@ A Feature Module is:
 
 Imagine putting everything inside AppModule:
 
-All components
-
-All features
-
-All imports
+- All components
+- All features
+- All imports
 
 That becomes messy fast.
 
 Feature modules:
 
-Group related components
-
-Improve scalability
-
-Enable lazy loading later
-
-Reduce coupling
+- Group related components
+- Improve scalability
+- Enable lazy loading later
+- Reduce coupling
 
 
 
