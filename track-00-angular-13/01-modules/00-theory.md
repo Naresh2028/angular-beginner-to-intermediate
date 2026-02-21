@@ -198,16 +198,12 @@ It is the entry point.
 Feature Module
 
 A Feature Module is:
+- A module that groups related functionality into a separate unit.
+- It is not the entry point.
+- It does not bootstrap.
+- It is imported into another module.
 
-A module that groups related functionality into a separate unit.
-
-It is not the entry point.
-
-It does not bootstrap.
-
-It is imported into another module.
-
-Why Feature Modules Exist
+### Why Feature Modules Exist
 
 Imagine putting everything inside AppModule:
 
