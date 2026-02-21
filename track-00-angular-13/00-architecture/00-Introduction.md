@@ -18,7 +18,9 @@ It includes:
 - JavaScript (logic
 
 The browser does not understand TypeScript.
+
 It does not understand Angular.
+
 It only understands:
 
 - HTML
