@@ -28,7 +28,7 @@ export class LoginModule {}
 ````
 Now Angular understands:
 
-
+LoginComponent belongs here.
 
 
 
