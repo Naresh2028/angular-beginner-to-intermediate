@@ -131,7 +131,10 @@ If you forget `@Input()` on the property:
 message!: string;
 ```
 
-Angular will not call `ngOnChanges()` — *no errors*, just silent failure.
+Angular will not call throw an — *errors*
+
+<img width="1713" height="460" alt="image" src="https://github.com/user-attachments/assets/3cd14358-86f1-476b-ae28-79994e9d67cf" />
+
 
 If you use the wrong signature:
 
@@ -139,7 +142,7 @@ If you use the wrong signature:
 ngOnchange(changes: any) {}
 ```
 
-Angular will not recognize it — again silent failure.
+Angular will not recognize it — silent failure.
 
 ---
 
@@ -321,5 +324,6 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
 
