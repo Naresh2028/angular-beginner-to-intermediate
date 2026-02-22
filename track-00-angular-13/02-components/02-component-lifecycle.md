@@ -355,75 +355,176 @@ And if you use heavy logic inside `ngDoCheck()`, it may hurt performance — bec
 
 ---
 
-### ngAfterContentInit()
+------------------------------------------------------------------------
 
-#### 1. Definition  
-`ngAfterContentInit()` is an Angular 13 lifecycle hook that runs once after Angular has fully initialized any external content projected into the component via `<ng-content>`.
+# ngAfterContentInit()
 
----
+## Definition
 
-#### 2. Analogy  
-It is like *unpacking all the luggage after guests arrive at a party* — once everything that was brought in from outside is in place, you can inspect it and act accordingly.
+`ngAfterContentInit()` is a lifecycle hook that runs **once** after:
 
----
+-   Angular projects external content into the component using
+    `<ng-content>`
+-   All `@ContentChild` and `@ContentChildren` references are
+    initialized
 
-#### 3. Problem & Fix
+It is the first safe place to access projected content inside a
+component.
 
-- **Problem:** When a component receives external content through `<ng-content>`, it may need to act only *after* that content is fully initialized. Running logic too early (like in `ngOnInit`) can cause undefined or incomplete access to projected content.
+------------------------------------------------------------------------
 
-- **Fix:** `ngAfterContentInit()` runs at the correct moment — after Angular has fully inserted and initialized the projected content — allowing safe interaction, inspection, and logic to run based on that content.
+## Analogy
 
-Example:
+Imagine you order furniture for your house from outside.
 
-```ts
-ngAfterContentInit(): void {
-  console.log('Projected content initialized');
+-   Constructor → House blueprint
+-   ngOnInit → House construction
+-   ngAfterContentInit → Furniture delivered and placed inside
+
+You cannot arrange external furniture before it arrives.\
+Similarly, you cannot access projected content before Angular inserts
+it.
+
+------------------------------------------------------------------------
+
+## Write a Problem & Fix the Problem by Using the Concept
+
+### ❌ Problem: Accessing ContentChild Too Early
+
+``` ts
+import { Component, ContentChild, ElementRef, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-wrapper',
+  template: `<ng-content></ng-content>`
+})
+export class WrapperComponent implements OnInit {
+
+  @ContentChild('projectedInput') input!: ElementRef;
+
+  ngOnInit() {
+    console.log(this.input); // undefined
+  }
 }
 ```
 
----
+### Why?
 
-#### 4. Key Takeaways
+Projected content is not initialized during `ngOnInit()`.
 
-- Runs exactly once, **after** external content is added.
-- Only applicable when using `<ng-content>`.
-- Ensures you interact with projected content at the right time.
-- Does *not* run on every change detection — only once after content init.
+------------------------------------------------------------------------
 
-### ngAfterContentChecked()
+### ✅ Fix: Use ngAfterContentInit
 
-#### 1. Definition  
-`ngAfterContentChecked()` is an Angular 13 lifecycle hook that runs after every Angular change detection cycle in which projected content is checked — not just once, but repeatedly.
+``` ts
+import { Component, ContentChild, ElementRef, AfterContentInit } from '@angular/core';
 
----
+@Component({
+  selector: 'app-wrapper',
+  template: `<ng-content></ng-content>`
+})
+export class WrapperComponent implements AfterContentInit {
 
-#### 2. Analogy  
-It is like a *security guard doing regular patrols of a room after guests arrive* — once the guests are in, the guard checks repeatedly to ensure nothing has changed unexpectedly.
+  @ContentChild('projectedInput') input!: ElementRef;
 
----
-
-#### 3. Problem & Fix
-
-- **Problem:** Projected content may change dynamically over time (due to parent updates, user actions, or external events), and Angular's normal change detection does not provide a specific moment to react after content changes.
-
-- **Fix:** `ngAfterContentChecked()` is called after each round of change detection on projected content, giving you a place to run custom logic in response to ongoing content changes.
-
-Example:
-
-```ts
-ngAfterContentChecked(): void {
-  console.log('Projected content was re-checked');
+  ngAfterContentInit() {
+    console.log(this.input.nativeElement); // works
+  }
 }
 ```
 
----
+Now the projected content is available.
 
-#### 4. Key Takeaways
+------------------------------------------------------------------------
 
-- Runs after every change detection pass on projected content.
-- Useful for tracking changes in `<ng-content>` over time.
-- Runs very frequently — avoid heavy or expensive logic here.
-- Comes after `ngAfterContentInit()` in the lifecycle sequence.
+## Key Takeaways
+
+-   Runs only once
+-   Used for projected content (`ng-content`)
+-   ContentChild is available here
+-   Do not access projected content in constructor or ngOnInit
+
+------------------------------------------------------------------------
+
+# ngAfterContentChecked()
+
+## Definition
+
+`ngAfterContentChecked()` is a lifecycle hook that runs:
+
+-   After Angular checks projected content
+-   After every change detection cycle involving content
+-   Multiple times during the component lifecycle
+
+It runs after `ngAfterContentInit()` and continues running whenever
+projected content changes.
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of a supervisor checking items delivered to a warehouse.
+
+Every time new items arrive or change, the supervisor checks them again.
+
+`ngAfterContentChecked()` behaves the same way ---\
+every content update triggers Angular to re-check projected content.
+
+------------------------------------------------------------------------
+
+## Write a Problem & Fix the Problem by Using the Concept
+
+### ❌ Problem: Heavy Logic Inside ngAfterContentChecked
+
+``` ts
+import { Component, AfterContentChecked } from '@angular/core';
+
+@Component({
+  selector: 'app-wrapper',
+  template: `<ng-content></ng-content>`
+})
+export class WrapperComponent implements AfterContentChecked {
+
+  ngAfterContentChecked() {
+    this.calculateHeavyData(); // runs many times
+  }
+
+  calculateHeavyData() {
+    console.log('Heavy calculation running...');
+  }
+}
+```
+
+### Why is this bad?
+
+-   Runs very frequently
+-   Causes performance issues
+-   Can create infinite loops if values are modified
+
+------------------------------------------------------------------------
+
+### ✅ Fix: Move Logic to ngAfterContentInit or Event-Based Execution
+
+``` ts
+ngAfterContentInit() {
+  this.calculateHeavyData(); // runs once
+}
+```
+
+Or trigger manually when needed instead of relying on the lifecycle
+hook.
+
+------------------------------------------------------------------------
+
+## Key Takeaways
+
+-   Runs after every change detection for projected content
+-   Can execute many times
+-   Avoid heavy logic inside it
+-   Avoid modifying bound properties inside it
+-   Mainly useful for debugging or content consistency checks
+
+------------------------------------------------------------------------
 
 # ngAfterViewInit()
 
@@ -597,6 +698,7 @@ onButtonClick() {
 -   Avoid heavy logic inside it
 -   Avoid modifying bound properties inside it
 -   Mainly useful for debugging or view consistency checks
+
 
 
 
