@@ -5,6 +5,11 @@ This file covers key initial lifecycle hooks in Angular 13:
 2. ngOnChanges()  
 3. ngOnInit()  
 4. ngDoCheck()
+5. ngAfterContentInit()
+6. ngAfterContentChecked()
+7. ngAfterViewInit()
+8. ngAfterViewChecked()
+9. ngOnDestroy()
 
 ---
 
@@ -350,10 +355,76 @@ And if you use heavy logic inside `ngDoCheck()`, it may hurt performance — bec
 
 ---
 
-## Summary
-- `ngOnChanges()` runs whenever input values change.  
-- `ngOnInit()` runs once after first binding.  
-- `ngDoCheck()` runs every change detection cycle — use with care.
+### ngAfterContentInit()
+
+#### 1. Definition  
+`ngAfterContentInit()` is an Angular 13 lifecycle hook that runs once after Angular has fully initialized any external content projected into the component via `<ng-content>`.
+
+---
+
+#### 2. Analogy  
+It is like *unpacking all the luggage after guests arrive at a party* — once everything that was brought in from outside is in place, you can inspect it and act accordingly.
+
+---
+
+#### 3. Problem & Fix
+
+- **Problem:** When a component receives external content through `<ng-content>`, it may need to act only *after* that content is fully initialized. Running logic too early (like in `ngOnInit`) can cause undefined or incomplete access to projected content.
+
+- **Fix:** `ngAfterContentInit()` runs at the correct moment — after Angular has fully inserted and initialized the projected content — allowing safe interaction, inspection, and logic to run based on that content.
+
+Example:
+
+```ts
+ngAfterContentInit(): void {
+  console.log('Projected content initialized');
+}
+```
+
+---
+
+#### 4. Key Takeaways
+
+- Runs exactly once, **after** external content is added.
+- Only applicable when using `<ng-content>`.
+- Ensures you interact with projected content at the right time.
+- Does *not* run on every change detection — only once after content init.
+
+### ngAfterContentChecked()
+
+#### 1. Definition  
+`ngAfterContentChecked()` is an Angular 13 lifecycle hook that runs after every Angular change detection cycle in which projected content is checked — not just once, but repeatedly.
+
+---
+
+#### 2. Analogy  
+It is like a *security guard doing regular patrols of a room after guests arrive* — once the guests are in, the guard checks repeatedly to ensure nothing has changed unexpectedly.
+
+---
+
+#### 3. Problem & Fix
+
+- **Problem:** Projected content may change dynamically over time (due to parent updates, user actions, or external events), and Angular's normal change detection does not provide a specific moment to react after content changes.
+
+- **Fix:** `ngAfterContentChecked()` is called after each round of change detection on projected content, giving you a place to run custom logic in response to ongoing content changes.
+
+Example:
+
+```ts
+ngAfterContentChecked(): void {
+  console.log('Projected content was re-checked');
+}
+```
+
+---
+
+#### 4. Key Takeaways
+
+- Runs after every change detection pass on projected content.
+- Useful for tracking changes in `<ng-content>` over time.
+- Runs very frequently — avoid heavy or expensive logic here.
+- Comes after `ngAfterContentInit()` in the lifecycle sequence.
+
 
 
 
