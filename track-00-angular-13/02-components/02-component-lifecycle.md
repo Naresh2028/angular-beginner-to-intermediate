@@ -185,16 +185,21 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-lifecycle-demo',
-  template: `<p>Init Complete: {{ message }}</p>`
+  template: `<p>Init Complete : {{message}}</p>`,
+  styleUrls: ['./lifecycle-demo.component.css']
 })
 export class LifecycleDemoComponent implements OnInit {
-  @Input() message = '';
+
+  @Input() message = 'Welcome';
 
   ngOnInit(): void {
-    console.log('ngOnInit: message is', this.message);
+  console.log('ngOninit: message is '+ this.message)
   }
+
 }
+
 ```
+<img width="575" height="339" alt="image" src="https://github.com/user-attachments/assets/bb57dea3-68af-4e79-afd1-b25cf91f931e" />
 
 ---
 
@@ -307,6 +312,7 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
 
 
