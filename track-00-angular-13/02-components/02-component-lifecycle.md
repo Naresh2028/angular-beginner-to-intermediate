@@ -699,7 +699,107 @@ onButtonClick() {
 -   Avoid modifying bound properties inside it
 -   Mainly useful for debugging or view consistency checks
 
+------------------------------------------------------------------------
 
+# ngOnDestroy()
+
+## Definition
+
+`ngOnDestroy()` is a lifecycle hook that runs **once** just before:
+
+-   A component is destroyed
+-   Angular removes the component from the DOM
+-   The component instance is cleaned up
+
+It is mainly used to perform cleanup tasks such as unsubscribing from
+Observables, removing event listeners, or clearing timers.
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of renting a hotel room.
+
+-   ngOnInit → You enter the room\
+-   Component lifecycle → You stay and use the room\
+-   ngOnDestroy → You check out and return the keys
+
+Before leaving, you must clean up your belongings.\
+Similarly, before Angular destroys a component, you must clean up
+resources.
+
+------------------------------------------------------------------------
+
+## Write a Problem & Fix the Problem by Using the Concept
+
+### ❌ Problem: Memory Leak Due to Unsubscribed Observable
+
+``` ts
+import { Component, OnInit } from '@angular/core';
+import { interval } from 'rxjs';
+
+@Component({
+  selector: 'app-demo',
+  template: `<p>Check console</p>`
+})
+export class DemoComponent implements OnInit {
+
+  ngOnInit() {
+    interval(1000).subscribe(value => {
+      console.log(value);
+    });
+  }
+}
+```
+
+### Why is this a problem?
+
+Even after the component is destroyed,\
+the subscription continues running in the background.
+
+This causes: - Memory leaks - Unnecessary processing - Performance
+issues
+
+------------------------------------------------------------------------
+
+### ✅ Fix: Use ngOnDestroy to Unsubscribe
+
+``` ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-demo',
+  template: `<p>Check console</p>`
+})
+export class DemoComponent implements OnInit, OnDestroy {
+
+  private subscription!: Subscription;
+
+  ngOnInit() {
+    this.subscription = interval(1000).subscribe(value => {
+      console.log(value);
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+}
+```
+
+Now when the component is destroyed,\
+the subscription is properly cleaned up.
+
+------------------------------------------------------------------------
+
+## Key Takeaways
+
+-   Runs only once before component destruction
+-   Used for cleanup logic
+-   Always unsubscribe from Observables
+-   Clear timers and event listeners
+-   Prevent memory leaks and performance issues
 
 
 
