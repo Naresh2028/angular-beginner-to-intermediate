@@ -425,6 +425,179 @@ ngAfterContentChecked(): void {
 - Runs very frequently — avoid heavy or expensive logic here.
 - Comes after `ngAfterContentInit()` in the lifecycle sequence.
 
+# ngAfterViewInit()
+
+## Definition
+
+`ngAfterViewInit()` is a lifecycle hook that runs **once** after:
+
+-   The component view is fully initialized
+-   All child component views are initialized
+-   All `@ViewChild` and `@ViewChildren` references are available
+
+It is the first safe place to access DOM elements from the template.
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of building a house.
+
+-   Constructor → Buying the land\
+-   ngOnInit → Building the structure\
+-   ngAfterViewInit → House is fully ready and you can enter
+
+You cannot arrange furniture before the house is fully built.\
+Similarly, you cannot access template elements before the view is
+initialized.
+
+------------------------------------------------------------------------
+
+## Write a Problem & Fix the Problem by Using the Concept
+
+### ❌ Problem: Accessing ViewChild Too Early
+
+``` ts
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  template: `<input #nameInput type="text" />`
+})
+export class DemoComponent implements OnInit {
+
+  @ViewChild('nameInput') input!: ElementRef;
+
+  ngOnInit() {
+    console.log(this.input); // undefined
+  }
+}
+```
+
+### Why?
+
+`ngOnInit()` runs before Angular finishes creating the component view.
+
+------------------------------------------------------------------------
+
+### ✅ Fix: Use ngAfterViewInit
+
+``` ts
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  template: `<input #nameInput type="text" />`
+})
+export class DemoComponent implements AfterViewInit {
+
+  @ViewChild('nameInput') input!: ElementRef;
+
+  ngAfterViewInit() {
+    this.input.nativeElement.focus(); // works
+  }
+}
+```
+
+Now the DOM element is available.
+
+------------------------------------------------------------------------
+
+## Key Takeaways
+
+-   Runs only once
+-   ViewChild is available here
+-   Safe place for DOM manipulation
+-   Ideal for initializing third-party libraries
+-   Do not access DOM in constructor or ngOnInit
+
+------------------------------------------------------------------------
+
+# ngAfterViewChecked()
+
+## Definition
+
+`ngAfterViewChecked()` is a lifecycle hook that runs:
+
+-   After Angular checks the component view
+-   After every change detection cycle
+-   Multiple times during the component lifecycle
+
+It runs after `ngAfterViewInit()` and continues running whenever Angular
+detects updates.
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Imagine a quality inspector in a factory.
+
+Every time something changes, the inspector checks everything again.
+
+`ngAfterViewChecked()` behaves the same way ---\
+every UI update triggers Angular to re-check the view.
+
+------------------------------------------------------------------------
+
+## Write a Problem & Fix the Problem by Using the Concept
+
+### ❌ Problem: Heavy Logic Inside ngAfterViewChecked
+
+``` ts
+import { Component, AfterViewChecked } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  template: `<button (click)="count++">Increase</button>{{ count }}`
+})
+export class DemoComponent implements AfterViewChecked {
+
+  count = 0;
+
+  ngAfterViewChecked() {
+    this.calculateHeavyData(); // runs many times
+  }
+
+  calculateHeavyData() {
+    console.log('Heavy calculation running...');
+  }
+}
+```
+
+### Why is this bad?
+
+-   Runs very frequently
+-   Causes performance issues
+-   Can create infinite loops if values are modified
+
+------------------------------------------------------------------------
+
+### ✅ Fix: Move Logic to Controlled Execution
+
+``` ts
+ngAfterViewInit() {
+  this.calculateHeavyData(); // runs once
+}
+```
+
+Or trigger manually:
+
+``` ts
+onButtonClick() {
+  this.calculateHeavyData();
+}
+```
+
+------------------------------------------------------------------------
+
+## Key Takeaways
+
+-   Runs after every change detection cycle
+-   Can execute many times
+-   Avoid heavy logic inside it
+-   Avoid modifying bound properties inside it
+-   Mainly useful for debugging or view consistency checks
+
 
 
 
