@@ -136,23 +136,6 @@ Angular will not call throw an — *errors*
 <img width="1713" height="460" alt="image" src="https://github.com/user-attachments/assets/3cd14358-86f1-476b-ae28-79994e9d67cf" />
 
 
-If you use the wrong signature:
-
-```ts
-ngOnchange(changes: any) {}
-```
-
-Angular will not recognize it — silent failure.
-
----
-
-### Expected Output
-When the parent changes the value of `message`, the console should show:
-
-```
-ngOnChanges called: { message: { previousValue: ..., currentValue: ... } }
-```
-
 ---
 
 ## 3️⃣ ngOnInit()
@@ -324,6 +307,7 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
 
 
