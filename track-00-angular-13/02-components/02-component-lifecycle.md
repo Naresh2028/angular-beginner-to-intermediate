@@ -95,13 +95,34 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 export class LifecycleDemoComponent implements OnChanges {
   @Input() message!: string;
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('ngOnChanges called:', changes);
+  ngOnChanges(changes:SimpleChanges){
+    console.log('ngOnchanges I received data! :',changes['message'].currentValue); 
   }
 }
 ```
 
+```
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
+
+<app-lifecycle-demo [message]="'Hello from Parent Component...'"></app-lifecycle-demo>`,
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angular-13';
+}
+
+```
+
+<img width="916" height="583" alt="image" src="https://github.com/user-attachments/assets/717dc88e-4f5c-4fed-a523-edf65cad047f" />
+
 ---
+
+
 
 ### What Happens If Misconfigured
 If you forget `@Input()` on the property:
@@ -300,3 +321,4 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
