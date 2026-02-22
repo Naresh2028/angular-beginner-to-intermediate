@@ -220,7 +220,7 @@ export class LifecycleDemoComponent implements OnInit {
 
 - From App Component
 
-```
+```ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -307,19 +307,30 @@ Same component files — just implement ability into `.ts`.
 ### Minimal Working Example
 
 ```ts
-import { Component, DoCheck } from '@angular/core';
+import { Component, DoCheck, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-lifecycle-demo',
-  template: `<p>DoCheck is running</p>`
+  template: `<input type="text" placeholder="Enter something..."/>
+  <button type="submit" (click)="0">Click Me</button>
+  <p>{{checkCount}}</p>
+  `,
+  styleUrls: ['./lifecycle-demo.component.css']
 })
 export class LifecycleDemoComponent implements DoCheck {
 
-  ngDoCheck(): void {
-    console.log('ngDoCheck executed');
+  checkCount = 0; 
+
+  ngDoCheck():void{
+    this.checkCount++;
+    console.log('ngDoCheck is triggered count :'+ this.checkCount);
+    
   }
+
 }
+
 ```
+<img width="879" height="805" alt="image" src="https://github.com/user-attachments/assets/c9651ca8-69a9-4aa5-9013-de901f83925f" />
 
 ---
 
@@ -332,18 +343,10 @@ ngDocheck() {}
 
 Angular will not call it — silent failure.
 
+<img width="857" height="719" alt="image" src="https://github.com/user-attachments/assets/8a637ff2-2e31-4436-83a4-c04ef41cc160" />
+
+
 And if you use heavy logic inside `ngDoCheck()`, it may hurt performance — because it's called so frequently.
-
----
-
-### Expected Output
-When change detection runs (even without input changes), the console should log:
-
-```
-ngDoCheck executed
-```
-
-This confirms Angular runs this hook every detection cycle.
 
 ---
 
@@ -352,7 +355,7 @@ This confirms Angular runs this hook every detection cycle.
 - `ngOnInit()` runs once after first binding.  
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
-Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
 
 
