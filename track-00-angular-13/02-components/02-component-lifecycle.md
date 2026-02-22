@@ -101,7 +101,7 @@ export class LifecycleDemoComponent implements OnChanges {
 }
 ```
 
-```
+```ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -321,4 +321,5 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
