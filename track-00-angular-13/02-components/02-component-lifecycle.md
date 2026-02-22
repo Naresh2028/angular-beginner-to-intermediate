@@ -208,16 +208,36 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class LifecycleDemoComponent implements OnInit {
 
-  @Input() message = 'Welcome';
+  @Input() message!:string;
 
   ngOnInit(): void {
-  console.log('ngOninit: message is '+ this.message)
+    console.log('message at ngOninit ' + this.message)
   }
 
 }
 
 ```
-<img width="575" height="339" alt="image" src="https://github.com/user-attachments/assets/bb57dea3-68af-4e79-afd1-b25cf91f931e" />
+
+- From App Component
+
+```
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
+
+<app-lifecycle-demo [message]="'This is data from parent component'"></app-lifecycle-demo>`,
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angular-13';
+}
+```
+
+<img width="799" height="570" alt="image" src="https://github.com/user-attachments/assets/b1f82961-9248-4f94-8fc7-ce3a073e20a6" />
+
 
 ---
 
@@ -228,19 +248,22 @@ Example mistake:
 
 ```ts
 constructor() {
-  console.log('message at constructor:', this.message);
-}
+    console.log('message at constructor : ', this.message);
+  }
 ```
 
 This may log `undefined`.
 
 ---
 
+<img width="676" height="360" alt="image" src="https://github.com/user-attachments/assets/4881f3e2-2df0-44ff-b2fa-e4961d989abf" />
+
+
 ### Expected Output
 When the component loads:
 
 ```
-ngOnInit: message is Hello
+message at ngOninit This is data from parent component
 ```
 
 ---
@@ -330,6 +353,7 @@ This confirms Angular runs this hook every detection cycle.
 - `ngDoCheck()` runs every change detection cycle — use with care.
 
 Keep this file as **Part 1 of Lifecycle Hooks**.
+
 
 
 
