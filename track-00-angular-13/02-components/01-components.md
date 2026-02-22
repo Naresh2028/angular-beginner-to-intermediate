@@ -88,6 +88,7 @@ Run:
 ```bash
 ng serve
 ```
+<img width="434" height="344" alt="image" src="https://github.com/user-attachments/assets/22efc60e-bf45-4fa2-b9b6-a6241d9db0b3" />
 
 ---
 
@@ -109,6 +110,9 @@ If you use the wrong selector in `app.component.html`, Angular will display:
 
 These errors prove that Angular only recognizes components declared in modules and rendered with correct selectors.
 
+<img width="1736" height="870" alt="image" src="https://github.com/user-attachments/assets/cee2a5c7-9108-466b-98ab-0f3313c146a7" />
+
+
 ---
 
 ## 8. Expected Output
@@ -128,3 +132,4 @@ When everything is configured correctly:
 
 ## Summary
 Angular components are the heart of UI structure. They solve modularization problems by combining view and logic, and they must be declared in modules and used with correct selectors to work.
+
