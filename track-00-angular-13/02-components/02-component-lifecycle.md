@@ -395,10 +395,23 @@ Without this hook, projected content may be `undefined`.
 
 ### Parent Usage
 
-```html
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
 <app-wrapper>
   <p #projectedContent>Projected Paragraph</p>
 </app-wrapper>
+`,
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'angular-13';
+}
+
 ```
 
 ### Wrapper Component
@@ -419,6 +432,10 @@ export class WrapperComponent implements AfterContentInit {
   }
 }
 ```
+Output
+
+<img width="788" height="560" alt="image" src="https://github.com/user-attachments/assets/972dfafb-54d3-464b-bc26-ee53dab378aa" />
+
 
 ---
 
@@ -426,9 +443,26 @@ export class WrapperComponent implements AfterContentInit {
 
 If you access `@ContentChild` inside `ngOnInit()`:
 
-- The value may be `undefined`
+- The value will be `undefined`
 - Runtime errors can occur
 - Unexpected behavior in UI
+
+```ts
+export class WrapperComponent implements OnInit, AfterContentInit {
+
+  @ContentChild('projectedContent') content!: ElementRef;
+
+
+  ngOnInit(): void {
+    console.log(this.content.nativeElement.textContent); // TypeError: Cannot read properties of undefined 
+  }
+  ngAfterContentInit(): void {
+    console.log(this.content.nativeElement.textContent);
+  }
+
+}
+```
+<img width="813" height="533" alt="image" src="https://github.com/user-attachments/assets/5be4cc04-676f-4d88-b24f-f25655854fc4" />
 
 ---
 
@@ -780,6 +814,7 @@ the subscription is properly cleaned up.
 -   Always unsubscribe from Observables
 -   Clear timers and event listeners
 -   Prevent memory leaks and performance issues
+
 
 
 
