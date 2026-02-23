@@ -188,41 +188,43 @@ It solves problems like:
 ### Child Component
 
 ```ts
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-child',
   template: `
-    <button (click)="sendData()">Send To Parent</button>
+  <button (click)="sendEvent()">Click to Send Data</button>
   `
 })
 export class ChildComponent {
 
   @Output() notify = new EventEmitter<string>();
 
-  sendData() {
-    this.notify.emit("Hello Parent");
+  sendEvent(){
+    this.notify.emit('Hello Parent');
   }
 }
+
 ```
 
 ### Parent Component
 
 ```ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-parent',
   template: `
-    <app-child (notify)="receiveData($event)"></app-child>
-  `
+  <app-child (notify)="ReceiveData($event)"></app-child>
+  `,
+  styleUrls: ['./parent.component.css']
 })
 export class ParentComponent {
-
-  receiveData(message: string) {
-    console.log(message);
+  ReceiveData(event:string){
+    console.log(event)
   }
 }
+
 ```
 
 ---
@@ -236,6 +238,8 @@ If:
 - Event binding name mismatches
 
 You may experience:
+
+<img width="1373" height="852" alt="image" src="https://github.com/user-attachments/assets/509cebf7-194c-4264-bb3d-c64f73b72539" />
 
 - Parent not receiving data
 - Silent failures
@@ -368,6 +372,7 @@ You may experience:
 - Unexpected UI behavior
 
 Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
 
 
 
