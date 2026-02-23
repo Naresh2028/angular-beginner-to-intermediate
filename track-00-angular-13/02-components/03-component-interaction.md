@@ -341,27 +341,38 @@ export class SiblingAComponent  {
 ### Sibling B (Receiver)
 
 ```ts
-import { Component, OnInit } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscriber, Subscription } from 'rxjs';
 import { CommunicationService } from 'src/app/Services/Communication/communication.service';
 
 @Component({
-  selector: 'app-sibling-a',
-  template: `
-  <button (click)="sendMessage()">Click to Send Data</button>
+  selector: 'app-sibling-b',
+  template:     `
+  <p>{{message}}</p>
   `
 })
-export class SiblingAComponent  {
+export class SiblingBComponent implements OnInit, OnDestroy {
 
-  constructor(private communicationService:CommunicationService,private route:Router) { } 
+  message = '';
 
-  sendMessage(){
-    this.communicationService.sendMessage("Hi! I am Sibling A...");
+  private mySubscription!:Subscription;
 
-    this.route.navigateByUrl('/siblingb');
+  constructor(private communicationService:CommunicationService) { }
+
+  ngOnInit(): void {
+    this.mySubscription = this.communicationService.message$.subscribe(data => {
+      this.message = data;
+    })
+  }
+
+  ngOnDestroy(): void {
+    if(this.mySubscription){
+      this.mySubscription.unsubscribe();
+    }
   }
 
 }
+
 
 ```
 
@@ -387,6 +398,7 @@ You may experience:
 - Unexpected UI behavior
 
 Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
 
 
 
