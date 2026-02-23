@@ -504,20 +504,53 @@ However, it should not contain heavy logic.
 
 ## Minimal Working Example
 
+Parent Component
 ```ts
-import { Component, AfterContentChecked } from '@angular/core';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
+<app-wrapper>
+
+    <p>Current Count{{count}}</p>
+    <button (click)="increment()">Click</button>
+
+</app-wrapper>
+`,
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  count = 0;
+
+  increment(){
+    this.count++;
+  }
+}
+
+```
+
+Child Component
+```ts
+import { AfterContentChecked, Component } from '@angular/core';
 
 @Component({
   selector: 'app-wrapper',
-  template: `<ng-content></ng-content>`
+  template: '<ng-content></ng-content>',
+  styleUrls: ['./wrapper.component.css']
 })
-export class WrapperComponent implements AfterContentChecked {
-
+export class WrapperComponent implements AfterContentChecked { 
   ngAfterContentChecked() {
-    console.log('Projected content checked');
+    console.log("Change detection occured.."); 
   }
+
 }
+
 ```
+Output
+
+<img width="929" height="660" alt="image" src="https://github.com/user-attachments/assets/a2785275-5f47-49e1-b87c-80ca795b6f92" />
 
 ---
 
@@ -814,6 +847,7 @@ the subscription is properly cleaned up.
 -   Always unsubscribe from Observables
 -   Clear timers and event listeners
 -   Prevent memory leaks and performance issues
+
 
 
 
