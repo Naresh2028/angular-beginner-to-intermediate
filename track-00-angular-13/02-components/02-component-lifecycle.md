@@ -361,62 +361,49 @@ And if you use heavy logic inside `ngDoCheck()`, it may hurt performance — bec
 
 ## Definition
 
-`ngAfterContentInit()` is a lifecycle hook that runs **once** after:
+`ngAfterContentInit()` is a lifecycle hook that runs **once** after Angular projects external content into a component using `<ng-content>`.
 
--   Angular projects external content into the component using
-    `<ng-content>`
--   All `@ContentChild` and `@ContentChildren` references are
-    initialized
+It is triggered after `@ContentChild` and `@ContentChildren` references are fully initialized.
 
-It is the first safe place to access projected content inside a
-component.
-
-------------------------------------------------------------------------
+---
 
 ## Analogy
 
-Imagine you order furniture for your house from outside.
+Think of receiving a parcel delivery.
 
--   Constructor → House blueprint
--   ngOnInit → House construction
--   ngAfterContentInit → Furniture delivered and placed inside
+- The house (component) already exists.
+- The parcel (projected content) arrives later.
+- Only after delivery can you open and use it.
 
-You cannot arrange external furniture before it arrives.\
-Similarly, you cannot access projected content before Angular inserts
-it.
+Similarly, projected content becomes available only after Angular inserts it.
 
-------------------------------------------------------------------------
+---
 
-## Write a Problem & Fix the Problem by Using the Concept
+## What Problem It Solves
 
-### ❌ Problem: Accessing ContentChild Too Early
+It solves the problem of:
 
-``` ts
-import { Component, ContentChild, ElementRef, OnInit } from '@angular/core';
+- Accessing projected content too early
+- Working with `@ContentChild` before initialization
+- Needing to manipulate external content safely
 
-@Component({
-  selector: 'app-wrapper',
-  template: `<ng-content></ng-content>`
-})
-export class WrapperComponent implements OnInit {
+Without this hook, projected content may be `undefined`.
 
-  @ContentChild('projectedInput') input!: ElementRef;
+---
 
-  ngOnInit() {
-    console.log(this.input); // undefined
-  }
-}
+## Minimal Working Example
+
+### Parent Usage
+
+```html
+<app-wrapper>
+  <p #projectedContent>Projected Paragraph</p>
+</app-wrapper>
 ```
 
-### Why?
+### Wrapper Component
 
-Projected content is not initialized during `ngOnInit()`.
-
-------------------------------------------------------------------------
-
-### ✅ Fix: Use ngAfterContentInit
-
-``` ts
+```ts
 import { Component, ContentChild, ElementRef, AfterContentInit } from '@angular/core';
 
 @Component({
@@ -425,58 +412,65 @@ import { Component, ContentChild, ElementRef, AfterContentInit } from '@angular/
 })
 export class WrapperComponent implements AfterContentInit {
 
-  @ContentChild('projectedInput') input!: ElementRef;
+  @ContentChild('projectedContent') content!: ElementRef;
 
   ngAfterContentInit() {
-    console.log(this.input.nativeElement); // works
+    console.log(this.content.nativeElement.textContent);
   }
 }
 ```
 
-Now the projected content is available.
+---
 
-------------------------------------------------------------------------
+## What Happens If Misconfigured
 
-## Key Takeaways
+If you access `@ContentChild` inside `ngOnInit()`:
 
--   Runs only once
--   Used for projected content (`ng-content`)
--   ContentChild is available here
--   Do not access projected content in constructor or ngOnInit
+- The value may be `undefined`
+- Runtime errors can occur
+- Unexpected behavior in UI
 
-------------------------------------------------------------------------
+---
 
 # ngAfterContentChecked()
 
 ## Definition
 
-`ngAfterContentChecked()` is a lifecycle hook that runs:
+`ngAfterContentChecked()` runs after Angular checks projected content during every change detection cycle.
 
--   After Angular checks projected content
--   After every change detection cycle involving content
--   Multiple times during the component lifecycle
+It runs:
 
-It runs after `ngAfterContentInit()` and continues running whenever
-projected content changes.
+- After `ngAfterContentInit()`
+- Every time projected content changes
 
-------------------------------------------------------------------------
+---
 
 ## Analogy
 
-Think of a supervisor checking items delivered to a warehouse.
+Think of a security guard checking packages.
 
-Every time new items arrive or change, the supervisor checks them again.
+Every time a new package arrives or is modified,
+the guard inspects it again.
 
-`ngAfterContentChecked()` behaves the same way ---\
-every content update triggers Angular to re-check projected content.
+Angular re-checks projected content similarly.
 
-------------------------------------------------------------------------
+---
 
-## Write a Problem & Fix the Problem by Using the Concept
+## What Problem It Solves
 
-### ❌ Problem: Heavy Logic Inside ngAfterContentChecked
+It allows you to:
 
-``` ts
+- React when projected content updates
+- Validate content state
+- Debug content-related issues
+
+However, it should not contain heavy logic.
+
+---
+
+## Minimal Working Example
+
+```ts
 import { Component, AfterContentChecked } from '@angular/core';
 
 @Component({
@@ -486,43 +480,29 @@ import { Component, AfterContentChecked } from '@angular/core';
 export class WrapperComponent implements AfterContentChecked {
 
   ngAfterContentChecked() {
-    this.calculateHeavyData(); // runs many times
-  }
-
-  calculateHeavyData() {
-    console.log('Heavy calculation running...');
+    console.log('Projected content checked');
   }
 }
 ```
 
-### Why is this bad?
+---
 
--   Runs very frequently
--   Causes performance issues
--   Can create infinite loops if values are modified
+## What Happens If Misconfigured
 
-------------------------------------------------------------------------
+If you:
 
-### ✅ Fix: Move Logic to ngAfterContentInit or Event-Based Execution
+- Perform heavy calculations
+- Modify bound properties
+- Trigger additional state changes
 
-``` ts
-ngAfterContentInit() {
-  this.calculateHeavyData(); // runs once
-}
-```
+It can cause:
 
-Or trigger manually when needed instead of relying on the lifecycle
-hook.
+- Performance issues
+- Infinite change detection loops
+- ExpressionChangedAfterItHasBeenCheckedError
 
-------------------------------------------------------------------------
+Use it only for lightweight checks or debugging.
 
-## Key Takeaways
-
--   Runs after every change detection for projected content
--   Can execute many times
--   Avoid heavy logic inside it
--   Avoid modifying bound properties inside it
--   Mainly useful for debugging or content consistency checks
 
 ------------------------------------------------------------------------
 
@@ -800,6 +780,7 @@ the subscription is properly cleaned up.
 -   Always unsubscribe from Observables
 -   Clear timers and event listeners
 -   Prevent memory leaks and performance issues
+
 
 
 
