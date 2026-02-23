@@ -125,6 +125,9 @@ export class ChildComponent {
 
 The child displays data received from the parent.
 
+<img width="927" height="432" alt="image" src="https://github.com/user-attachments/assets/0e22ee8e-c3bc-476d-9d33-b9b63446d2cd" />
+
+
 ---
 
 ## What Happens If Misconfigured
@@ -365,6 +368,7 @@ You may experience:
 - Unexpected UI behavior
 
 Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
 
 
 
