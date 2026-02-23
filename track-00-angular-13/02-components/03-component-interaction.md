@@ -226,6 +226,9 @@ export class ParentComponent {
 }
 
 ```
+#### Output
+
+<img width="1007" height="596" alt="image" src="https://github.com/user-attachments/assets/ce1dbdaa-6afc-4a82-b035-2b39d5bf7194" />
 
 ---
 
@@ -372,6 +375,7 @@ You may experience:
 - Unexpected UI behavior
 
 Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
 
 
 
