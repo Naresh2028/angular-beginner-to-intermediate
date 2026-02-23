@@ -146,4 +146,226 @@ You may experience:
 
 Always ensure proper property binding and type consistency.
 
+# Child → Parent
+
+## Definition
+
+Child to Parent communication in Angular happens using the `@Output()` decorator along with `EventEmitter`.
+
+The child component emits an event, and the parent listens to that event using event binding.
+
+Data flows upward.
+
+---
+
+## Analogy
+
+Think of a student asking a question in class.
+
+- The student (child) raises a hand.
+- The teacher (parent) listens and responds.
+
+The child notifies, the parent reacts.
+
+---
+
+## What Problem It Solves
+
+It solves problems like:
+
+- Notifying parent when a button is clicked
+- Sending form data to parent
+- Informing parent about state changes
+- Triggering parent logic from child actions
+
+---
+
+## Minimal Working Example
+
+### Child Component
+
+```ts
+import { Component, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `
+    <button (click)="sendData()">Send To Parent</button>
+  `
+})
+export class ChildComponent {
+
+  @Output() notify = new EventEmitter<string>();
+
+  sendData() {
+    this.notify.emit("Hello Parent");
+  }
+}
+```
+
+### Parent Component
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-parent',
+  template: `
+    <app-child (notify)="receiveData($event)"></app-child>
+  `
+})
+export class ParentComponent {
+
+  receiveData(message: string) {
+    console.log(message);
+  }
+}
+```
+
+---
+
+## What Happens If Misconfigured
+
+If:
+
+- `@Output()` is missing
+- EventEmitter is not emitted
+- Event binding name mismatches
+
+You may experience:
+
+- Parent not receiving data
+- Silent failures
+- Debugging difficulties
+
+Always ensure proper event naming and binding.
+
+---
+
+# Sibling → Sibling (via shared service)
+
+## Definition
+
+Sibling components communicate through a shared service using Observables.
+
+The service acts as a mediator between components.
+
+---
+
+## Analogy
+
+Think of two employees in different rooms.
+
+They don’t talk directly.
+They communicate through a common manager (service).
+
+---
+
+## What Problem It Solves
+
+It solves problems like:
+
+- Sharing state between unrelated components
+- Global notifications
+- Cross-component communication
+- Avoiding deeply nested input/output chains
+
+---
+
+## Minimal Working Example
+
+### Shared Service
+
+```ts
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CommunicationService {
+
+  private messageSource = new Subject<string>();
+  message$ = this.messageSource.asObservable();
+
+  sendMessage(message: string) {
+    this.messageSource.next(message);
+  }
+}
+```
+
+---
+
+### Sibling A (Sender)
+
+```ts
+import { Component } from '@angular/core';
+import { CommunicationService } from './communication.service';
+
+@Component({
+  selector: 'app-sibling-a',
+  template: `<button (click)="send()">Send</button>`
+})
+export class SiblingAComponent {
+
+  constructor(private service: CommunicationService) {}
+
+  send() {
+    this.service.sendMessage("Hello from Sibling A");
+  }
+}
+```
+
+---
+
+### Sibling B (Receiver)
+
+```ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommunicationService } from './communication.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-sibling-b',
+  template: `<p>{{ message }}</p>`
+})
+export class SiblingBComponent implements OnInit, OnDestroy {
+
+  message = '';
+  private subscription!: Subscription;
+
+  constructor(private service: CommunicationService) {}
+
+  ngOnInit() {
+    this.subscription = this.service.message$.subscribe(msg => {
+      this.message = msg;
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+}
+```
+
+---
+
+## What Happens If Misconfigured
+
+If:
+
+- Service is not provided properly
+- Subscriptions are not cleaned up
+- Observable logic is incorrect
+
+You may experience:
+
+- Memory leaks
+- Stale data
+- Unexpected UI behavior
+
+Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
+
+
 
