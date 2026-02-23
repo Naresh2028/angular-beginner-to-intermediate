@@ -141,5 +141,9 @@ You may experience:
 - Template errors
 - Unexpected UI behavior
 
+<img width="1622" height="340" alt="image" src="https://github.com/user-attachments/assets/4baafbc9-c4a6-4486-ae84-244885e9ac0c" />
+
+
 Always ensure proper property binding and type consistency.
+
 
