@@ -613,32 +613,62 @@ Without this hook, ViewChild references may be `undefined`.
 
 ## Minimal Working Example
 
-### Template
-
-```html
-<input #username type="text" />
-```
-
-### Component
+### Parent Component
 
 ```ts
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ViewChild } from '@angular/core';
+import { ViewComponentComponent } from './components/view-component/view-component.component';
 
 @Component({
-  selector: 'app-demo',
-  template: `<input #username type="text" />`
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
+<app-view-component></app-view-component>
+`,
+  styleUrls: ['./app.component.css']
 })
-export class DemoComponent implements AfterViewInit {
-
-  @ViewChild('username') input!: ElementRef;
-
-  ngAfterViewInit() {
-    this.input.nativeElement.focus();
+export class AppComponent implements AfterViewInit {
+  
+  @ViewChild(ViewComponentComponent) childReference!:ViewComponentComponent;
+  
+  ngAfterViewInit(): void {
+    console.log(this.childReference.childStatus);
+    console.log(this.childReference.getAlert()); 
   }
+  
 }
+
 ```
 
-The input field is focused once the view is initialized.
+### Child Component
+
+```ts
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-view-component',
+  template:`
+  <input #username type="text">
+  <button (click)="getAlert()">Click
+  `,
+  styleUrls: ['./view-component.component.css']
+})
+export class ViewComponentComponent {
+
+  childStatus = 'View Component is ready';
+
+  getAlert(){
+    return 'Action from View Component';
+  }
+
+}
+
+```
+
+#### Output
+
+<img width="959" height="591" alt="image" src="https://github.com/user-attachments/assets/788c877e-3498-475e-9f92-4913e9faabb8" />
+
 
 ---
 
@@ -646,12 +676,56 @@ The input field is focused once the view is initialized.
 
 If you try accessing ViewChild inside `ngOnInit()`:
 
+```ts
+export class AppComponent implements OnInit,AfterViewInit {
+  
+  @ViewChild(ViewComponentComponent) childReference!:ViewComponentComponent;
+  
+  ngAfterViewInit(): void {
+    console.log(this.childReference.childStatus);
+    console.log(this.childReference.getAlert()); 
+  }
+
+  ngOnInit(): void {
+    console.log(this.childReference.childStatus);
+  }
+  
+}
+```
+
 - The reference may be `undefined`
 - Runtime errors may occur
 - UI behavior becomes unpredictable
 
+<img width="834" height="554" alt="image" src="https://github.com/user-attachments/assets/0073f0f6-2f6a-4ba6-8fb2-f5c69eca8ae3" />
+
+
 If you modify bound data inside this hook incorrectly,  
 you may encounter `ExpressionChangedAfterItHasBeenCheckedError`.
+
+
+```ts
+@Component({
+  selector: 'app-root',
+  template:`<h1>Hello World</h1>
+<router-outlet></router-outlet>
+<h1>Status: {{status}}</h1>
+`,
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements AfterViewInit {
+  
+  status = 'loading...';
+  
+  ngAfterViewInit(): void {
+    this.status = 'ready'
+  }
+
+}
+```
+
+#### Output
+<img width="1705" height="593" alt="image" src="https://github.com/user-attachments/assets/b286b97a-57b0-4930-beb0-b88b0a406ff1" />
 
 ---
 
@@ -693,25 +767,58 @@ However, it should not contain heavy logic.
 
 ## Minimal Working Example
 
+### Parent Component
+
 ```ts
-import { Component, AfterViewChecked } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { ViewComponentComponent } from './components/view-component/view-component.component';
 
 @Component({
-  selector: 'app-demo',
-  template: `
-    <button (click)="count++">Increase</button>
-    <p>{{ count }}</p>
-  `
+  selector: 'app-root',
+  template: `<h1>Hello World</h1>
+<router-outlet></router-outlet>
+<app-view-component></app-view-component>
+`,
+  styleUrls: ['./app.component.css']
 })
-export class DemoComponent implements AfterViewChecked {
+export class AppComponent implements AfterViewChecked {
 
-  count = 0;
+  @ViewChild(ViewComponentComponent) childReference!: ViewComponentComponent;
 
-  ngAfterViewChecked() {
-    console.log('View checked');
+  ngAfterViewChecked(): void {    
+    console.log(this.childReference.getAlert());
   }
+
+
 }
+
 ```
+
+### Child Component
+
+```ts
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-view-component',
+  template: `
+  <button (click)="getAlert()">Click
+  `,
+  styleUrls: ['./view-component.component.css']
+})
+export class ViewComponentComponent {
+  getAlert() {
+    return 'Action from View Component';
+  }
+
+}
+
+```
+
+### output
+
+<img width="1054" height="630" alt="image" src="https://github.com/user-attachments/assets/353d2400-b1e6-4438-8322-02eb588a7c65" />
+
 
 Each button click triggers change detection, and the hook runs again.
 
@@ -834,5 +941,6 @@ the subscription is properly cleaned up.
 -   Always unsubscribe from Observables
 -   Clear timers and event listeners
 -   Prevent memory leaks and performance issues
+
 
 
