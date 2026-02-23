@@ -885,57 +885,104 @@ Without proper cleanup, applications may suffer from performance degradation.
 
 ### ❌ Problem: Unsubscribed Observable
 
+#### Parent Component 
 ```ts
-import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs';
+import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-demo',
-  template: `<p>Check console</p>`
+  selector: 'app-root',
+  template: `
+  <button (click)="exist = !exist">
+    {{exist? 'destroy component':'create component'}}
+  </button>
+<app-destroy *ngIf="exist"></app-destroy>
+`,
+  styleUrls: ['./app.component.css']
 })
-export class DemoComponent implements OnInit {
-
-  ngOnInit() {
-    interval(1000).subscribe(value => {
-      console.log(value);
-    });
-  }
+export class AppComponent {
+  exist=true;
 }
+
+```
+
+#### Child Component
+
+```ts
+export class DestroyComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+      interval(1000).subscribe(value => {
+        console.log(value);
+      });
+  }
+
+}
+
 ```
 
 Even if the component is destroyed,  
 the subscription continues running in the background.
 
+<img width="1171" height="886" alt="image" src="https://github.com/user-attachments/assets/0c98d9b2-10f7-4a18-9b6e-0cb4a8e30971" />
+
+
 ---
 
 ### ✅ Fix: Use ngOnDestroy to Unsubscribe
 
+#### Parent Component
+
 ```ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-demo',
-  template: `<p>Check console</p>`
+  selector: 'app-root',
+  template: `
+  <button (click)="exist = !exist">
+    {{exist? 'destroy component':'create component'}}
+  </button>
+<app-destroy *ngIf="exist"></app-destroy>
+`,
+  styleUrls: ['./app.component.css']
 })
-export class DemoComponent implements OnInit, OnDestroy {
+export class AppComponent {
+  exist = true;
+}
 
-  private subscription!: Subscription;
+```
 
-  ngOnInit() {
-    this.subscription = interval(1000).subscribe(value => {
-      console.log(value);
-    });
+#### Child Component
+
+```ts
+export class DestroyComponent implements OnInit,OnDestroy {
+
+  private mySubscription!: Subscription
+  constructor() { }
+
+  ngOnInit(): void {
+      this.mySubscription = interval(1000).subscribe(value => {
+        console.log(value);
+      });
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  ngOnDestroy(): void {
+    if(this.mySubscription){
+      this.mySubscription.unsubscribe();
+      console.log("Successfully cleaned up!");
+      
+    }
   }
+
 }
 ```
 
 Now when the component is removed,  
 the subscription stops properly.
+
+<img width="890" height="739" alt="image" src="https://github.com/user-attachments/assets/50cacb9c-67ff-47be-ba3b-b50f62aaf44e" />
+
 
 ---
 
@@ -950,16 +997,3 @@ If you forget to clean up:
 
 Always unsubscribe from Observables,  
 clear intervals, and remove event listeners inside `ngOnDestroy()`.
-
-
-
-
-
-
-
-
-
-
-
-
-
