@@ -288,20 +288,22 @@ It solves problems like:
 
 ```ts
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommunicationService {
 
-  private messageSource = new Subject<string>();
+  private messageSource = new BehaviorSubject<string>('');
+
   message$ = this.messageSource.asObservable();
 
   sendMessage(message: string) {
     this.messageSource.next(message);
   }
 }
+
 ```
 
 ---
@@ -309,21 +311,29 @@ export class CommunicationService {
 ### Sibling A (Sender)
 
 ```ts
-import { Component } from '@angular/core';
-import { CommunicationService } from './communication.service';
+import { Component, OnInit } from '@angular/core';
+import { Route, Router } from '@angular/router';
+import { CommunicationService } from 'src/app/Services/Communication/communication.service';
 
 @Component({
   selector: 'app-sibling-a',
-  template: `<button (click)="send()">Send</button>`
+  template: `
+  <button (click)="sendMessage()">Click to Send Data</button>
+  `
 })
-export class SiblingAComponent {
+export class SiblingAComponent  {
 
-  constructor(private service: CommunicationService) {}
+  constructor(private communicationService:CommunicationService,private route:Router) { } 
 
-  send() {
-    this.service.sendMessage("Hello from Sibling A");
+  sendMessage(){
+    this.communicationService.sendMessage("Hi! I am Sibling A...");
+
+    this.route.navigateByUrl('/siblingb');
+    
   }
+
 }
+
 ```
 
 ---
@@ -331,32 +341,34 @@ export class SiblingAComponent {
 ### Sibling B (Receiver)
 
 ```ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommunicationService } from './communication.service';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Route, Router } from '@angular/router';
+import { CommunicationService } from 'src/app/Services/Communication/communication.service';
 
 @Component({
-  selector: 'app-sibling-b',
-  template: `<p>{{ message }}</p>`
+  selector: 'app-sibling-a',
+  template: `
+  <button (click)="sendMessage()">Click to Send Data</button>
+  `
 })
-export class SiblingBComponent implements OnInit, OnDestroy {
+export class SiblingAComponent  {
 
-  message = '';
-  private subscription!: Subscription;
+  constructor(private communicationService:CommunicationService,private route:Router) { } 
 
-  constructor(private service: CommunicationService) {}
+  sendMessage(){
+    this.communicationService.sendMessage("Hi! I am Sibling A...");
 
-  ngOnInit() {
-    this.subscription = this.service.message$.subscribe(msg => {
-      this.message = msg;
-    });
+    this.route.navigateByUrl('/siblingb');
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
 }
+
 ```
+
+#### Output
+
+<img width="847" height="643" alt="image" src="https://github.com/user-attachments/assets/f66cfee8-5640-4f74-bc97-2d539d01c792" />
+
 
 ---
 
@@ -375,6 +387,7 @@ You may experience:
 - Unexpected UI behavior
 
 Always unsubscribe in `ngOnDestroy()` and keep services stateless when possible.
+
 
 
 
