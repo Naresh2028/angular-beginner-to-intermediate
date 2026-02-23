@@ -846,36 +846,46 @@ Use this hook only for lightweight operations or debugging purposes.
 
 ## Definition
 
-`ngOnDestroy()` is a lifecycle hook that runs **once** just before:
+`ngOnDestroy()` is a lifecycle hook that runs **once** just before Angular:
 
--   A component is destroyed
--   Angular removes the component from the DOM
--   The component instance is cleaned up
+- Destroys the component
+- Removes it from the DOM
+- Cleans up the component instance
 
-It is mainly used to perform cleanup tasks such as unsubscribing from
-Observables, removing event listeners, or clearing timers.
+It is mainly used to release resources and perform cleanup logic.
 
-------------------------------------------------------------------------
+---
 
 ## Analogy
 
-Think of renting a hotel room.
+Think of checking out from a hotel.
 
--   ngOnInit → You enter the room\
--   Component lifecycle → You stay and use the room\
--   ngOnDestroy → You check out and return the keys
+- You used the room during your stay.
+- Before leaving, you turn off lights and return the keys.
 
-Before leaving, you must clean up your belongings.\
-Similarly, before Angular destroys a component, you must clean up
-resources.
+Similarly, before Angular removes a component,  
+you must clean up resources like subscriptions, timers, or event listeners.
 
-------------------------------------------------------------------------
+---
 
-## Write a Problem & Fix the Problem by Using the Concept
+## What Problem It Solves
 
-### ❌ Problem: Memory Leak Due to Unsubscribed Observable
+It solves problems such as:
 
-``` ts
+- Memory leaks from active subscriptions
+- Background timers still running
+- Event listeners not removed
+- Unnecessary processing after component removal
+
+Without proper cleanup, applications may suffer from performance degradation.
+
+---
+
+## Minimal Working Example
+
+### ❌ Problem: Unsubscribed Observable
+
+```ts
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 
@@ -893,19 +903,14 @@ export class DemoComponent implements OnInit {
 }
 ```
 
-### Why is this a problem?
-
-Even after the component is destroyed,\
+Even if the component is destroyed,  
 the subscription continues running in the background.
 
-This causes: - Memory leaks - Unnecessary processing - Performance
-issues
-
-------------------------------------------------------------------------
+---
 
 ### ✅ Fix: Use ngOnDestroy to Unsubscribe
 
-``` ts
+```ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
@@ -929,18 +934,32 @@ export class DemoComponent implements OnInit, OnDestroy {
 }
 ```
 
-Now when the component is destroyed,\
-the subscription is properly cleaned up.
+Now when the component is removed,  
+the subscription stops properly.
 
-------------------------------------------------------------------------
+---
 
-## Key Takeaways
+## What Happens If Misconfigured
 
--   Runs only once before component destruction
--   Used for cleanup logic
--   Always unsubscribe from Observables
--   Clear timers and event listeners
--   Prevent memory leaks and performance issues
+If you forget to clean up:
+
+- Memory leaks occur
+- Background processes continue running
+- Performance issues increase over time
+- Unexpected behavior may appear
+
+Always unsubscribe from Observables,  
+clear intervals, and remove event listeners inside `ngOnDestroy()`.
+
+
+
+
+
+
+
+
+
+
 
 
 
