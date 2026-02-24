@@ -143,6 +143,9 @@ Think of a wardrobe with labeled sections:
 -   Pants section
 -   Shoes section
 
+<img width="3840" height="3840" alt="image" src="https://github.com/user-attachments/assets/97482e55-7aff-442d-8fda-5a039e1f70af" />
+
+
 Items go into specific sections based on labels.
 
 ------------------------------------------------------------------------
@@ -259,4 +262,5 @@ The projected content appears only if `isVisible` is true.
 -   `select` attribute enables multi-slot control
 -   Structural directives allow conditional projection
 -   Improves component reusability and flexibility
+
 
