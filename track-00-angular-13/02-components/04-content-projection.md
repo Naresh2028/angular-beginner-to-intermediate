@@ -61,30 +61,66 @@ Use single-slot projection when:
 
 ## Practical Example
 
-### Component
+### Child Component
 
 ``` ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-card',
-  template: `
-    <div class="card">
-      <ng-content></ng-content>
-    </div>
-  `
+  template:`
+  <div class="card">
+    <ng-content></ng-content>
+  </div>
+  `,
+  styles: [`
+    .card {
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 10px;
+      max-width: 300px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      background-color: #f9f9f9;
+    }
+  `]
 })
-export class CardComponent {}
+export class CardComponent implements OnInit {
+}
+
 ```
 
-### Usage
+### Parent Component
 
-``` html
-<app-card>
-  <h2>Title</h2>
-  <p>Description content</p>
-</app-card>
+``` ts
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+  <router-outlet></router-outlet>
+  <h1>App Component</h1>
+  <app-card>
+    <h3>User Profile</h3>
+    <p>Naresh</p>
+    <button class="btn btn-primary" (click)="sendRequest()">Click Me</button>
+  </app-card>
+`
+})
+export class AppComponent {
+
+  sendRequest(){
+    alert("Clicked Me")
+  }
+  
+}
+
 ```
+
+### Output
+
+<img width="655" height="413" alt="image" src="https://github.com/user-attachments/assets/4448421d-cf46-408d-9ff6-7885c20a9197" />
+
 
 All content is placed inside the same slot.
 
@@ -223,3 +259,4 @@ The projected content appears only if `isVisible` is true.
 -   `select` attribute enables multi-slot control
 -   Structural directives allow conditional projection
 -   Improves component reusability and flexibility
+
