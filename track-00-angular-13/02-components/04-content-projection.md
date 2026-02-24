@@ -314,6 +314,8 @@ export class ConditionalCardComponent {
   <p>This content appears conditionally.</p>
 </app-conditional-card>
 ```
+<img width="1155" height="313" alt="image" src="https://github.com/user-attachments/assets/88842e39-44ac-4dc0-8389-7d1b19e6ca10" />
+
 
 The projected content appears only if `isVisible` is true.
 
@@ -325,6 +327,7 @@ The projected content appears only if `isVisible` is true.
 -   `select` attribute enables multi-slot control
 -   Structural directives allow conditional projection
 -   Improves component reusability and flexibility
+
 
 
 
