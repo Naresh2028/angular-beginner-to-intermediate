@@ -162,39 +162,102 @@ Use multi-slot projection when:
 
 ## Practical Example
 
-### Component
+### Child Component
 
 ``` ts
+import { Component, OnInit } from '@angular/core';
+
 @Component({
   selector: 'app-layout',
   template: `
-    <header>
-      <ng-content select="[header]"></ng-content>
-    </header>
+  <div class="dashboard-card">
+  <header class="card-header">
+    <ng-content select="[header]">
 
-    <main>
-      <ng-content></ng-content>
-    </main>
+    </ng-content>
+  </header>
 
-    <footer>
-      <ng-content select="[footer]"></ng-content>
-    </footer>
-  `
+  <main class="card-body">
+  <ng-content></ng-content>
+  </main>
+
+  <footer class="card-footer">
+    <ng-content select="[footer]">
+
+    </ng-content>
+  </footer>
+  </div>
+  `,
+  styles: [`
+    .dashboard-card { border: 1px solid #ddd; border-radius: 8px; width: 400px; overflow: hidden; }
+    .card-header { background: #f4f4f4; padding: 15px; border-bottom: 1px solid #ddd; font-weight: bold; }
+    .card-body { padding: 20px; min-height: 100px; }
+    .card-footer { background: #fafafa; padding: 10px; border-top: 1px solid #ddd; text-align: right; }
+  `]
 })
-export class LayoutComponent {}
+export class LayoutComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
 ```
 
-### Usage
+### Parent Component
 
-``` html
-<app-layout>
-  <div header>Header Content</div>
-  <p>Main Content</p>
-  <div footer>Footer Content</div>
-</app-layout>
+``` ts
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+  <router-outlet></router-outlet>
+  <h1 class="text-center">Angular Learning</h1>
+  <app-layout>
+    
+    <div footer>
+      <p>© Parewa Labs Pvt. Ltd. All rights reserved.</p>
+    </div>  
+    <div header>
+      <p><strong>User Name :</strong> Naresh</p>
+    </div> 
+    
+
+    <p><strong>Email:</strong> admin@company.com</p>
+      <p><strong>Last Login:</strong> Feb 24, 2026</p>
+      <p>This user has full access to the system settings.</p>
+    
+  </app-layout>
+`
+})
+export class AppComponent {
+
+  sendRequest() {
+    alert("Clicked Me")
+  }
+
+}
+
 ```
+
+<img width="1279" height="585" alt="image" src="https://github.com/user-attachments/assets/1553f62b-b594-473f-b5df-f40185afb04f" />
+
 
 Content is projected into specific slots.
+
+### 1. Select attribute behaviour
+
+The select attribute acts like a filter or a magnet. When you define <ng-content select="[header]">, you are telling the child component: "Only pull in content from the parent that has the attribute 'header'."
+
+- Targeting: It uses standard CSS selectors (attributes, classes, or tags) to identify specific pieces of content.
+- clusion: Any content that does not match the selector is ignored by that specific slot and moves on to find the next available slot or the default "catch-all" slot.
+
+### 2. Placement Irrespective of Order
+
+In multi-slot projection, the physical order of the code in the Parent component does not matter. The Child's template is the boss and determines the final layout.
 
 ------------------------------------------------------------------------
 
@@ -262,5 +325,6 @@ The projected content appears only if `isVisible` is true.
 -   `select` attribute enables multi-slot control
 -   Structural directives allow conditional projection
 -   Improves component reusability and flexibility
+
 
 
