@@ -45,29 +45,31 @@ It is best suited for displaying string or primitive values.
 ### Component
 
 ``` ts
-import { Component } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-demo',
-  templateUrl: './demo.component.html'
+  selector: 'app-root',
+  template: `
+  <router-outlet></router-outlet>
+  <h1 class="text-center">Angular Learning</h1>
+  <h3>{{name}}</h3>
+  <p>Total count{{count}}</p> 
+  <p>Next Count {{count + 1}}</p> 
+`
 })
-export class DemoComponent {
+export class AppComponent {
 
   name = "Naresh";
   count = 5;
 
 }
-```
 
-### Template (demo.component.html)
-
-``` html
-<h2>Hello {{ name }}</h2>
-<p>Total Count: {{ count }}</p>
-<p>Next Count: {{ count + 1 }}</p>
 ```
 
 Output:
+
+<img width="901" height="261" alt="image" src="https://github.com/user-attachments/assets/5862afd6-7ef3-4f20-917c-08fcb54c7fa3" />
+
 
 -   Displays dynamic name
 -   Shows variable values
@@ -82,4 +84,5 @@ Output:
 -   Cannot contain complex logic
 -   Automatically updates when data changes
 -   Follows one-way data binding (component → view)
+
 
