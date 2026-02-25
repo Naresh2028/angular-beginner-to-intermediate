@@ -16,6 +16,9 @@ element properties.
 
 Think of a remote controlling a TV.
 
+<img width="666" height="1000" alt="image" src="https://github.com/user-attachments/assets/84599d0c-3803-4014-a5ce-5bab3b225750" />
+
+
 -   The remote (component) sends signals.
 -   The TV (DOM element) updates accordingly.
 
@@ -80,3 +83,4 @@ What happens:
 -   One-way data binding (component → view)
 -   Automatically updates when component data changes
 -   Frequently used with `@Input()` for parent → child communication
+
