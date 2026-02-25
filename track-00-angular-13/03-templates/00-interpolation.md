@@ -16,6 +16,9 @@ the template.
 
 Think of a name badge template.
 
+<img width="275" height="183" alt="image" src="https://github.com/user-attachments/assets/6a786c81-9a50-4126-a83c-5ea8cb514649" />
+
+
 The badge design is fixed, but the name printed on it changes depending
 on the person.
 
@@ -79,3 +82,4 @@ Output:
 -   Cannot contain complex logic
 -   Automatically updates when data changes
 -   Follows one-way data binding (component → view)
+
