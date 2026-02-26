@@ -258,3 +258,167 @@ Production Use Cases:
 -   Pipes should contain only presentation logic.
 -   Avoid heavy computation inside pipes.
 -   Pure pipes run only when input changes (default behavior).
+
+# Pure Pipe
+
+## Definition
+
+A Pure Pipe in Angular is a pipe that executes only when the input value
+changes by reference.
+
+By default, all Angular pipes are pure (`pure: true`).
+
+Pure pipes do NOT run on every change detection cycle --- they run only
+when:
+
+-   A primitive value changes
+-   An object reference changes
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of a security checkpoint that checks only when a new person
+enters.
+
+If the same person stands still, the guard does not re-check them.
+
+Pure pipes behave the same way --- they execute only when the input
+reference changes.
+
+------------------------------------------------------------------------
+
+## Production-Level Example
+
+### Scenario: Sorting Product List
+
+#### Pipe
+
+``` ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'sortProducts',
+  pure: true
+})
+export class SortProductsPipe implements PipeTransform {
+
+  transform(products: any[]): any[] {
+    return [...products].sort((a, b) => a.price - b.price);
+  }
+
+}
+```
+
+------------------------------------------------------------------------
+
+#### Usage
+
+``` html
+<li *ngFor="let product of products | sortProducts">
+  {{ product.name }} - {{ product.price }}
+</li>
+```
+
+Production Benefit:
+
+-   Efficient performance
+-   Runs only when products array reference changes
+-   Ideal for filtering, sorting, formatting
+
+------------------------------------------------------------------------
+
+# Impure Pipe
+
+## Definition
+
+An Impure Pipe runs on every change detection cycle, regardless of
+whether the input reference changes.
+
+It is defined using:
+
+``` ts
+@Pipe({
+  name: 'example',
+  pure: false
+})
+```
+
+Impure pipes are powerful but can impact performance if misused.
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of a security guard who re-checks everyone every second, even if
+nothing changes.
+
+That constant checking consumes more energy.
+
+Impure pipes behave similarly --- they run frequently.
+
+------------------------------------------------------------------------
+
+## Production-Level Example
+
+### Scenario: Real-time Search Filter
+
+#### Pipe
+
+``` ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filterUsers',
+  pure: false
+})
+export class FilterUsersPipe implements PipeTransform {
+
+  transform(users: any[], searchText: string): any[] {
+    if (!searchText) return users;
+
+    return users.filter(user =>
+      user.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
+
+}
+```
+
+------------------------------------------------------------------------
+
+#### Usage
+
+``` html
+<input [(ngModel)]="searchText" placeholder="Search Users">
+
+<li *ngFor="let user of users | filterUsers:searchText">
+  {{ user.name }}
+</li>
+```
+
+Production Use Case:
+
+-   Real-time search filtering
+-   Auto-updating lists
+-   Dynamic UI responses
+
+------------------------------------------------------------------------
+
+## Key Differences
+
+  Feature            Pure Pipe                 Impure Pipe
+  ------------------ ------------------------- ------------------------
+  Runs When          Input reference changes   Every change detection
+  Performance        Optimized                 Can be expensive
+  Default Behavior   Yes                       No
+  Use Case           Sorting, formatting       Real-time filtering
+
+------------------------------------------------------------------------
+
+## Important Notes
+
+-   Prefer pure pipes for better performance.
+-   Avoid heavy computations inside impure pipes.
+-   Impure pipes should be used only when necessary.
+-   For complex logic, consider moving logic to component or service.
