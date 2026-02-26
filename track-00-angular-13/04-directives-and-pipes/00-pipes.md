@@ -29,7 +29,7 @@ original data.
 
 ------------------------------------------------------------------------
 
-## Two Production-Level Examples
+## Production-Level Examples
 
 ### 1️⃣ Formatting Currency (E-commerce Application)
 
@@ -97,14 +97,6 @@ Explanation:
 
 ------------------------------------------------------------------------
 
-Another example with date pipe:
-
-``` html
-<p>{{ today | date:'fullDate' }}</p>
-```
-
-------------------------------------------------------------------------
-
 # Chained Pipes
 
 ## Definition
@@ -134,16 +126,6 @@ Explanation:
 
 1.  `uppercase` → Converts text to uppercase
 2.  `slice:0:5` → Extracts first 5 characters
-
-------------------------------------------------------------------------
-
-Another example:
-
-``` html
-<p>{{ amount | currency:'INR' | uppercase }}</p>
-```
-
-The value is first formatted as currency, then converted to uppercase.
 
 ------------------------------------------------------------------------
 
