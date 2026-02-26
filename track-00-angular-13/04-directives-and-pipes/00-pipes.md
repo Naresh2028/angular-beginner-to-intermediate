@@ -216,31 +216,30 @@ Custom pipes allow you to define your own data transformation logic.
 #### Step 1: Create Pipe
 
 ``` ts
-import { Pipe, PipeTransform } from '@angular/core';
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
 
-@Pipe({
-  name: 'maskId'
+    <app-card>
+    
+    <p>Credit Card Number : {{'2314-3215-6541-6545' | maskId}}</p>
+
+    </app-card>
+  `,
 })
-export class MaskIdPipe implements PipeTransform {
-
-  transform(value: string): string {
-    return value.slice(0, 2) + "****" + value.slice(-2);
-  }
-
+export class AppComponent {
+  
 }
 ```
 
 ------------------------------------------------------------------------
 
-#### Step 2: Use in Template
+#### Output
 
-``` html
-<p>User ID: {{ 'ABCD12345678XY' | maskId }}</p>
-```
+<img width="552" height="226" alt="image" src="https://github.com/user-attachments/assets/c1ef9630-7213-43e8-9796-bef5cb1a803b" />
 
-Output:
 
-User ID: AB\*\*\*\*XY
 
 Production Use Cases:
 
