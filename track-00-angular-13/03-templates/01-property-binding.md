@@ -101,30 +101,29 @@ What happens:
 -   Frequently used with `@Input()` for parent → child communication
 
 
-# DOM Properties
+# DOM Properties in HTML
 
 ## Definition
 
-DOM Properties represent the current state of an element in the Document
-Object Model (DOM).
+DOM Properties represent the live state of an HTML element inside the
+browser's Document Object Model (DOM).
 
-They are part of the live DOM object and can change dynamically as the
-application runs.
+They are part of the JavaScript object representation of an element and
+can change dynamically while the application is running.
 
-In Angular, property binding updates DOM properties using:
-
-`[property]="expression"`
+Properties reflect the current value/state of an element.
 
 ------------------------------------------------------------------------
 
 ## Analogy
 
-Think of a light switch.
+Think of a smart TV remote.
 
--   The switch position (ON/OFF) represents the current state.
--   That state can change anytime.
+-   The TV has current volume, brightness, and channel.
+-   These values can change anytime.
 
-DOM properties represent the live state of an element.
+DOM properties behave like those live values --- they represent the
+current state.
 
 ------------------------------------------------------------------------
 
@@ -132,35 +131,44 @@ DOM properties represent the live state of an element.
 
 Use DOM properties when:
 
--   Enabling or disabling a button
--   Setting input values dynamically
--   Binding image sources
--   Updating element states dynamically
+-   Enabling or disabling a button dynamically
+-   Updating input field values
+-   Changing image sources at runtime
+-   Checking checkbox states
+-   Modifying element behavior via JavaScript
 
 ------------------------------------------------------------------------
 
 ## Practical Example
 
 ``` html
-<button [disabled]="isDisabled">Submit</button>
-<input [value]="username" />
-<img [src]="imageUrl" />
+<input id="username" value="Naresh" />
+<button id="btn">Click</button>
 ```
 
-These update the actual live state of the elements.
+``` js
+const input = document.getElementById("username");
+const button = document.getElementById("btn");
+
+input.value = "Updated Name";   // Updating property
+button.disabled = true;         // Changing live state
+```
+
+Here, `value` and `disabled` are DOM properties.
 
 ------------------------------------------------------------------------
 
-# DOM Attributes
+# DOM Attributes in HTML
 
 ## Definition
 
-DOM Attributes define the initial values set in the HTML markup.
+DOM Attributes define the initial configuration of an element in the
+HTML markup.
 
-They represent how the element was originally defined in the HTML file.
+They represent how the element was originally declared in the HTML
+document.
 
-Attributes do not automatically reflect runtime changes unless
-explicitly updated.
+Attributes are part of the HTML source code.
 
 ------------------------------------------------------------------------
 
@@ -168,10 +176,10 @@ explicitly updated.
 
 Think of a birth certificate.
 
--   It records initial details.
--   It does not automatically update when life changes.
+-   It records original information.
+-   It does not automatically change during life.
 
-DOM attributes represent the original setup of an element.
+DOM attributes represent the original definition.
 
 ------------------------------------------------------------------------
 
@@ -179,43 +187,42 @@ DOM attributes represent the original setup of an element.
 
 Use DOM attributes when:
 
--   Defining static values
+-   Defining static values in HTML
 -   Setting accessibility attributes (`aria-*`)
--   Working with non-standard attributes
--   Using Angular attribute binding `[attr.attributeName]`
+-   Configuring metadata
+-   Defining default element behavior
 
 ------------------------------------------------------------------------
 
 ## Practical Example
 
 ``` html
-<input type="text" value="Initial Value">
-<button disabled>Submit</button>
+<input type="text" value="Initial Value" disabled />
 ```
 
-Angular attribute binding example:
+In this example:
 
-``` html
-<button [attr.aria-label]="buttonLabel">Click</button>
-```
+-   `type`, `value`, and `disabled` are HTML attributes.
+-   They define the initial state of the element.
 
 ------------------------------------------------------------------------
 
-# Attribute vs Property
+# Attributes vs Properties
 
-  Feature               DOM Property          DOM Attribute
-  --------------------- --------------------- --------------------------------
-  Represents            Current live state    Initial HTML value
-  Updates dynamically   Yes                   No (unless explicitly updated)
-  Angular binding       `[property]`          `[attr.attribute]`
-  Example               `[disabled]="true"`   `disabled`
+  Feature                 DOM Attribute     DOM Property
+  ----------------------- ----------------- --------------------------
+  Defined In              HTML markup       JavaScript DOM object
+  Represents              Initial value     Current live state
+  Updates Automatically   No                Yes
+  Example                 `value="Hello"`   `input.value = "Hello"`
+  Boolean Example         `disabled`        `button.disabled = true`
 
 ------------------------------------------------------------------------
 
 ## Key Difference
 
--   Property = Live, dynamic, reflects runtime state.
--   Attribute = Static, initial configuration.
+-   Attribute → Defines how the element starts.
+-   Property → Represents how the element behaves right now.
 
-In Angular, property binding is used most of the time for dynamic
-behavior.
+In dynamic applications (like Angular), property binding is preferred
+because it updates the live state of the element.
