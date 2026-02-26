@@ -154,27 +154,25 @@ The async pipe handles subscription and cleanup automatically.
 #### Component
 
 ``` ts
-import { Component } from '@angular/core';
-import { Observable, interval, map } from 'rxjs';
-
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html'
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card> 
+      <p>Live Count {{liveCount$ | async}}</p>
+    </app-card>
+  `,
 })
-export class DashboardComponent {
-
+export class AppComponent {
   liveCount$: Observable<number> = interval(1000).pipe(
-    map(value => value + 1)
+    map((value) => value + 1),
   );
-
 }
 ```
 
-#### Template
+<img width="622" height="220" alt="image" src="https://github.com/user-attachments/assets/cd545ff1-505a-4f86-9658-c5212f0b489b" />
 
-``` html
-<p>Live Counter: {{ liveCount$ | async }}</p>
-```
 
 Production Benefits:
 
