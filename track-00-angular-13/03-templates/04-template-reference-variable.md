@@ -34,32 +34,46 @@ name to elements inside the template.
 
 ### 1️⃣ Accessing Input Value Without ngModel
 
-#### Template
-
-``` html
-<input #emailInput type="email" placeholder="Enter Email" />
-<button (click)="submit(emailInput.value)">Submit</button>
-```
-
 #### Component
 
 ``` ts
-import { Component } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html'
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+      <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <input #emailVariable type="email" placeholder="Enter Email">
+      <button type="submit" class="btn btn-primary" (click)="Submit(emailVariable.value)">Submit</button>
+
+    </app-card>
+  `,
 })
-export class LoginComponent {
+export class AppComponent {
 
-  submit(email: string) {
-    console.log("Submitted Email:", email);
+  Submit(email:string){
+    console.log("Submitted Email :" + email);
   }
-
+  
 }
+
 ```
 
 Production Use Case:
+
+<img width="1210" height="551" alt="image" src="https://github.com/user-attachments/assets/ac3fc2f4-aa34-4833-af96-690159956fae" />
+
 
 -   Lightweight forms
 -   Quick input handling
@@ -72,28 +86,60 @@ Production Use Case:
 #### Child Component
 
 ``` ts
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
 @Component({
-  selector: 'app-counter',
-  template: `<p>Count: {{ count }}</p>`
+  selector: 'app-child',
+  template: `
+  <p>Count {{count}}</p>
+  `
 })
-export class CounterComponent {
+export class ChildComponent {
+
   count = 0;
 
-  increment() {
+  increament(){
     this.count++;
   }
+
 }
+
 ```
 
-#### Parent Template
+```ts
 
-``` html
-<app-counter #counterComp></app-counter>
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
-<button (click)="counterComp.increment()">
-  Increase Count
-</button>
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+    
+    <app-child #childDom></app-child>
+
+    <button (click)="childDom.increament()">
+      Increase Count
+    </button>
+
+    </app-card>
+  `,
+})
+export class AppComponent {
+}
+
+
 ```
+
+<img width="503" height="270" alt="image" src="https://github.com/user-attachments/assets/4ec8a0eb-70fd-4b01-9d6d-033b73ec9ff8" />
 
 Production Use Case:
 
@@ -110,3 +156,4 @@ Production Use Case:
 -   Can reference DOM elements, components, or directives
 -   Useful for simple interactions
 -   For complex logic, prefer `@ViewChild` in component class
+
