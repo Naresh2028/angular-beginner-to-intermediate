@@ -209,13 +209,14 @@ In this example:
 
 # Attributes vs Properties
 
-  Feature                 DOM Attribute     DOM Property
-  ----------------------- ----------------- --------------------------
-  Defined In              HTML markup       JavaScript DOM object
-  Represents              Initial value     Current live state
-  Updates Automatically   No                Yes
-  Example                 `value="Hello"`   `input.value = "Hello"`
-  Boolean Example         `disabled`        `button.disabled = true`
+| Feature               | DOM Attribute        | DOM Property                  |
+|------------------------|----------------------|-------------------------------|
+| Defined In             | HTML markup          | JavaScript DOM object         |
+| Represents             | Initial value        | Current live state            |
+| Updates Automatically  | No                   | Yes                           |
+| Example                | `value="Hello"`      | `input.value = "Hello"`       |
+| Boolean Example        | `disabled`           | `button.disabled = true`      |
+
 
 ------------------------------------------------------------------------
 
@@ -226,3 +227,4 @@ In this example:
 
 In dynamic applications (like Angular), property binding is preferred
 because it updates the live state of the element.
+
