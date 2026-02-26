@@ -213,7 +213,7 @@ Custom pipes allow you to define your own data transformation logic.
 
 ### Scenario: Masking Sensitive Data (User ID)
 
-#### Step 1: Create Pipe
+#### Step 1: Component
 
 ``` ts
 @Component({
@@ -232,7 +232,24 @@ export class AppComponent {
   
 }
 ```
+#### Step 1: Create Pipe
 
+````ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'maskId',
+  pure:true
+})
+export class MaskIdPipe implements PipeTransform {
+
+  transform(value: string): string {
+    return value.slice(0,2) + "****" + value.slice(-2);
+  }
+
+}
+
+````
 ------------------------------------------------------------------------
 
 #### Output
