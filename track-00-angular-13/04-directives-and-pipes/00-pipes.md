@@ -62,6 +62,99 @@ Production Use Case:
 -   Ensuring consistent currency formatting
 
 ------------------------------------------------------------------------
+# Parameters
+
+## Definition
+
+Pipe parameters allow you to pass additional arguments to a pipe to
+customize its transformation behavior.
+
+Parameters are passed using a colon `:` after the pipe name.
+
+Multiple parameters can be separated by additional colons.
+
+------------------------------------------------------------------------
+
+## Syntax
+
+``` html
+{{ value | pipeName:parameter1:parameter2 }}
+```
+
+------------------------------------------------------------------------
+
+## Example
+
+``` html
+<p>{{ price | currency:'INR':'symbol':'1.2-2' }}</p>
+```
+
+Explanation:
+
+-   `INR` → Currency code
+-   `symbol` → Display style
+-   `1.2-2` → Decimal formatting
+
+------------------------------------------------------------------------
+
+Another example with date pipe:
+
+``` html
+<p>{{ today | date:'fullDate' }}</p>
+```
+
+------------------------------------------------------------------------
+
+# Chained Pipes
+
+## Definition
+
+Chained pipes allow multiple pipes to be applied sequentially to the
+same value.
+
+The output of one pipe becomes the input of the next pipe.
+
+------------------------------------------------------------------------
+
+## Syntax
+
+``` html
+{{ value | pipe1 | pipe2 | pipe3 }}
+```
+
+------------------------------------------------------------------------
+
+## Example
+
+``` html
+<p>{{ username | uppercase | slice:0:5 }}</p>
+```
+
+Explanation:
+
+1.  `uppercase` → Converts text to uppercase
+2.  `slice:0:5` → Extracts first 5 characters
+
+------------------------------------------------------------------------
+
+Another example:
+
+``` html
+<p>{{ amount | currency:'INR' | uppercase }}</p>
+```
+
+The value is first formatted as currency, then converted to uppercase.
+
+------------------------------------------------------------------------
+
+## Key Notes
+
+-   Parameters customize pipe behavior.
+-   Multiple parameters are separated using colons.
+-   Chained pipes apply transformations in order (left to right).
+-   Improves readability of template transformations.
+-   Avoid complex heavy logic inside pipes for performance reasons.
+---
 
 ### 2️⃣ Date Formatting (Dashboard / Reports)
 
