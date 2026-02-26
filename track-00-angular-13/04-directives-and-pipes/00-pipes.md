@@ -370,31 +370,49 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'filterUsers',
-  pure: false
+  pure:false
 })
 export class FilterUsersPipe implements PipeTransform {
 
-  transform(users: any[], searchText: string): any[] {
+    transform(users: any[], searchText: string): any[] {
     if (!searchText) return users;
 
     return users.filter(user =>
-      user.name.toLowerCase().includes(searchText.toLowerCase())
+      user.toLowerCase().includes(searchText.toLowerCase())
     );
   }
-
 }
+
 ```
 
 ------------------------------------------------------------------------
 
 #### Usage
 
-``` html
-<input [(ngModel)]="searchText" placeholder="Search Users">
+``` ts
+import {
+  AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
-<li *ngFor="let user of users | filterUsers:searchText">
-  {{ user.name }}
-</li>
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+      <input [(ngModel)]="searchText" placeholder="Search Users" />
+
+      <li *ngFor="let user of Users | filterUsers:searchText">
+        {{ user }}
+      </li>
+    </app-card>
+  `,
+})
+export class AppComponent {
+  Users = ['Naresh', 'Kavin', 'Ben 10'];
+
+  searchText = '';
+}
+
 ```
 
 Production Use Case:
