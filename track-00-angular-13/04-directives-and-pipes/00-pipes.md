@@ -68,24 +68,21 @@ Production Use Case:
 #### Component
 
 ``` ts
-import { Component } from '@angular/core';
-
 @Component({
-  selector: 'app-report',
-  templateUrl: './report.component.html'
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card> 
+      <p>Today {{today | date : 'fullDate'}}</p>
+    </app-card>
+  `,
 })
-export class ReportComponent {
-
-  today: Date = new Date();
-
+export class AppComponent {
+  today:Date = new Date();
 }
 ```
-
-#### Template
-
-``` html
-<p>Report Generated On: {{ today | date:'fullDate' }}</p>
-```
+<img width="582" height="220" alt="image" src="https://github.com/user-attachments/assets/2e801cfb-6b3b-463d-9b71-c056d73ef7b2" />
 
 Production Use Case:
 
