@@ -43,28 +43,37 @@ synchronized.
 #### Component
 
 ``` ts
-import { Component } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html'
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+      <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <input type="text" class="form-control" [(ngModel)]="userName" />
+      <p>{{ userName }}</p>
+    </app-card>
+  `,
 })
-export class ProfileComponent {
-
-  userName: string = "";
-
+export class AppComponent {
+  userName = '';
 }
-```
 
-#### Template
-
-``` html
-<input type="text" [(ngModel)]="userName" placeholder="Enter Name" />
-
-<p>Preview: {{ userName }}</p>
 ```
 
 Production Use Case:
+
+<img width="566" height="337" alt="image" src="https://github.com/user-attachments/assets/2c8b506e-e5e8-418f-9991-4d5a0b55649f" />
 
 -   Live form validation
 -   Real-time preview of user data
@@ -77,29 +86,40 @@ Production Use Case:
 #### Component
 
 ``` ts
-import { Component } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+      <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <label
+        >Eable Dark Mode
+        <input type="checkbox" [(ngModel)]="darkMode" />
+      </label>
+
+      <p>Dark Mode Status {{ darkMode }}</p>
+    </app-card>
+  `,
 })
-export class SettingsComponent {
-
-  darkMode: boolean = false;
-
+export class AppComponent {
+  darkMode: boolean = true;
 }
+
 ```
 
-#### Template
+<img width="489" height="286" alt="image" src="https://github.com/user-attachments/assets/52f72c3f-6b3a-46a8-b778-186ace3dea8b" />
 
-``` html
-<label>
-  <input type="checkbox" [(ngModel)]="darkMode" />
-  Enable Dark Mode
-</label>
-
-<p>Dark Mode Status: {{ darkMode }}</p>
-```
 
 Production Use Case:
 
@@ -116,3 +136,4 @@ Production Use Case:
 -   Useful for forms and user input scenarios
 -   Overuse in complex apps can impact performance
 -   Prefer reactive forms for large-scale enterprise applications
+
