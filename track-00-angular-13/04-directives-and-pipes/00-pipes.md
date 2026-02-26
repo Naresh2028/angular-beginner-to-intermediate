@@ -407,12 +407,13 @@ Production Use Case:
 
 ## Key Differences
 
-  Feature            Pure Pipe                 Impure Pipe
-  ------------------ ------------------------- ------------------------
-  Runs When          Input reference changes   Every change detection
-  Performance        Optimized                 Can be expensive
-  Default Behavior   Yes                       No
-  Use Case           Sorting, formatting       Real-time filtering
+| Feature           | Pure Pipe                 | Impure Pipe              |
+|-------------------|---------------------------|--------------------------|
+| Runs When         | Input reference changes   | Every change detection   |
+| Performance       | Optimized                 | Can be expensive         |
+| Default Behavior  | Yes                       | No                       |
+| Use Case          | Sorting, formatting       | Real-time filtering      |
+
 
 ------------------------------------------------------------------------
 
