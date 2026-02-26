@@ -415,6 +415,8 @@ export class AppComponent {
 
 ```
 
+<img width="670" height="270" alt="image" src="https://github.com/user-attachments/assets/c3a680c4-7f56-4d1e-a97f-69b5ab656ea0" />
+
 Production Use Case:
 
 -   Real-time search filtering
@@ -434,6 +436,9 @@ Production Use Case:
 
 
 ------------------------------------------------------------------------
+
+
+
 
 ## Important Notes
 
