@@ -1,4 +1,4 @@
-# Hierarchical Dependency Injection (Module Level, Component Level)
+# Hierarchical Dependency Injection
 
 ## Definition
 
