@@ -1,4 +1,4 @@
-# Core Roles in DI System (Dependency Consumer, Dependency Provider, Injector, Tree-shaking)
+# Core Roles in DI System
 
 ## Definition
 
