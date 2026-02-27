@@ -449,6 +449,7 @@ export class HighlightDirective {
   Hover over this text
 </p>
 ```
+<img width="546" height="333" alt="image" src="https://github.com/user-attachments/assets/8dbf6bbe-8edc-4ffa-abf7-1718e96ca8db" />
 
 Production Use Case:
 
