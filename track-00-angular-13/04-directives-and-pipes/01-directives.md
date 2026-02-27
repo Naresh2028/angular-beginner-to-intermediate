@@ -280,6 +280,7 @@ Use Case:
  		}
  
 	```
+	<img width="552" height="326" alt="image" src="https://github.com/user-attachments/assets/51e0a2e6-899d-49b4-b525-0143a4b64a04" />
 
 	Use Case:
 
