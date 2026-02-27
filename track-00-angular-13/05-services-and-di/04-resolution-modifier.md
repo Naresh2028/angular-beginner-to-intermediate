@@ -1,4 +1,4 @@
-# Resolution Modifiers (@Optional, @Self, @SkipSelf)
+# Resolution Modifiers
 
 ## Definition
 
