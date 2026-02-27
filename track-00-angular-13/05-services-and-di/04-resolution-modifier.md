@@ -167,11 +167,14 @@ Production Use Case:
 
 # Key Differences
 
-  Modifier    Search Behavior         Error if Not Found
-  ----------- ----------------------- --------------------
-  @Optional   Normal search           No (returns null)
-  @Self       Current injector only   Yes
-  @SkipSelf   Parent injectors only   Yes
+# Angular Dependency Injection Modifiers
+
+| Modifier   | Search Behavior         | Error if Not Found |
+|------------|--------------------------|--------------------|
+| @Optional  | Normal search            | No (returns null)  |
+| @Self      | Current injector only    | Yes                |
+| @SkipSelf  | Parent injectors only    | Yes                |
+
 
 ------------------------------------------------------------------------
 
