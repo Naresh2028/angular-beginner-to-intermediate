@@ -80,54 +80,186 @@ Think of built-in tools in a toolkit.
 Angular provides these directives ready to use.
 
 ------------------------------------------------------------------------
+	# \*ngIf
 
-## Production-Level Example
+	## Definition
 
-### 1️⃣ \*ngFor (Rendering Lists)
+	`*ngIf` is a structural directive that conditionally adds or removes an
+	element from the DOM based on a Boolean expression.
 
-``` html
-<ul>
-  <li *ngFor="let product of products">
-    {{ product.name }}
-  </li>
-</ul>
-```
+	If the condition is true, the element is rendered. If false, it is
+	removed from the DOM.
 
-Used for rendering dynamic lists from API responses.
+	------------------------------------------------------------------------
 
-------------------------------------------------------------------------
+	## Analogy
 
-### 2️⃣ ngClass (Dynamic Styling)
+	Think of a security gate.
 
-``` html
-<div [ngClass]="{ 'active': isActive }">
-  Status Box
-</div>
-```
+	-   If you have access → gate opens.
+	-   If you don't → gate stays closed.
 
-Used for applying conditional CSS classes.
+	`*ngIf` works the same way for UI elements.
 
-------------------------------------------------------------------------
+	------------------------------------------------------------------------
 
-### 3️⃣ ngSwitch (Conditional Rendering)
+	## Production-Level Example
 
-``` html
-<div [ngSwitch]="role">
-  <p *ngSwitchCase="'admin'">Admin Panel</p>
-  <p *ngSwitchCase="'user'">User Dashboard</p>
-  <p *ngSwitchDefault>Guest View</p>
-</div>
-```
+	``` html
+	<button *ngIf="isAdmin">Delete User</button>
+	```
 
-Used for role-based UI rendering.
+	Use Case:
 
-------------------------------------------------------------------------
+	-   Role-based access control
+	-   Conditional rendering of UI elements
+	-   Showing loaders or error messages
 
-## Key Notes
+	------------------------------------------------------------------------
 
--   Directives extend HTML functionality.
--   Structural directives change DOM structure (`*ngIf`, `*ngFor`).
--   Attribute directives change appearance or behavior (`ngClass`,
-    `ngStyle`).
--   Built-in directives are optimized and production-ready.
--   Custom directives can be created for advanced behavior.
+	# \*ngFor
+
+	## Definition
+
+	`*ngFor` is a structural directive used to iterate over a collection and
+	render elements for each item.
+
+	------------------------------------------------------------------------
+
+	## Analogy
+
+	Think of a printer printing multiple copies.
+
+	For every item in the list, a new copy is created.
+
+	------------------------------------------------------------------------
+
+	## Production-Level Example
+
+	``` html
+	<ul>
+	  <li *ngFor="let user of users; index as i">
+		{{ i + 1 }} - {{ user.name }}
+	  </li>
+	</ul>
+	```
+
+	Use Case:
+
+	-   Rendering API data lists
+	-   Displaying products, users, notifications
+	-   Generating dynamic tables
+
+	------------------------------------------------------------------------
+
+	# ngSwitch
+
+	## Definition
+
+	`ngSwitch` conditionally displays elements based on matching
+	expressions.
+
+	It works similar to a switch statement in programming.
+
+	------------------------------------------------------------------------
+
+	## Analogy
+
+	Think of a railway track switch.
+
+	Depending on the signal, the train moves in a specific direction.
+
+	------------------------------------------------------------------------
+
+	## Production-Level Example
+
+	``` html
+	<div [ngSwitch]="role">
+	  <p *ngSwitchCase="'admin'">Admin Dashboard</p>
+	  <p *ngSwitchCase="'user'">User Dashboard</p>
+	  <p *ngSwitchDefault>Guest View</p>
+	</div>
+	```
+
+	Use Case:
+
+	-   Role-based dashboards
+	-   Status-based UI
+	-   Multi-condition rendering
+
+	------------------------------------------------------------------------
+
+	# \[ngClass\]
+
+	## Definition
+
+	`[ngClass]` is an attribute directive used to dynamically apply CSS
+	classes to an element.
+
+	------------------------------------------------------------------------
+
+	## Analogy
+
+	Think of wearing different uniforms based on your role.
+
+	Your appearance changes depending on the situation.
+
+	------------------------------------------------------------------------
+
+	## Production-Level Example
+
+	``` html
+	<div [ngClass]="{ 'active': isActive, 'disabled': !isActive }">
+	  Status Box
+	</div>
+	```
+
+	Use Case:
+
+	-   Conditional styling
+	-   Form validation states
+	-   Status indicators
+
+	------------------------------------------------------------------------
+
+	# \[ngStyle\]
+
+	## Definition
+
+	`[ngStyle]` is an attribute directive used to dynamically apply inline
+	styles to an element.
+
+	------------------------------------------------------------------------
+
+	## Analogy
+
+	Think of adjusting brightness and color on a smart screen dynamically.
+
+	Styles change based on conditions.
+
+	------------------------------------------------------------------------
+
+	## Production-Level Example
+
+	``` html
+	<div [ngStyle]="{ 'color': isError ? 'red' : 'green', 'font-size.px': 18 }">
+	  System Status
+	</div>
+	```
+
+	Use Case:
+
+	-   Dynamic theming
+	-   Error highlighting
+	-   Real-time UI feedback
+
+	------------------------------------------------------------------------
+
+	## Key Notes
+
+	-   `*ngIf`, `*ngFor`, `ngSwitch` → Structural Directives (modify DOM
+		structure)
+	-   `[ngClass]`, `[ngStyle]` → Attribute Directives (modify appearance)
+	-   Structural directives use `*` syntax
+	-   Attribute directives use property binding `[]`
+	-   These are optimized and widely used in production applications
