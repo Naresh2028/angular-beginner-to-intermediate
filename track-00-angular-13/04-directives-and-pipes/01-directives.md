@@ -45,8 +45,8 @@ Here:
 
 Angular provides three main types of directives:
 
-1.  Component Directives\
-2.  Structural Directives\
+1.  Built-in Directive
+2.  Structural Directives
 3.  Attribute Directives
 
 ------------------------------------------------------------------------
