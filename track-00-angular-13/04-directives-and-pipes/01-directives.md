@@ -379,3 +379,138 @@ Use Case:
 	-   These are optimized and widely used in production applications
 
 
+# Custom Directive
+
+## Definition
+
+A Custom Directive in Angular is a user-defined directive that allows
+you to extend or modify the behavior of DOM elements.
+
+Custom directives are typically used to:
+
+-   Add reusable behavior
+-   Manipulate element styles dynamically
+-   Encapsulate UI logic
+-   Reduce repeated code
+
+There are two main types of custom directives:
+
+-   Attribute Directives (modify appearance/behavior)
+-   Structural Directives (modify DOM structure)
+
+------------------------------------------------------------------------
+
+## Analogy
+
+Think of installing a smart sensor in a room.
+
+-   The room already exists.
+-   The sensor adds extra intelligent behavior.
+
+A custom directive enhances an existing element with additional
+behavior.
+
+------------------------------------------------------------------------
+
+## Two Production-Level Examples
+
+### 1️⃣ Highlight Directive (Attribute Directive)
+
+### Scenario: Highlight input field on hover
+
+#### Step 1: Create Directive
+
+``` ts
+import { Directive, ElementRef, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter')
+  onMouseEnter() {
+    this.el.nativeElement.style.backgroundColor = 'yellow';
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.el.nativeElement.style.backgroundColor = null;
+  }
+}
+```
+
+#### Step 2: Use in Template
+
+``` html
+<p appHighlight>
+  Hover over this text
+</p>
+```
+
+Production Use Case:
+
+-   UI feedback on hover
+-   Interactive elements
+-   Reusable styling behavior
+
+------------------------------------------------------------------------
+
+### 2️⃣ Role-Based Access Directive (Structural Directive)
+
+### Scenario: Show content only for admin users
+
+#### Step 1: Create Directive
+
+``` ts
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appIfRole]'
+})
+export class IfRoleDirective {
+
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
+  ) {}
+
+  @Input() set appIfRole(role: string) {
+    const currentUserRole = 'admin'; // Example
+
+    if (role === currentUserRole) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainer.clear();
+    }
+  }
+}
+```
+
+#### Step 2: Use in Template
+
+``` html
+<div *appIfRole="'admin'">
+  Admin Panel Content
+</div>
+```
+
+Production Use Case:
+
+-   Role-based UI rendering
+-   Feature toggling
+-   Permission control
+-   Secure UI sections
+
+------------------------------------------------------------------------
+
+## Key Notes
+
+-   Custom directives promote reusability.
+-   Attribute directives modify behavior or appearance.
+-   Structural directives modify DOM structure.
+-   Use `@HostListener` for event handling.
+-   Use `TemplateRef` and `ViewContainerRef` for structural directives.
+-   Keep directive logic focused and lightweight.
