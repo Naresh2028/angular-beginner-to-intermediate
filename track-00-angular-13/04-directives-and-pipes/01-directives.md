@@ -311,10 +311,16 @@ Use Case:
 	## Production-Level Example
 
 	``` html
-	<div [ngClass]="{ 'active': isActive, 'disabled': !isActive }">
-	  Status Box
-	</div>
+	<h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <div [ngClass]="{'active':isActive, 'disabled':!isActive}">
+        Status
+      </div>
+
+      <button class="btn btn-primary" (click)="toggleStatus()">Change Status</button>
 	```
+
+ 	<img width="602" height="325" alt="image" src="https://github.com/user-attachments/assets/3f2ae50c-6ab2-4af6-a9e1-49bfe563df0e" />
 
 	Use Case:
 
@@ -347,7 +353,13 @@ Use Case:
 	<div [ngStyle]="{ 'color': isError ? 'red' : 'green', 'font-size.px': 18 }">
 	  System Status
 	</div>
+
+ 	<button (click)="toggleStatus()">
+        Change Status
+      </button>
 	```
+
+<img width="597" height="335" alt="image" src="https://github.com/user-attachments/assets/880ca37d-e19f-4f0b-a6b3-18c80d2e8652" />
 
 	Use Case:
 
