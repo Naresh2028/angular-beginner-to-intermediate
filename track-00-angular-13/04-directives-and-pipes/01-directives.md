@@ -51,7 +51,7 @@ Angular provides three main types of directives:
 
 ------------------------------------------------------------------------
 
-# Built-in Directives
+# Built-in or Structural Directives
 
 ## Definition
 
@@ -79,11 +79,13 @@ Think of built-in tools in a toolkit.
 
 Angular provides these directives ready to use.
 
+------------------------------------------------------------------------
+
 # \*ngIf
 
 ## Definition
 
-`*ngIf` is a structural directive that conditionally adds or removes an
+`*ngIf` is a structural or built-in directive that conditionally adds or removes an
 	element from the DOM based on a Boolean expression.
 
 If the condition is true, the element is rendered. If false, it is
