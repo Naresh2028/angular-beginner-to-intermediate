@@ -51,7 +51,7 @@ Angular provides three main types of directives:
 
 ------------------------------------------------------------------------
 
-# Built-in or Structural Directives
+# Built-in 
 
 ## Definition
 
@@ -80,6 +80,8 @@ Think of built-in tools in a toolkit.
 Angular provides these directives ready to use.
 
 ------------------------------------------------------------------------
+
+# Structural Directives
 
 # \*ngIf
 
@@ -189,6 +191,7 @@ Use Case:
 	-   Multi-condition rendering
 
 	------------------------------------------------------------------------
+	# Attribute Directives
 
 	# \[ngClass\]
 
@@ -264,14 +267,5 @@ Use Case:
 	-   Structural directives use `*` syntax
 	-   Attribute directives use property binding `[]`
 	-   These are optimized and widely used in production applications
-
-
-
-
-
-
-
-
-
 
 
