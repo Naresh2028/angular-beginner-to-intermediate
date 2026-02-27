@@ -108,9 +108,39 @@ Think of a security gate.
 
 ## Production-Level Example
 
-``` html
-<button *ngIf="isAdmin">Delete User</button>
+``` ts
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card> 
+      <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+      
+      <button *ngIf="isAdmin" class="btn btn-primary" (click)="deleteUser()">Delete User</button>
+
+
+    </app-card>
+  `,
+})
+export class AppComponent {
+
+  currentRole = {
+    name:'Naresh',
+    role:'Admin'
+  }
+
+  get isAdmin():boolean{
+    return (this.currentRole.role === "Admin");
+  }
+
+  deleteUser(){
+    alert("Deleted successfully!");
+  }
+}
+
 ```
+<img width="656" height="381" alt="image" src="https://github.com/user-attachments/assets/9bfaf6ea-ede4-4685-a9bb-06931f213f84" />
 
 Use Case:
 
