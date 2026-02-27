@@ -1,4 +1,4 @@
-# Fundamental Building Blocks (Routes Array, RouterOutlet, RouterLink Directive)
+# Fundamental Building Blocks
 
 ## Definition
 
