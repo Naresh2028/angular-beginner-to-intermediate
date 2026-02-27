@@ -245,11 +245,40 @@ Use Case:
 	## Production-Level Example
 
 	``` html
-	<div [ngSwitch]="role">
-	  <p *ngSwitchCase="'admin'">Admin Dashboard</p>
-	  <p *ngSwitchCase="'user'">User Dashboard</p>
-	  <p *ngSwitchDefault>Guest View</p>
-	</div>
+	 <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <div [ngSwitch]="role">
+        <div *ngSwitchCase="'admin'">
+          <p>Welcome Admin</p>
+        </div>
+
+        <div *ngSwitchCase="'user'">
+          <p>Welcome User</p>
+        </div>
+
+        <div *ngSwitchDefault>
+          <p>Welcome Guest</p>
+        </div>
+      </div>
+
+      <button (click)="SwicthRole('admin')" class="btn btn-primary">
+        Admin
+      </button>
+
+      <button (click)="SwicthRole('user')" class="btn btn-primary">User</button>
+
+      <button (click)="SwicthRole('guest')" class="btn btn-primary">
+        Guest
+      </button>
+
+ 		export class AppComponent implements OnInit {
+ 		role = 'user';
+ 		ngOnInit(): void {}
+ 		SwicthRole(role: string) {
+ 				 this.role = role;
+ 				}
+ 		}
+ 
 	```
 
 	Use Case:
