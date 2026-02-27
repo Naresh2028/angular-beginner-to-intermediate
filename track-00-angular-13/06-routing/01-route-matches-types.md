@@ -1,4 +1,4 @@
-# Route Matching and Types (First-Match Wins Strategy, Static Routes, Dynamic Routes, Wildcard Routes)
+# Route Matching and Types
 
 ## Definition
 
