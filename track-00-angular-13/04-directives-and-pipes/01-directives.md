@@ -167,13 +167,53 @@ For every item in the list, a new copy is created.
 
 ## Production-Level Example
 
-``` html
-<ul>
-  <li *ngFor="let user of users; index as i">
-	{{ i + 1 }} - {{ user.name }}
-  </li>
-</ul>
+``` ts
+interface User{
+  id:number,
+  name:string,
+  email:string
+}
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+
+    <app-card>
+      <h1 class="card-title mb-3 text-primary">Angular Learning</h1>
+
+      <table class="table">
+        <thead>
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Email</th>
+        </thead>
+        <tbody *ngFor="let user of Users; index as i ">
+          <td>{{i + 1}}</td>
+          <td>{{user.name}}</td>
+          <td>{{user.email}}</td>
+        </tbody>
+      </table>
+    </app-card>
+  `,
+})
+export class AppComponent implements OnInit {
+  
+  Users:User[] = [];
+
+  ngOnInit(): void {
+    this.Users = [
+      { id: 101, name: 'Naresh', email: 'naresh@example.com' },
+      { id: 102, name: 'Amit', email: 'amit@example.com' },
+      { id: 103, name: 'Sita', email: 'sita@example.com' },
+      { id: 104, name: 'John', email: 'john@example.com' }
+    ];
+  }
+}
 ```
+
+<img width="546" height="385" alt="image" src="https://github.com/user-attachments/assets/0d37622f-7be6-446d-b6c3-1fee3d10f198" />
+
 
 Use Case:
 
