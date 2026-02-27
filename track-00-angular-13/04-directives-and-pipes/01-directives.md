@@ -79,76 +79,75 @@ Think of built-in tools in a toolkit.
 
 Angular provides these directives ready to use.
 
-------------------------------------------------------------------------
-	# \*ngIf
+# \*ngIf
 
-	## Definition
+## Definition
 
-	`*ngIf` is a structural directive that conditionally adds or removes an
+`*ngIf` is a structural directive that conditionally adds or removes an
 	element from the DOM based on a Boolean expression.
 
-	If the condition is true, the element is rendered. If false, it is
-	removed from the DOM.
+If the condition is true, the element is rendered. If false, it is
+removed from the DOM.
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-	## Analogy
+## Analogy
 
-	Think of a security gate.
+Think of a security gate.
 
-	-   If you have access → gate opens.
-	-   If you don't → gate stays closed.
+-   If you have access → gate opens.
+-   If you don't → gate stays closed.
 
-	`*ngIf` works the same way for UI elements.
+`*ngIf` works the same way for UI elements.
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-	## Production-Level Example
+## Production-Level Example
 
-	``` html
-	<button *ngIf="isAdmin">Delete User</button>
-	```
+``` html
+<button *ngIf="isAdmin">Delete User</button>
+```
 
-	Use Case:
+Use Case:
 
-	-   Role-based access control
-	-   Conditional rendering of UI elements
-	-   Showing loaders or error messages
+-   Role-based access control
+-   Conditional rendering of UI elements
+-   Showing loaders or error messages
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-	# \*ngFor
+# \*ngFor
 
-	## Definition
+## Definition
 
-	`*ngFor` is a structural directive used to iterate over a collection and
-	render elements for each item.
+`*ngFor` is a structural directive used to iterate over a collection and
+render elements for each item.
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-	## Analogy
+## Analogy
 
-	Think of a printer printing multiple copies.
+Think of a printer printing multiple copies.
 
-	For every item in the list, a new copy is created.
+For every item in the list, a new copy is created.
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-	## Production-Level Example
+## Production-Level Example
 
-	``` html
-	<ul>
-	  <li *ngFor="let user of users; index as i">
-		{{ i + 1 }} - {{ user.name }}
-	  </li>
-	</ul>
-	```
+``` html
+<ul>
+  <li *ngFor="let user of users; index as i">
+	{{ i + 1 }} - {{ user.name }}
+  </li>
+</ul>
+```
 
-	Use Case:
+Use Case:
 
-	-   Rendering API data lists
-	-   Displaying products, users, notifications
-	-   Generating dynamic tables
+-   Rendering API data lists
+-   Displaying products, users, notifications
+-   Generating dynamic tables
 
 	------------------------------------------------------------------------
 
@@ -263,3 +262,14 @@ Angular provides these directives ready to use.
 	-   Structural directives use `*` syntax
 	-   Attribute directives use property binding `[]`
 	-   These are optimized and widely used in production applications
+
+
+
+
+
+
+
+
+
+
+
