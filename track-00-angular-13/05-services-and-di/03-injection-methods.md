@@ -69,19 +69,33 @@ The key (InjectionToken) identifies which locker (dependency) to open.
 import { InjectionToken } from '@angular/core';
 
 export const API_URL = new InjectionToken<string>('API_URL');
+
 ```
 
 ------------------------------------------------------------------------
 
-### Step 2: Provide Token
+### Step 2: Provide or Register the Token
 
 ``` ts
 @NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    GameModule,
+    FormsModule,
+    HttpClientModule,
+    FeatureModule
+],
   providers: [
-    { provide: API_URL, useValue: 'https://api.production.com' }
-  ]
+    {provide:API_URL,useValue:'https://jsonplaceholder.typicode.com/posts'}
+  ],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
+
 ```
 
 ------------------------------------------------------------------------
@@ -89,15 +103,37 @@ export class AppModule {}
 ### Step 3: Inject Token
 
 ``` ts
-constructor(@Inject(API_URL) private apiUrl: string) {
-  console.log(apiUrl);
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Post } from 'src/app/Interface/post';
+import { API_URL } from 'src/app/Class/token';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
+
+  getPost(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.api);
+  }
 }
+
 ```
+
+## Key Points to Remember
+
+- @Inject Decorator: This is mandatory for tokens. It tells Angular: "Don't look for a class named apiUrl, look for the value registered under the API_URL token".
+
+- Type Safety: By defining new InjectionToken<string>, TypeScript will ensure that whatever you provide in the useValue field is actually a string.
 
 Production Use Case:
 
--   Environment-based configuration
--   Feature toggles
+-   Environment-based url configuration
 -   Multi-tenant architecture
 -   Clean separation of config from logic
 
