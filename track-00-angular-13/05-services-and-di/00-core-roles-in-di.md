@@ -88,9 +88,15 @@ The Singleton pattern is a design pattern that ensures a class has only one inst
 
 ```ts
 export class AppSingleton {
+
+  // Holds the single copy of the class.
   private static instance: AppSingleton;
 
+ // Prevents anyone from calling new AppSingleton() directly. You can’t create multiple instances.
+
   private constructor() {}
+
+ // This method checks if the instance exists: If not, it creates one. If yes, it returns the existing one. So every call returns the same object.
 
   public static getInstance(): AppSingleton {
     if (!AppSingleton.instance) {
@@ -102,9 +108,11 @@ export class AppSingleton {
 
   counter = 0;
 
+  // This property (counter) is shared across all components that use getInstance()
   increamentCounter() {
     this.counter++;
   }
+
 }
 
 ```
