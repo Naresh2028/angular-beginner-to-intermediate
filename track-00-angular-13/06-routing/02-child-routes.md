@@ -162,7 +162,8 @@ export class UserNewComponent implements OnInit {
 
 #### View User Detail
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9acf97a5-293a-412f-a413-9add44e325d0" />
+<img width="1259" height="709" alt="image" src="https://github.com/user-attachments/assets/fdd7b456-a703-4c60-a0b5-7cf65125b5d3" />
+
 
 #### Summary
 
