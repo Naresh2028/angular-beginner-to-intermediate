@@ -34,30 +34,60 @@ Angular routing works the same way.
 
 ## Definition
 
-Angular evaluates routes in the order they are defined. The first route
-that matches the URL is selected.
+In Angular, the Router parses the routes array from top to bottom. It stops as soon as it finds the first match. If you place a broad route before a specific one, the specific one will never be reached.
 
 ------------------------------------------------------------------------
 
-## Production-Level Example
+### ❌ Incorrect Example (Broken Strategy)
+
+If we moved your wildcard to the top, your entire application would break because ** matches everything.
 
 ``` ts
 const routes: Routes = [
-  { path: 'users/new', component: NewUserComponent },
-  { path: 'users/:id', component: UserDetailComponent }
+  { path: '**', component: NotFoundComponentComponent }, // 🛑 FIRST MATCH! Every URL will redirect to Home.
+  //{path:'',component:HomeComponent},
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'users', component: UserlistComponent },
+  { path: 'users/:id', component: UserdetailComponent }
 ];
-```
+````
 
-If the order is reversed:
+#### Output
 
-``` ts
-{ path: 'users/:id', component: UserDetailComponent },
-{ path: 'users/new', component: NewUserComponent }
-```
+<img width="1401" height="521" alt="image" src="https://github.com/user-attachments/assets/8b26159a-2aff-4b8d-8a9a-b5a57bf24be8" />
 
-Then navigating to `/users/new` will incorrectly match `:id`.
+- Whatever the url is changes, it will always remains same.
 
-Correct ordering prevents routing bugs.
+
+### Correct Comfiguration
+
+```ts
+const routes: Routes = [
+  // 1. Exact match for empty URL
+  {path:'',component:HomeComponent, pathMatch:'full'},
+
+  // 2. Exact static matches
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'logout', component: LogoutComponent },
+
+  // 3. Specific list match
+  { path: 'users', component: UserlistComponent },
+
+  // 4. Dynamic match (matches 'users/1' but NOT 'users')
+  { path: 'users/:id', component: UserdetailComponent },
+
+  // 5. The "Safety Net"
+  { path: '**', component: NotFoundComponentComponent },
+];
+````
+
+
+Correct ordering prevents routing bugs in earlier stage.
 
 ------------------------------------------------------------------------
 
@@ -162,11 +192,14 @@ Production Use Cases:
 
 ``` ts
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
-  { path: 'users/new', component: NewUserComponent },
-  { path: 'users/:id', component: UserDetailComponent },
-  { path: 'login', component: LoginComponent },
-  { path: '**', redirectTo: '' }
+  {path:'',component:HomeComponent, pathMatch:'full'},
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'users', component: UserlistComponent },
+  { path: 'users/:id', component: UserdetailComponent },
+  { path: '**', component: NotFoundComponentComponent },
 ];
 ```
 
