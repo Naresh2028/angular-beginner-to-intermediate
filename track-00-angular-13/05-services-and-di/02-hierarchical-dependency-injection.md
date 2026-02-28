@@ -134,11 +134,10 @@ export class AppComponent {}
 
 ````
 
-### Output
+## What Happened here:
 
 <img width="539" height="714" alt="image" src="https://github.com/user-attachments/assets/af96f8cf-6a71-4c85-ab08-5e2ccc309d7d" />
 
-## What Happened here:
 1. Proof of "Multiple Instances"
 
 - In the image, we see Component Instance: 1, 2, and 3.
