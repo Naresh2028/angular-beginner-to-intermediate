@@ -62,7 +62,7 @@ const routes: Routes = [
 - Whatever the url is changes, it will always remains same.
 
 
-### Correct Comfiguration
+### Correct Configuration
 
 ```ts
 const routes: Routes = [
