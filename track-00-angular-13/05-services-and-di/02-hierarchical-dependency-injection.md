@@ -140,7 +140,7 @@ export class AppComponent {}
 
 ---
 
-1. Proof of "Multiple Instances"
+### Proof of "Multiple Instances"
 
 - In the image, we see Component Instance: 1, 2, and 3.
 
@@ -148,7 +148,7 @@ export class AppComponent {}
 
 - Each component is "holding" a completely different object in memory.
 
-2. Proof of "Isolated State"
+### Proof of "Isolated State"
 
 - Instance 1 has a count of 7.
 
