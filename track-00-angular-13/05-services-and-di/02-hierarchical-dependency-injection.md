@@ -36,7 +36,9 @@ Each level can provide its own version of a service.
 By default, when you generate a service in Angular 13, it is configured as a singleton.
 
 - One Instance: Angular creates only one instance of the service class for the entire app.
+  
 - Shared State: Because every component receives the same instance, they all share the same data. If Component A changes a variable in the service, Component B sees that change immediately.
+  
 - Memory Efficiency: Since there is only one object in memory, it prevents the overhead of creating duplicate objects for the same logic.
 
 ``` ts
