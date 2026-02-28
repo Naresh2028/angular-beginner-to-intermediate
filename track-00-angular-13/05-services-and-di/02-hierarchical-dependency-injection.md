@@ -165,3 +165,130 @@ Production Use Case:
 -   Multi-instance dashboards
 
 ------------------------------------------------------------------------
+### 3 Module Level Service
+
+In Module Level Services : All components within that same module share one single instance, but components outside that module cannot see it. This is perfect for a "Feature" where all sub-pages need to share the same data.
+
+## 1. Feature Service
+
+```ts
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class FeatureService {
+  public uniqueId = Math.random();
+  public data: string[] = [];
+
+  constructor() {
+    console.log('Module-levle instance-created!');
+  }
+}
+```
+
+## 2. Feature Module
+
+We register the service here. Now, every component declared in this module will share the same FeatureService instance.
+
+```ts
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ComponentAComponent } from './component-a/component-a.component';
+import { ComponentBComponent } from './component-b/component-b.component';
+import { FeatureService } from 'src/app/Services/feature/feature.service';
+
+@NgModule({
+  declarations: [ComponentAComponent, ComponentBComponent],
+  imports: [CommonModule],
+  exports: [ComponentAComponent, ComponentBComponent],
+  providers: [FeatureService],
+})
+export class FeatureModule {}
+```
+
+## 3. Sharing Data Between Siblings
+---
+
+Because they belong to the same module, ComponentA and ComponentB will act like they have a singleton, even though it's restricted to their feature.
+
+## Component - A (Writer)
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { FeatureService } from 'src/app/Services/feature/feature.service';
+
+@Component({
+  selector: 'app-component-a',
+  template: `
+    <button class="btn btn-primary" (click)="SendData()">Send Message</button>
+  `,
+})
+export class ComponentAComponent {
+  constructor(private featureService: FeatureService) {}
+
+  SendData() {
+    this.featureService.data.push(
+      'Hello this message from Component - A (Feature Module, & Feature module-level service)',
+    );
+  }
+}
+
+```
+## Component-B (Reader)
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { FeatureService } from 'src/app/Services/feature/feature.service';
+
+@Component({
+  selector: 'app-component-b',
+  template: `
+    <ul>
+      <li *ngFor="let item of featureService.data">{{ item }}</li>
+    </ul>
+  `,
+})
+export class ComponentBComponent {
+  constructor(public featureService: FeatureService) {}
+}
+```
+
+## App-Component
+
+````ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+    <app-card>
+      <h1 appHighlight class="card-title mb-3 text-primary">
+        Angular Learning
+      </h1>
+      
+      <app-component-a></app-component-a>
+      <hr>
+      <app-component-b></app-component-b>
+    </app-card>
+  `,
+})
+export class AppComponent {}
+
+````
+
+## Output
+
+
+<img width="552" height="567" alt="image" src="https://github.com/user-attachments/assets/3b766e01-98b0-46d2-bd45-80914b0a6191" />
+
+
+
+## Summary of Scope
+
+# Angular Service Provider Levels
+
+| Level     | Syntax                                | Scope                              |
+|-----------|---------------------------------------|------------------------------------|
+| Root      | `providedIn: 'root'`                  | Entire Application                 |
+| Module    | `providers: [Service]` in `@NgModule` | All components in that module      |
+| Component | `providers: [Service]` in `@Component`| Only that component & its children |
