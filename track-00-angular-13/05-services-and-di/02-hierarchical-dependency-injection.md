@@ -134,6 +134,8 @@ export class AppComponent {}
 
 ````
 
+### Output
+
 <img width="539" height="714" alt="image" src="https://github.com/user-attachments/assets/af96f8cf-6a71-4c85-ab08-5e2ccc309d7d" />
 
 ## What Happened here:
