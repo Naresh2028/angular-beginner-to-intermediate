@@ -148,8 +148,6 @@ export class AppComponent {}
 
 2. Proof of "Isolated State"
 
-Look at the Count values in your screenshot:
-
 - Instance 1 has a count of 7.
 
 - Instance 2 has a count of 4.
