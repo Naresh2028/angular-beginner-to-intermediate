@@ -27,6 +27,49 @@ Think of searching for a document in an office building:
 
 ------------------------------------------------------------------------
 
+# Default Resolution Behavior
+
+If you do not use any special modifiers (like @Optional() or @SkipSelf()), Angular follows these strict rules:
+
+### 1. The Bottom-Up Search (Hierarchical Check)
+
+When a component requests a dependency, the Angular Injector starts looking at the most local level and moves upward:
+
+- Step 1 (Component Level): It first checks the providers array of the component itself.
+
+- Step 2 (Parent Level): If not found, it moves to the immediate parent component and checks its providers.
+
+- Step 3 (Module/Root Level): It continues up the "Element Injector" tree until it reaches the ModuleInjector (the providers in your NgModule) and finally the Root Injector (providedIn: 'root').
+
+### 2. The "Must-Find" Rule
+
+By default, a dependency is considered required.
+
+- If the Injector reaches the very top of the tree (the NullInjector) and still hasn't found a provider for that token, it will throw an error.
+
+- If you remove the HttpClientModule from App-Module you will get the: NullInjectorError: No provider for HttpClient.
+
+```ts
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    //HttpClientModule
+],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+## Output
+
+<img width="1920" height="345" alt="image" src="https://github.com/user-attachments/assets/3194d23a-441a-4f27-94d6-1879ed109759" />
+
+
 # @Optional()
 
 ## Definition
