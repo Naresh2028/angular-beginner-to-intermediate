@@ -33,53 +33,78 @@ Services centralize logic for reuse across components.
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Post } from 'src/app/Interface/post';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class UserService {
-
-  private apiUrl = 'https://api.example.com/users';
+export class PostService {
+  private API_URL = 'https://jsonplaceholder.typicode.com/posts';
 
   constructor(private http: HttpClient) {}
 
-  getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getPost(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.API_URL);
   }
-
 }
+
 ```
+
+### Entity Class
+
+```ts
+export interface Post {
+    userId:number,
+    id:number,
+    title:string,
+    body:string
+}
+````
 
 ### Using Service in Component
 
 ``` ts
-import { Component, OnInit } from '@angular/core';
-import { UserService } from './user.service';
-
 @Component({
-  selector: 'app-users',
+  selector: 'app-root',
   template: `
-    <ul>
-      <li *ngFor="let user of users">
-        {{ user.name }}
-      </li>
-    </ul>
-  `
+    <router-outlet></router-outlet>
+
+    <h1 appHighlight class="card-title mb-3 text-primary">Angular Learning</h1>
+
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Number</th>
+          <th>Title</th>
+          <th>Body</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of postData; index as i">
+          <ng-container *ngIf="i < 10">
+            <td>{{ item.id }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.body }}</td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  `,
 })
-export class UsersComponent implements OnInit {
+export class AppComponent implements OnInit {
+  postData: Post[] = [];
 
-  users: any[] = [];
+  constructor(private postService: PostService) {}
 
-  constructor(private userService: UserService) {}
-
-  ngOnInit() {
-    this.userService.getUsers().subscribe(data => {
-      this.users = data;
+  ngOnInit(): void {
+    this.postService.getPost().subscribe((data) => {
+      this.postData = data;
     });
   }
-
 }
 ```
+## Output
+<img width="1920" height="723" alt="image" src="https://github.com/user-attachments/assets/6c3df146-b465-4d36-9a50-e8dfe01a02f0" />
 
 ------------------------------------------------------------------------
 
