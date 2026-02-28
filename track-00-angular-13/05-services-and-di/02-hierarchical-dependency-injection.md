@@ -60,23 +60,102 @@ While services are singletons by default, Angular allows you to break this patte
 
 - Multiple Instances: If you have five instances of a component on a page and each provides the service locally, you will have five separate instances of that service instead of one shared singleton.
 
+## Creating Service (Service Provider)
 ``` ts
-@Component({
-  selector: 'app-editor',
-  template: `Editor Component`,
-  providers: [EditorStateService]
-})
-export class EditorComponent {}
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class CounterService {
+  counter: number = 0;
+
+  private static globalId = 0;
+
+  public instanceId = 0;
+
+  constructor() {
+    CounterService.globalId++;
+    this.instanceId = CounterService.globalId;
+    console.log(`New Instance Created ${this.instanceId} Created!`);
+  }
+
+  add() {
+    this.counter++;
+  }
+}
+
 ```
+## Component (Uitilizing Service) 
 
 ``` ts
-@Injectable()
-export class EditorStateService {
-  state = {};
+import { Component, OnInit } from '@angular/core';
+import { CounterService } from 'src/app/Services/Counter/counter.service';
+
+@Component({
+  selector: 'app-counter',
+  template: `
+    <div>
+      <p>Count : {{ counterService.counter }}</p>
+      <p>Component Instance : {{ counterService.instanceId }}</p>
+      <button class="btn btn-primary"(click)="counterService.add()">Cilck Me</button>
+    </div>
+  `,
+  styles: [``],
+  providers: [CounterService],
+})
+export class CounterComponent implements OnInit {
+  constructor(public counterService: CounterService) {}
+
+  ngOnInit(): void {}
 }
 ```
 
-Each EditorComponent gets its own EditorStateService instance.
+## App Component 
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <router-outlet></router-outlet>
+    <app-card>
+      <h1 appHighlight class="card-title mb-3 text-primary">
+        Angular Learning
+      </h1>
+      <h1>Component-Level Provider Test</h1>
+
+      <app-counter></app-counter>
+      <app-counter></app-counter>
+      <app-counter></app-counter>
+    </app-card>
+  `,
+})
+export class AppComponent {}
+
+````
+
+<img width="539" height="714" alt="image" src="https://github.com/user-attachments/assets/af96f8cf-6a71-4c85-ab08-5e2ccc309d7d" />
+
+## What Happened here:
+1. Proof of "Multiple Instances"
+
+- In the image, we see Component Instance: 1, 2, and 3.
+
+- Because we added CounterService to the component's providers array, Angular ran the service constructor three separate times.
+
+- Each component is "holding" a completely different object in memory.
+
+2. Proof of "Isolated State"
+
+Look at the Count values in your screenshot:
+
+- Instance 1 has a count of 7.
+
+- Instance 2 has a count of 4.
+
+- Instance 3 has a count of 4.
+
+If this were a Global Singleton (using providedIn: 'root'), all three numbers would be identical (all would be 15, the total sum of clicks). Instead, because they are Component-Level Providers, clicking the button in Instance 1 only affects Instance 1.
 
 Production Use Case:
 
