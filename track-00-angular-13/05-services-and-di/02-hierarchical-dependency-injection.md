@@ -10,8 +10,8 @@ Each level (Root, Module, Component) can have its own injector.
 Scopes:
 
 -   Root Level → Single instance shared across entire app
--   Module Level → Shared within a feature module
 -   Component Level → New instance per component
+-   Module Level → Shared within a feature module
 
 This allows fine-grained control over service scope and lifecycle.
 
