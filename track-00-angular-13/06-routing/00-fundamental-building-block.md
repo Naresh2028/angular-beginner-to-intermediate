@@ -117,13 +117,99 @@ It binds navigation paths to clickable elements.
 </button>
 ```
 
-Dynamic Navigation Example:
+## Dynamic Routing
 
-``` html
-<a [routerLink]="['/users', user.id]">
-  View User
-</a>
+- Dynamic Routing is a technique where a single route can handle multiple values by using a parameterized path. 
+
+- Instead of creating a separate route for every user (e.g., /user-1, /user-2), you define a placeholder like path: 'users/:id'.
+
+- This allows the application to load the same component layout while dynamically fetching and displaying different data based on the ID provided in the URL.
+
+## Define the Route with a Parameter
+
+``` ts
+  { path: 'users', component: UserlistComponent },
+  { path: 'users/:id', component: UserdetailComponent }
 ```
+
+
+## Component Implementation
+
+### List Compoenent (Send data to the details Component) 
+
+```ts
+@Component({
+  selector: 'app-userlist',
+  template: `
+    <ul>
+      <li *ngFor="let user of users">
+        <span>{{ user.name }}</span>
+        <br />
+        <a [routerLink]="['/users', user.id]">View Users</a>
+      </li>
+    </ul>
+  `,
+})
+export class UserlistComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  users = [
+    { id: 1, name: 'Naresh', role: '.NET Developer' },
+    { id: 2, name: 'Sandy', role: 'QA' },
+  ];
+}
+```
+
+### Detail Component (Recieve id from user Component)
+
+```ts
+@Component({
+  selector: 'app-userdetail',
+  template: `
+    <h2>User Details</h2>
+    <p>Selected Id value is {{ userId }}</p>
+    <button class="btn btn-primary" routerLink="/Users">Back to Users</button>
+  `,
+})
+export class UserdetailComponent {
+  userId!: string | null;
+
+  constructor(private route: ActivatedRoute) {
+    this.userId = this.route.snapshot.paramMap.get('id');
+    console.log('Fetching data for user:', this.userId);
+  }
+}
+
+```
+
+### App-Component
+
+```ts
+@Component({
+  selector: 'app-root',
+  template: `
+    <app-card>
+      <h1 appHighlight class="card-title mb-3 text-primary">
+        Angular Learning
+      </h1>
+
+      <app-userlist></app-userlist>
+      <div class="container mt-4">
+        <router-outlet></router-outlet>
+      </div>
+    </app-card>
+  `,
+})
+export class AppComponent implements OnInit {}
+```
+
+### Output
+
+<img width="571" height="515" alt="image" src="https://github.com/user-attachments/assets/d4e990a6-19db-4da3-8540-59557630c286" />
+
+Path Variable Capture: The message "Selected Id value is 2" proves that your UserDetailComponent successfully used ActivatedRoute to extract the ID from the URL.
 
 Production Use:
 
