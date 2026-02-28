@@ -280,8 +280,8 @@ export class AppComponent {}
 <img width="552" height="567" alt="image" src="https://github.com/user-attachments/assets/3b766e01-98b0-46d2-bd45-80914b0a6191" />
 
 
-
 ## Summary of Scope
+When you click the button, the text was orginal send from component-A of Feature module.
 
 # Angular Service Provider Levels
 
