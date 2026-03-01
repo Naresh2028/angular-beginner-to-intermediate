@@ -136,6 +136,121 @@ Both are valid. FormBuilder is preferred in production for brevity, but FormGrou
 
 <img width="735" height="720" alt="image" src="https://github.com/user-attachments/assets/d4e9776c-fc7d-47c2-8113-37bfde7e0387" />
 
+------------------------------------------------------------------------
+
+## 2. FormArray Example
+
+A common use case for FormArray is a list of "Skills" or "Phone Numbers" where the user can add or remove fields dynamically.
+
+### Step 1: The TypeScript (register.component.ts)
+
+```ts
+export class RegisterComponent implements OnInit {
+  registerform!: FormGroup;
+  constructor() {}
+
+  ngOnInit(): void {
+    this.registerform = new FormGroup({
+      userName: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      skills: new FormArray([]),
+    });
+  }
+
+  //Get Control
+  get skills(): FormArray {
+    return this.registerform.get('skills') as FormArray;
+  }
+
+  //Add Control
+  AddSkills() {
+    this.skills.push(new FormControl('', Validators.required));
+  }
+
+  //Review Control
+  RemoveSkill(index: number) {
+    this.skills.removeAt(index);
+  }
+
+  SubmitRegisterForm() {
+    if (this.registerform.valid) {
+      alert('Registered Successfully!');
+    } else {
+      alert('Please fill all required fields correctly.');
+    }
+  }
+}
+
+```
+
+### Step 2: The Template (register.component.html)
+
+```html
+<form [formGroup]="registerform" (ngSubmit)="SubmitRegisterForm()">
+
+    <div class="mb-3">
+        <label for="userName" class="form-label">User Name :</label>
+        <input name="userName" id="userName" formControlName="userName" class="form-control">
+
+        <div *ngIf="registerform.get('userName')?.invalid && registerform.get('userName')?.touched">
+            <small class="text-danger">Provide Valid User Name</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email :</label>
+        <input name="email" id="email" formControlName="email" class="form-control">
+
+        <div *ngIf="registerform.get('email')?.invalid && registerform.get('email')?.touched">
+            <small class="text-danger">Provide Valid Email</small>
+        </div>
+    </div>
+
+    <div formArrayControl="skills" class="mb-3">
+        <label class="form-label">Skills :</label>
+
+        <button class="btn btn-primary" (click)="AddSkills()">+ Add
+            Skills</button>
+
+        <div *ngFor="let skill of skills.controls; index as i">
+            <input class="form-control" [formControlName]="i" placeholder="Enter Skills">
+            <button class="btn btn-warning" (click)="RemoveSkill(i)">Remove
+                Skill</button>
+        </div>
+
+    </div>
+    <br>
+
+    <button class="btn btn-primary" type="submit">Submit Form</button>
+
+</form>
+```
+
+### Output
+
+<img width="686" height="873" alt="image" src="https://github.com/user-attachments/assets/6e51b271-baed-4025-b599-98f2289bdb08" />
+
+---
+
+### Validators Class
+
+The Validators class is a collection of built-in functions used to perform synchronous validation on FormControl instances. When a control value changes, these functions run and return either null (valid) or an error object (invalid).
+
+| Validator       | Purpose                                   | Example                                |
+|-----------------|-------------------------------------------|----------------------------------------|
+| required        | Ensures the field is not empty.           | Validators.required                     |
+| email           | Validates that the input matches an email pattern. | Validators.email                        |
+| minLength(x)    | Requires a minimum number of characters.  | Validators.minLength(5)                 |
+| pattern(regex)  | Matches the input against a Regular Expression. | Validators.pattern('^[0-9]*$')          |
+
+
+### Key Concepts
+
+- Static Methods: You don't need to create an "instance" of the Validators class; you call its methods directly (e.g., Validators.required).
+
+- Multiple Validators: To apply more than one, wrap them in an array: ['', [Validators.required, Validators.minLength(3)]].
+
+- Validation State: Validators update the status property of the control to either 'VALID', 'INVALID', 'PENDING', or 'DISABLED'.
 
 ------------------------------------------------------------------------
 
