@@ -30,47 +30,6 @@ ActivatedRoute provides route-related information to the component.
 
 ## Production-Level Example
 
-### Scenario: Product Detail Page
-
-### Routing Configuration
-
-``` ts
-const routes: Routes = [
-  { path: 'products/:id', component: ProductDetailComponent }
-];
-```
-
-------------------------------------------------------------------------
-
-### Component Implementation
-
-``` ts
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-@Component({
-  selector: 'app-product-detail',
-  template: `
-    <h2>Product ID: {{ productId }}</h2>
-  `
-})
-export class ProductDetailComponent implements OnInit {
-
-  productId!: string | null;
-
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit() {
-    this.productId = this.route.snapshot.paramMap.get('id');
-  }
-
-}
-```
-
-------------------------------------------------------------------------
-
-## Advanced Reactive Version
-
 ### product.component.ts (The Product List Component)
 
 ``` ts
