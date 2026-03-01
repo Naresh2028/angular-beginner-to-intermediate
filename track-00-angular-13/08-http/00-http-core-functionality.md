@@ -102,22 +102,113 @@ export class PostComponent implements OnInit {
 
 ## Use Case
 
-Creating a new user.
+Creating a new Post.
 
-``` ts
-createUser(user: any) {
-  return this.http.post('https://api.example.com/users', user);
-}
+``` html
+
+<div>
+    <h2>Send Post Data to Server!</h2>
+    <form class="form" #postForm="ngForm" (ngSubmit)="CreatePost(postForm)">
+
+        <div class="form-group mb-2">
+            <label for="title" class="form-label">Title : </label>
+            <input class="form-control" type="text" name="title"
+                id="title"
+                #title="ngModel"
+                [(ngModel)]="createPost.title" />
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="body" class="form-label">Body : </label>
+            <input class="form-control" type="text" name="body"
+                id="body"
+                #body="ngModel"
+                [(ngModel)]="createPost.body" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Save Post</button>
+
+        <button class="btn btn-warning" type="button"
+            (click)="ResetForm()">Reset Form</button>
+    </form>
+</div>
 ```
 
 Component:
 
 ``` ts
-this.userService.createUser(this.form.value)
-  .subscribe(response => {
-    console.log('User Created', response);
-  });
+export class PostComponent implements OnInit {
+  post: Post[] = [];
+
+  createPost:Partial<Post> = {
+    id:12,
+    title:'',
+    body:'',
+    userId:1
+  };
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {
+    this.fetchPost();
+  }
+
+  fetchPost() {
+    this.postService.getPost().subscribe({
+      next: (data) => {
+        this.post = data.slice(0, 9);
+      },
+      error: (err) => {
+        alert('Something went wrong :' + err);
+      },
+    });
+  }
+
+  CreatePost(postForm:NgForm){
+    
+    if(postForm.valid){
+    this.postService.createPost(this.createPost).subscribe({
+      next:(data) => {
+        alert("Submitted Successfully! Created Post Id" + data.id);
+        this.ResetForm();
+      },
+      error:(err) => {
+        alert(`Something went wrong ${err}`);
+      }
+    })
+    }
+
+  }
+
+  ResetForm(){
+    this.createPost = {title:'',id:1,body:'',userId:1}
+  }
+}
+
 ```
+
+### Service Function
+
+```ts
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
+
+  createPost(newPost: Partial<Post>): Observable<Post> {
+    return this.http.post<Post>(`${this.api}`, newPost);
+  }
+}
+```
+
+### Output
+
+<img width="684" height="773" alt="image" src="https://github.com/user-attachments/assets/81fbbe1c-3971-4722-916d-d30fcf5efb93" />
+
 
 ------------------------------------------------------------------------
 
