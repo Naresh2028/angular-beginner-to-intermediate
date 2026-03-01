@@ -32,22 +32,42 @@ Route Guards protect routes the same way.
 
 ### Step 1: Create Guard
 
+### 1. CanActivate: Authentication Guard
+
+This is the most common guard. It checks if a user is logged in before allowing them to enter a route like /dashboard.
+
 ``` ts
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
+  isLoggedIn!: string | null;
 
-  isLoggedIn = false; // Example condition
+  constructor(private route: Router) {}
 
   canActivate(): boolean {
-    return this.isLoggedIn;
-  }
+    this.isLoggedIn = localStorage.getItem('userToken');
 
+    if (this.isLoggedIn) {
+      return true;
+    } else {
+      alert('you are not authiorized credentials to access, please login...');
+      this.route.navigate(['/']);
+      return false;
+    }
+  }
 }
+
 ```
 
 ------------------------------------------------------------------------
@@ -56,15 +76,57 @@ export class AuthGuard implements CanActivate {
 
 ``` ts
 const routes: Routes = [
+  { path: '', component: LoginComponent, pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard] },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'logout', component: LogoutComponent },
+
+  //Parent Route
   {
-    path: 'admin',
-    component: AdminComponent,
-    canActivate: [AuthGuard]
-  }
+    path: 'users',
+    component: UserlistComponent,
+    children: [
+      //Child Routes
+      { path: 'new', component: UserNewComponent },
+      { path: ':id', component: UserdetailComponent },
+    ],
+  },
+
+  { path: '**', component: NotFoundComponentComponent },
 ];
 ```
+### Component Implementation
 
-If `isLoggedIn` is false → Navigation is blocked.
+````ts
+export class LoginComponent implements OnInit {
+  constructor(private route: Router) {}
+
+  ngOnInit(): void {}
+
+  loginData = {
+    username: '',
+    password: '',
+  };
+
+  onSubmit() {
+    if (this.loginData.username && this.loginData.password ) {
+      alert('Login attempted:' + JSON.stringify(this.loginData));
+      localStorage.setItem('userToken', 'naresh');
+      this.route.navigate(['/dashboard']);
+    } 
+  }
+}
+````
+
+### Output
+
+<img width="1622" height="822" alt="image" src="https://github.com/user-attachments/assets/f0a9963e-e476-40eb-808a-97c080045d18" />
+
+---
+
+#### Summart
+- CanActivate is used to control entry (Authentication/Authorization).
 
 ------------------------------------------------------------------------
 
