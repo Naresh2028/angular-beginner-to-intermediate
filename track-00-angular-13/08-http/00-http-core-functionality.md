@@ -34,9 +34,21 @@ export class AppModule {}
 
 # 1️⃣ GET Request (Read Data)
 
-## Use Case
 
-Fetching users from API.
+## Purpose
+GET is used to **retrieve data** from the server without modifying it.
+
+## Signature
+
+```ts
+get<T>(url: string, options?: Object): Observable<T>
+```
+
+- url: endpoint to send the request
+
+- options: headers, params, etc.
+
+- Returns: an Observable<T> that you can subscribe to
 
 ``` ts
 @Injectable({
@@ -100,9 +112,22 @@ export class PostComponent implements OnInit {
 
 # 2️⃣ POST Request (Create Data)
 
-## Use Case
+## Purpose
+POST is used to **create a new resource** on the server.
 
-Creating a new Post.
+## Signature
+
+```ts
+post<T>(url: string, body: any, options?: Object): Observable<T>
+```
+
+- url: endpoint to send the request
+
+- body: the data you want to create
+
+- options: headers, params, etc.
+
+- Returns: an Observable<T> that you can subscribe to
 
 ``` html
 
@@ -214,7 +239,22 @@ export class PostService {
 
 # 3️⃣ PUT Request 
 
-## Use Case
+## Purpose
+PUT is used to **update or replace** an existing resource.
+
+## Signature
+
+```ts
+put<T>(url: string, body: any, options?: Object): Observable<T>
+```
+
+- url: endpoint to send the request
+
+- body: the data you want to update
+
+- options: headers, params, etc.
+
+- Returns: an Observable<T> that you can subscribe to
 
 ``` ts
 @Injectable({
