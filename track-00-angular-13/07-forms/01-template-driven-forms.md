@@ -132,23 +132,23 @@ Production Use Case:
 
 ``` ts
 export class ProfileComponent {
-
-  profile = {
-    personal: {
+  Profile = {
+    person: {
       firstName: '',
-      lastName: ''
+      lastName: '',
     },
     contact: {
-      phone: ''
-    }
+      number: '',
+    },
   };
 
-  updateProfile(form: any) {
+  SubmitRegisterForm(form: any) {
     if (form.valid) {
-      console.log('Profile Updated:', this.profile);
+      alert('You Form Submitted Successfully');
+    } else {
+      alert('Provide Valid Form!');
     }
   }
-
 }
 ```
 
@@ -157,43 +157,49 @@ export class ProfileComponent {
 ### Template
 
 ``` html
-<form #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)">
+<form #ProfileForm="ngForm" (ngSubmit)="SubmitRegisterForm(ProfileForm)">
 
-  <div ngModelGroup="personal">
+  <div class="mb-3 form-group" ngModelGroup="person">
+    <label class="form-label" for="firstName">First Name</label>
+    <input type="text" name="firstName" class="form-control"
+      [(ngModel)]="Profile.person.firstName" placeholder="Enter First Name"
+      #firstName="ngModel" required>
 
-    <input
-      type="text"
-      name="firstName"
-      [(ngModel)]="profile.personal.firstName"
-      required
-    />
+    <div class="text-danger" *ngIf="firstName.invalid && firstName.touched">
+      provide firstName
+    </div>
 
-    <input
-      type="text"
-      name="lastName"
-      [(ngModel)]="profile.personal.lastName"
-      required
-    />
+    <label class="form-label" for="lastName">Last Name</label>
+    <input type="text" name="lastName" class="form-control"
+      [(ngModel)]="Profile.person.lastName" placeholder="Enter Last Name"
+      #lastName="ngModel" required>
 
+    <div class="text-danger" *ngIf="lastName.invalid && lastName.touched">
+      provide lastName
+    </div>
   </div>
 
-  <div ngModelGroup="contact">
+  <div ngModelGroup="contact"> 
+    <label class="form-label" for="number">Phone</label>
+    <input type="text" name="number" class="form-control"
+      [(ngModel)]="Profile.contact.number" placeholder="Enter number"
+      #number="ngModel" required>
 
-    <input
-      type="text"
-      name="phone"
-      [(ngModel)]="profile.contact.phone"
-      required
-    />
-
+    <div class="text-danger" *ngIf="number.invalid && number.touched">
+      provide number
+    </div>
   </div>
 
-  <button type="submit">
-    Update Profile
-  </button>
+
+  <button class="btn btn-primary">Submit Form</button>
 
 </form>
 ```
+
+### Output
+
+<img width="777" height="889" alt="image" src="https://github.com/user-attachments/assets/43a0c6b9-c647-4179-ab23-2dc5ebcef2b5" />
+
 
 ------------------------------------------------------------------------
 
