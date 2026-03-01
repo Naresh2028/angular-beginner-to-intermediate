@@ -1,4 +1,4 @@
-# Observable APIs Request Configuration (URL Parameters, Request Headers, Response Types)
+# Observable APIs Request Configuration
 
 ## Definition
 
