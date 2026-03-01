@@ -28,8 +28,6 @@ Route Guards protect routes the same way.
 
 ## Production-Level Example
 
-### Scenario: Protect Admin Route
-
 ### Step 1: Create Guard
 
 ### 1. CanActivate: Authentication Guard
@@ -127,6 +125,74 @@ export class LoginComponent implements OnInit {
 
 #### Summart
 - CanActivate is used to control entry (Authentication/Authorization).
+
+---
+
+### 2. CanDeActivate : Unsaved Changes Guard
+
+This guard prevents users from accidentally navigating away from a form (like UserNewComponent) if they have typed data but haven't clicked "Save".
+
+### Guard Implementation
+
+````ts
+export interface canComponentDeactivate{
+  canDeactivate:() => boolean
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UnsavedChangesGuard implements CanDeactivate<canComponentDeactivate> {
+  canDeactivate(component: canComponentDeactivate): boolean {
+    return component.canDeactivate ? component.canDeactivate() : true;
+  }
+}
+````
+- export interface canComponentDeactivate → Defines a contract that any component can implement if it wants to support the “unsaved changes” check.
+
+- canDeactivate: () => boolean → Requires the component to have a method called canDeactivate that returns a boolean (true = allow navigation, false = block navigation).
+
+- UnsavedChangesGuard → The guard class itself.
+
+- implements CanDeactivate<canComponentDeactivate> → Tells Angular this guard will run before deactivating a route, and it applies to components that implement the canComponentDeactivate interface.
+
+- Checks if the component has a canDeactivate method.
+
+- If yes → calls it, and the component decides whether navigation is allowed.
+
+- If not → defaults to true (navigation allowed).
+
+````ts
+export class UserNewComponent implements canComponentDeactivate {
+  userName = '';
+  constructor(private route: Router) {}
+
+  SaveUser() {
+    alert(`New User Added ${this.userName}`);
+    this.route.navigateByUrl('/users');
+  }
+
+  canDeactivate(): boolean {
+    if (this.userName.length > 0) {
+      return confirm('You have unsaved changes! Do you really want to leave?');
+    }
+    return true;
+  }
+}
+````
+
+### Output
+
+<img width="1405" height="766" alt="image" src="https://github.com/user-attachments/assets/4c67e8c5-4dbb-4c54-84b3-51534136eca1" />
+
+---
+
+# Angular Route Guards
+
+| Guard Type   | Purpose           | Main Use Case                                      |
+|--------------|------------------|---------------------------------------------------|
+| CanActivate  | Entrance Control | Checking if a user is logged in or is an Admin     |
+| CanDeactivate| Exit Control     | Preventing data loss on forms or stopping a video/upload |
 
 ------------------------------------------------------------------------
 
