@@ -46,58 +46,96 @@ import { ReactiveFormsModule } from '@angular/forms';
 ### Step 2: Component Implementation
 
 ``` ts
-import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html'
-})
 export class LoginComponent {
+  loginForm!: FormGroup;
 
-  loginForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.email
-    ]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6)
-    ])
-  });
-
-  onSubmit() {
-    if (this.loginForm.valid) {
-      console.log('Login Data:', this.loginForm.value);
-    }
+  constructor(
+    private fb: FormBuilder,
+    private route: Router,
+  ) {
+    this.loginForm = this.fb.group({
+      userName: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required]],
+    });
   }
 
+  LoginFormSubmit() {
+    if (this.loginForm.valid) {
+      alert('Login successfull');
+      this.route.navigate(['/users']);
+    } else {
+      alert('Invalid Form Details!.');
+    }
+  }
 }
 ```
+
+### Alternate way
+
+```ts
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+})
+export class LoginComponent {
+  loginForm: FormGroup;
+  constructor(private route: Router) {
+    this.loginForm = new FormGroup({
+      userName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      password: new FormControl('', [Validators.required]),
+    });
+  }
+}
+```
+
+### Key differences
+
+- FormBuilder: this.fb.group({ userName: ['', Validators.required] }) → concise.
+
+- FormGroup + FormControl: new FormGroup({ userName: new FormControl('', Validators.required) }) → explicit.
+
+Both are valid. FormBuilder is preferred in production for brevity, but FormGroup + FormControl is great for learning and when you want to see exactly how Angular constructs the form.
 
 ------------------------------------------------------------------------
 
 ### Step 3: Template
 
 ``` html
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-  <input type="email" formControlName="email" />
-  <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-    Valid email is required
+<form [formGroup]="loginForm" (ngSubmit)="LoginFormSubmit()">
+
+  <div>
+    <label for="userName" class="form-label">User Name :</label>
+    <input name="userName" id="userName" formControlName="userName" class="form-control">
+
+    <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched">
+      <small class="text-danger">Provide Valid User Name</small>
+    </div>
   </div>
 
-  <input type="password" formControlName="password" />
-  <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-    Password must be at least 6 characters
+
+    <div>
+    <label for="password" class="form-label">Password :</label>
+    <input name="password" id="password" formControlName="password" class="form-control">
+
+    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+      <small class="text-danger">Provide Valid Password</small>
+    </div>
   </div>
 
-  <button type="submit" [disabled]="loginForm.invalid">
-    Login
+  <button type="submit" class="btn btn-primary">
+    Submit Form
   </button>
 
 </form>
 ```
+
+
+### Output
+
+<img width="735" height="720" alt="image" src="https://github.com/user-attachments/assets/d4e9776c-fc7d-47c2-8113-37bfde7e0387" />
+
 
 ------------------------------------------------------------------------
 
