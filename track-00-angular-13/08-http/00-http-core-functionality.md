@@ -39,25 +39,62 @@ export class AppModule {}
 Fetching users from API.
 
 ``` ts
-@Injectable({ providedIn: 'root' })
-export class UserService {
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor( private http: HttpClient, @Inject(API_URL) private api: string) {}
 
-  constructor(private http: HttpClient) {}
-
-  getUsers() {
-    return this.http.get<any[]>('https://api.example.com/users');
+  getPost(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.api);
   }
-
 }
 ```
 
 Component:
 
 ``` ts
-this.userService.getUsers().subscribe(data => {
-  this.users = data;
-});
+@Component({
+  selector: 'app-post',
+  template: `
+    <div *ngIf="post.length > 0">
+      <div class="card" *ngFor="let item of post">
+        <div class="card-body">
+          <h4>Title : {{ item.title | uppercase }}</h4>
+        </div>
+        <div>Body : {{ item.body }}</div>
+
+        <div class="card-footer">
+          <small style="color: green;">Post Id :{{ item.id }}</small>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class PostComponent implements OnInit {
+  post: Post[] = [];
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {
+    this.fetchPost();
+  }
+
+  fetchPost() {
+    this.postService.getPost().subscribe({
+      next: (data) => {
+        this.post = data.slice(0, 9);
+      },
+      error: (err) => {
+        alert('Something went wrong :' + err);
+      },
+    });
+  }
+}
 ```
+
+### Ouptut
+<img width="732" height="841" alt="image" src="https://github.com/user-attachments/assets/410f7aa7-1239-4d8c-b4ef-f10da8bd857a" />
 
 ------------------------------------------------------------------------
 
