@@ -284,6 +284,8 @@ export class PostService {
 
 ### Template
 
+We use a conditional *ngIf to show the edit form only when a post is selected.
+
 ``` html
 
 <div *ngIf="isEditing">
