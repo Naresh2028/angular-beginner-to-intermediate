@@ -46,7 +46,7 @@ export class FeatureModule {}
 
 ------------------------------------------------------------------------
 
-### Configure the child Route Configuration
+### Child Route Configuration
 
 You can create a feature module without Angular cli command.
 
