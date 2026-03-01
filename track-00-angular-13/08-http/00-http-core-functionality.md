@@ -212,17 +212,147 @@ export class PostService {
 
 ------------------------------------------------------------------------
 
-# 3️⃣ PUT Request (Replace Data)
+# 3️⃣ PUT Request 
 
 ## Use Case
 
-Updating entire user record.
-
 ``` ts
-updateUser(id: number, user: any) {
-  return this.http.put(`https://api.example.com/users/${id}`, user);
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
+
+  getPost(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.api);
+  }
+
+  createPost(newPost: Partial<Post>): Observable<Post> {
+    return this.http.post<Post>(`${this.api}`, newPost);
+  }
+
+  updatePost(id: number, updateData: Post): Observable<Post> {
+    const url = `${this.api}/${id}`;
+    return this.http.put<Post>(url, updateData);
+  }
+}
+
+```
+
+### Template
+
+``` html
+
+<div *ngIf="isEditing">
+    <h2>Send Post Data to Server!</h2>
+    <form class="form" #postForm="ngForm" (ngSubmit)="UpdatePost(postForm)">
+
+        <div class="form-group mb-2">
+            <label for="title" class="form-label">Title : </label>
+            <input class="form-control" type="text" name="title"
+                id="title"
+                #title="ngModel"
+                [(ngModel)]="editData.title" />
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="body" class="form-label">Body : </label>
+            <input class="form-control" type="text" name="body"
+                id="body"
+                #body="ngModel"
+                [(ngModel)]="editData.body" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Update Post</button>
+
+        <button class="btn btn-warning" type="button"
+            (click)="ResetForm()">Reset Form</button>
+    </form>
+</div>
+
+<div class="card">
+    <div *ngFor="let item of post">
+        <div class="card-body">
+            Title : {{item.title}}
+        </div>
+
+        <button class="btn btn-primary" (click)="editPost(item)">Edit
+            Post</button>
+    </div>
+
+</div>
+```
+
+### Component Implementation
+``` ts
+export class PostComponent implements OnInit {
+  post: Post[] = [];
+
+  editData: Post = { body: '', title: '', id: 0, userId: 1 };
+
+  isEditing: boolean = false;
+
+  editPost(post: Post) {
+    this.isEditing = true;
+
+    this.editData = { ...post };
+  }
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {
+    this.fetchPost();
+  }
+
+  fetchPost() {
+    this.postService.getPost().subscribe({
+      next: (data) => {
+        this.post = data.slice(0, 9);
+      },
+      error: (err) => {
+        alert('Something went wrong :' + err);
+      },
+    });
+  }
+
+
+  UpdatePost(postForm: NgForm) {
+    if (postForm.valid) {
+      const id = this.editData.id;
+      const updateData = this.editData;
+
+      this.postService.updatePost(id, updateData).subscribe({
+        next: (data) => {
+          if (data) {
+            alert('Updated Successfully!, Updated Id :' + data.id);
+            this.isEditing = false;
+          }
+        },
+        error(err) {
+          alert('something went wrong!' + err);
+        },
+      });
+    }
+  }
+
 }
 ```
+
+
+### Output
+
+<img width="728" height="724" alt="image" src="https://github.com/user-attachments/assets/3bbd724b-b916-4806-8305-378ed2d28426" />
+
+### 🔑 Key Implementation Details
+
+- Cloning the Data: Using { ...post } (the spread operator) is important. It ensures that if the user starts typing in the edit box but clicks "Cancel," the original data in your list hasn't been changed.
+- 
+- The URL Construction: Your service correctly uses ${this.api}/${id}, which results in a call to https://jsonplaceholder.typicode.com/posts/1. The server needs this ID in the URL to know which specific record to replace.
+- 
+- PUT vs. PATCH: Remember that since you are using http.put, you must send the entire object. If you leave out the userId in your editData, the server might remove that field from the record.
 
 ------------------------------------------------------------------------
 
