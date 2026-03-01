@@ -1,4 +1,4 @@
-# Core Functionality: Performing HTTP Requests (GET, POST, PUT, PATCH, DELETE)
+# Core Functionality: Performing HTTP Requests
 
 ## Definition
 
