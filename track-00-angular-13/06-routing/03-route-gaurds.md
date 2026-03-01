@@ -94,7 +94,7 @@ const routes: Routes = [
   { path: '**', component: NotFoundComponentComponent },
 ];
 ```
-### Component Implementation
+### Step 3:  Component Implementation
 
 ````ts
 export class LoginComponent implements OnInit {
@@ -179,6 +179,21 @@ export class UserNewComponent implements canComponentDeactivate {
     return true;
   }
 }
+````
+
+###  Apply Guard in Routing
+
+````ts
+//Parent Route
+  {
+    path: 'users',
+    component: UserlistComponent,
+    children: [
+      //Child Routes
+      { path: 'new', component: UserNewComponent,canDeactivate:[UnsavedChangesGuard] },
+      { path: ':id', component: UserdetailComponent },
+    ],
+  },
 ````
 
 ### Output
