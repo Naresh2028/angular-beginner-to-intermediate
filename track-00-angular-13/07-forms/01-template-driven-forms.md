@@ -40,24 +40,24 @@ in the template.
 ### Component
 
 ``` ts
-import { Component } from '@angular/core';
+export class RegisterComponent implements OnInit {
 
-@Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html'
-})
-export class RegisterComponent {
+  constructor() { }
 
-  user = {
-    name: '',
-    email: '',
-    password: ''
-  };
+  regsiterForm = {
+    userName : '',
+    email:'',
+    password:''
+  }
 
-  onSubmit(form: any) {
-    if (form.valid) {
-      console.log('Form Submitted:', this.user);
+  ngOnInit(): void {
+  }
+
+  SubmitRegisterForm(form:any){
+    if(form.valid){
+      alert(`Form submitted successfuly : ${JSON.stringify(form.value)}`);
     }
+    alert("Please fill the form")
   }
 
 }
@@ -68,49 +68,51 @@ export class RegisterComponent {
 ### Template
 
 ``` html
-<form #form="ngForm" (ngSubmit)="onSubmit(form)">
 
-  <input
-    type="text"
-    name="name"
-    [(ngModel)]="user.name"
-    required
-    #name="ngModel"
-  />
-  <div *ngIf="name.invalid && name.touched">
-    Name is required
-  </div>
+<form #formRegister (ngSubmit)="SubmitRegisterForm(formRegister)">
 
-  <input
-    type="email"
-    name="email"
-    [(ngModel)]="user.email"
-    required
-    email
-    #email="ngModel"
-  />
-  <div *ngIf="email.invalid && email.touched">
-    Valid email required
-  </div>
+    <div class="form-group mb-3">
+        <label for="userName" class="form-label">UserName : </label>
+        <input class="form-control" type="text" name="userName"
+            id="userName"
+            #userName="ngModel"
+            [(ngModel)]="regsiterForm.userName" required />
+    </div>
+    <div class="text-danger" *ngIf="userName.invalid && userName.touched">
+        <span >Provide userName</span>
+    </div>
 
-  <input
-    type="password"
-    name="password"
-    [(ngModel)]="user.password"
-    required
-    minlength="6"
-    #password="ngModel"
-  />
-  <div *ngIf="password.invalid && password.touched">
-    Password must be at least 6 characters
-  </div>
+    <div class="form-group mb-3">
+        <label for="email" class="form-label">Email : </label>
+        <input class="form-control" type="email" name="email" id="email"
+            #email="ngModel"
+            [(ngModel)]="regsiterForm.email" required />
+    </div>
+    <div class="text-danger" *ngIf="email.invalid && email.touched">
+        <span>Provide Email</span>
+    </div>
 
-  <button type="submit" [disabled]="form.invalid">
-    Register
-  </button>
+    <div class="form-group mb-3">
+        <label for="password" class="form-label">Password : </label>
+        <input class="form-control" type="password" name="password"
+            id="password"
+            #password="ngModel"
+            [(ngModel)]="regsiterForm.password"
+            required />
+    </div>
+    <div class="text-danger" *ngIf="password.invalid && password.touched">
+        <span>Provide Password</span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit Form</button>
 
 </form>
 ```
+
+### Output
+
+<img width="607" height="837" alt="image" src="https://github.com/user-attachments/assets/ba6805ca-064d-4eca-823d-9b38b6d4f81a" />
+
 
 ------------------------------------------------------------------------
 
