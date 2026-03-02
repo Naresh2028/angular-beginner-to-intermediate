@@ -69,26 +69,6 @@ export class featureRoutingModule {}
 
 ```
 
-### Import Feature Route class file in Feature Module
-
-````ts
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ComponentAComponent } from './component-a/component-a.component';
-import { ComponentBComponent } from './component-b/component-b.component';
-import { FeatureService } from 'src/app/Services/feature/feature.service';
-import { featureRoutingModule } from './feature-routing.module';
-
-@NgModule({
-  declarations: [ComponentAComponent, ComponentBComponent],
-  imports: [CommonModule, featureRoutingModule],
-  exports: [ComponentAComponent, ComponentBComponent],
-  providers: [FeatureService],
-})
-export class FeatureModule {}
-
-````
-
 ------------------------------------------------------------------------
 
 ### Configure Lazy Route
