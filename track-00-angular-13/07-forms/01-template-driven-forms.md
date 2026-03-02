@@ -69,7 +69,7 @@ export class RegisterComponent implements OnInit {
 
 ``` html
 
-<form #formRegister (ngSubmit)="SubmitRegisterForm(formRegister)">
+<form #formRegister="ngForm" (ngSubmit)="SubmitRegisterForm(formRegister)">
 
     <div class="form-group mb-3">
         <label for="userName" class="form-label">UserName : </label>
