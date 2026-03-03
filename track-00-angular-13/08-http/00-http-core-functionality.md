@@ -400,34 +400,180 @@ export class PostComponent implements OnInit {
 
 # 4️⃣ PATCH Request (Partial Update)
 
-## Use Case
 
-Updating only email.
+````html
+<div *ngIf="isEditing">
+    <h2>Send Post Data to Server!</h2>
+    <form class="form" #postForm="ngForm" (ngSubmit)="PartialEdit(postForm)">
+
+        <div class="form-group mb-2">
+            <label for="title" class="form-label">Title : </label>
+            <input class="form-control" type="text" name="title"
+                id="title"
+                #title="ngModel"
+                [(ngModel)]="currentPost.title" />
+        </div>
+
+        <div *ngIf="!hidediv" class="form-group mb-2">
+            <label for="body" class="form-label">Body : </label>
+            <input class="form-control" type="text" name="body"
+                id="body"
+                #body="ngModel"
+                [(ngModel)]="currentPost.body" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Update Post</button>
+
+        <button class="btn btn-warning" type="button"
+            (click)="ResetForm()">Reset Form</button>
+    </form>
+</div>
+
+<div class="card">
+    <div *ngFor="let item of post">
+        <div class="card-body">
+            Title : {{item.title}}
+        </div>
+
+        <button class="btn btn-primary" type="button" (click)="editPost(item)">Edit
+            Post
+        </button>
+
+        <button class="btn btn-warning" type="button" (click)="partialUpdate(item)">Partial Title Edit</button>
+        <button class="btn btn-danger" type="button" (click)="DeletePost(item.id)">Delete Post</button>
+    </div>
+
+</div>
+````
+
+- Setting the Mode (hidediv): We use a simple true/false switch to tell the HTML what to show.
+
+- For PUT (Edit Post): We set hidediv = false because we want the user to see and edit everything (Title and Body).
+
+- For PATCH (Partial Edit): We set hidediv = true to hide the Body field, signaling that we only intend to change the Title.
 
 ``` ts
-updateUserEmail(id: number, email: string) {
-  return this.http.patch(
-    `https://api.example.com/users/${id}`,
-    { email }
-  );
-}
+ hidediv: boolean = false;
+
+  currentPost: Post = { body: '', title: '', id: 0, userId: 1 };
+
+  isEditing: boolean = false;
+
+  editPost(post: Post) {
+    this.isEditing = true;
+
+    this.currentPost = { ...post };
+  }
+
+  partialUpdate(post: Post) {
+    this.isEditing = true;
+    this.hidediv = true;
+    this.currentPost = { ...post };
+  }
+
+  PartialEdit(postForm: NgForm) {
+    if (postForm.valid) {
+      const id = this.currentPost.id;
+      const updateData = { title: this.currentPost.title };
+
+      this.postService.PartialEdit(id, updateData).subscribe({
+        next: (updatedList) => {
+          if (updatedList) {
+            this.hidediv = true;
+            alert('The title updated successfully :' + updatedList.title);
+
+            const index = this.post.findIndex((x) => x.id === id);
+            this.isEditing = false;
+
+            if (index !== -1) {
+              this.post[index].title = updatedList.title;
+            }
+            this.ResetForm();
+          }
+        },
+      });
+    }
+  }
 ```
+
+###   What we did 
+
+- Cloning the Data ({...post}): We don't want to change the text on the main list while the user is typing, in case they decide to click "Cancel". By using the "spread operator" (...), we create a temporary copy of the data for the user to edit.
+
+- Selective Data Payload: In your component, We created a specific object updateData = { title: ... } to ensure you weren't sending unnecessary fields like body or -userId over the network.
+
+- Optimistic UI Sync: Instead of reloading the whole list, we used findIndex() to locate the post in your local array and updated only its title property. This makes the update feel instantaneous to the user.
+
+- Unified Form Logic: We used a single currentPost object for both full and partial edits, using a hidediv flag to conditionally show or hide form fields.   
+
+```ts
+  PartialEdit(id:number,updateRecord:Partial<Post>):Observable<Post>{
+    const url = `${this.api}/${id}`
+    return this.http.patch<Post>(url,updateRecord);
+  }
+````
+created a service method using http.patch rather than http.put. While PUT replaces the entire resource, PATCH tells the server to only modify specific fields.
+
+
 
 ------------------------------------------------------------------------
 
 # 5️⃣ DELETE Request (Remove Data)
 
-## Use Case
+```html
+<div class="card">
+    <div *ngFor="let item of post">
+        <div class="card-body">
+            Title : {{item.title}}
+        </div>
 
-Deleting user.
+        <button class="btn btn-primary" type="button" (click)="editPost(item)">Edit
+            Post
+        </button>
+
+        <button class="btn btn-warning" type="button" (click)="partialUpdate(item)">Partial Title Edit</button>
+        <button class="btn btn-danger" type="button" (click)="DeletePost(item.id)">Delete Post</button>
+    </div>
+
+</div>
+````
+
+```ts
+post: Post[] = [];
+
+  constructor(private postService: PostService) {}
+
+  DeletePost(id: number) {
+    if (confirm('Are you sure you want to delete this post?')) {
+      this.postService.DeleteRecord(id).subscribe({
+        next: (data0) => {
+          alert('Deleted Successfully');
+
+          this.post = this.post.filter(x => x.id !== id)
+        },
+        error: (err) => {
+          alert('something went wrong...' + err);
+        },
+      });
+    }
+  }
+````
+
+### What we did
+
+- User Confirmation: We added a confirm() dialog, which is a best practice to prevent accidental data loss.
+
+- Client-Side Filtering: Since you are using a fake API (JSONPlaceholder) that doesn't actually delete data from its database, we used this.post.filter() to remove the item from the local array.
+
+- Manual Synchronization: By updating the local this.post variable within the next block of the subscription, we ensured the UI re-rendered automatically to show the updated list without the deleted item.
 
 ``` ts
-deleteUser(id: number) {
-  return this.http.delete(
-    `https://api.example.com/users/${id}`
-  );
-}
+   DeleteRecord(id:number):Observable<void>{
+    return this.http.delete<void>(`${this.api}/${id}`);
+  }
 ```
+
+
 
 ------------------------------------------------------------------------
 
