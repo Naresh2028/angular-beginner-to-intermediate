@@ -124,10 +124,15 @@ export interface ApiResponse<T> {
 ### Use Generic Wrapper
 
 ``` ts
-getUsers() {
-  return this.http.get<ApiResponse<User[]>>(
-    'https://api.example.com/users'
-  );
+export class UserService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private url: string,
+  ) {}
+
+  getUsers(): Observable<ApiResponse<User[]>> {
+    return this.http.get<ApiResponse<User[]>>(this.url);
+  }
 }
 ```
 
@@ -136,11 +141,41 @@ getUsers() {
 ### Access Data Safely
 
 ``` ts
-this.userService.getUsers().subscribe(response => {
-  if (response.success) {
-    this.users = response.data;
+@Component({
+  selector: 'app-user',
+  template: `
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <ul class="list-group" *ngIf="users.length > 0">
+      <li class="list-group-item" *ngFor="let user of users">
+        {{ user.name }} ({{ user.email }})
+      </li>
+    </ul>
+  `,
+})
+export class UserComponent implements OnInit {
+  users: User[] = [];
+  errorMessage: string = '';
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.users = response.data;
+        } else {
+          this.errorMessage = response.message;
+        }
+      },
+      error: (err) => {
+        this.errorMessage = 'Network Error: ' + err.message;
+      },
+    });
   }
-});
+}
 ```
 
 This ensures both structure and nested data are strongly typed.
