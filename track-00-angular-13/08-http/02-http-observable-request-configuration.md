@@ -33,25 +33,118 @@ Used for:
 
 ## Production-Level Example
 
+## Service File (API Request)
+
 ``` ts
-import { HttpParams } from '@angular/common/http';
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Post } from 'src/app/Interfaces/post';
+import { API_URL } from 'src/app/Class/token';
 
-getUsers(page: number, search: string) {
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
 
-  let params = new HttpParams()
-    .set('page', page)
-    .set('search', search);
+  getLimitedUserList(userId: number, limit: number): Observable<Post[]> {
+    const params = new HttpParams()
+      .set('userId', userId.toString())
+      .set('_limit', limit.toString());
 
-  return this.http.get<User[]>(
-    'https://api.example.com/users',
-    { params }
-  );
+    return this.http.get<Post[]>(this.api, { params });
+  }
 }
+
 ```
+### Service File: The "Communicator"
 
-Generated URL:
+- **Immutability of HttpParams:** Remember that HttpParams is immutable. 
 
-    https://api.example.com/users?page=1&search=admin
+- Each **.set()** returns a new instance. Chaining them as you did (.set().set()) is the correct way to build a query string like ?userId=1&_limit=5.
+
+## Component Implementation
+
+````ts
+@Component({
+  selector: 'app-search-post',
+  templateUrl: './search-post.component.html',
+  styleUrls: ['./search-post.component.css'],
+})
+export class SearchPostComponent implements OnInit {
+  UserId: number = 1;
+  limit: number = 5;
+  results: Post[] = [];
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {}
+
+  Search() {
+    this.postService.getLimitedUserList(this.UserId, this.limit).subscribe({
+      next: (data) => {
+        if (data) {
+          this.results = data;
+        }
+      },
+    });
+  }
+}
+````
+
+### Component Implementation: The "Coordinator"
+
+- **Defensive Initialization:** By setting UserId: number = 1; and limit: number = 5, We prevent "undefined" errors if the user clicks "Submit" immediately after the page loads.
+
+## Template View
+
+````html
+
+<div class="container">
+    <label for="UserId" class="form-label">UserId : </label>
+    <input class="form-control" type="number" name="UserId"
+        id="UserId"
+        [(ngModel)]="UserId" />
+
+    <label for="limit" class="form-label">Limit : </label>
+    <input class="form-control" type="number" name="limit"
+        id="limit"
+        [(ngModel)]="limit" />
+    <button class="btn btn-primary" (click)="Search()"> Sumbit </button>
+</div>
+
+<div class="card mt-3 shadow-sm" *ngIf="results.length > 0">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Search Results</h5>
+    </div>
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item" *ngFor="let result of results">
+            <h6 class="fw-bold text-uppercase mb-1">Title: {{ result.title
+                }}</h6>
+            <p class="mb-0 text-muted">Body: {{ result.body }}</p>
+        </li>
+    </ul>
+
+    <div class="card-footer text-end">
+        <small class="text-secondary">Total Results: {{ results.length
+            }}</small>
+    </div>
+</div>
+
+<div class="card" *ngIf="results.length == 0">
+    <p>Empty results found! plese search for different results...</p>
+</div>
+````
+
+### Output
+
+<img width="704" height="885" alt="image" src="https://github.com/user-attachments/assets/61228460-d4a9-44bf-95fb-96d4f89a51f6" />
+
 
 ------------------------------------------------------------------------
 
