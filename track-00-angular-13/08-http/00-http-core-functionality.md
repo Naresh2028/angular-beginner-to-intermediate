@@ -400,6 +400,24 @@ export class PostComponent implements OnInit {
 
 # 4️⃣ PATCH Request (Partial Update)
 
+## Purpose
+PATCH is used to **partially update** an existing resource on the server.  
+Unlike PUT, which replaces the entire resource, PATCH applies only the changes you send.
+
+## Signature
+
+```ts
+patch<T>(url: string, body: any, options?: Object): Observable<T>
+```
+
+- url: endpoint to send the request
+
+- body: the partial data you want to update
+
+- options: headers, params, etc.
+
+- Returns: an Observable<T> that you can subscribe to
+
 ## Template Implementation
 
 ````html
@@ -532,6 +550,21 @@ export class PostComponent implements OnInit {
 ------------------------------------------------------------------------
 
 # 5️⃣ DELETE Request (Remove Data)
+
+## Purpose
+DELETE is used to **remove an existing resource** from the server.
+
+## Signature
+
+```ts
+delete<T>(url: string, options?: Object): Observable<T>
+````
+
+- url: endpoint to send the request (usually includes the resource ID)
+
+- options: headers, params, etc.
+
+- Returns: an Observable<T> that you can subscribe to
 
 ## Template implementation
 
