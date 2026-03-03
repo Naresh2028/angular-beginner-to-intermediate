@@ -400,6 +400,7 @@ export class PostComponent implements OnInit {
 
 # 4️⃣ PATCH Request (Partial Update)
 
+## Template Implementation
 
 ````html
 <div *ngIf="isEditing">
@@ -452,7 +453,11 @@ export class PostComponent implements OnInit {
 
 - For PATCH (Partial Edit): We set hidediv = true to hide the Body field, signaling that we only intend to change the Title.
 
+## post.Complement.ts
+
 ``` ts
+export class PostComponent implements OnInit {
+  post: Post[] = [];
  hidediv: boolean = false;
 
   currentPost: Post = { body: '', title: '', id: 0, userId: 1 };
@@ -494,6 +499,7 @@ export class PostComponent implements OnInit {
       });
     }
   }
+}
 ```
 
 ###   What we did 
@@ -506,19 +512,28 @@ export class PostComponent implements OnInit {
 
 - Unified Form Logic: We used a single currentPost object for both full and partial edits, using a hidediv flag to conditionally show or hide form fields.   
 
+## post.service.ts
+
 ```ts
   PartialEdit(id:number,updateRecord:Partial<Post>):Observable<Post>{
     const url = `${this.api}/${id}`
     return this.http.patch<Post>(url,updateRecord);
   }
 ````
-created a service method using http.patch rather than http.put. While PUT replaces the entire resource, PATCH tells the server to only modify specific fields.
 
+### Ouptut
+<img width="640" height="683" alt="image" src="https://github.com/user-attachments/assets/e3f28b05-8d92-4b20-9cb0-4f7546574a9d" />
 
+### Summary
+
+- Created a service method using http.patch rather than http.put. 
+- While PUT replaces the entire resource, PATCH tells the server to only modify specific fields.
 
 ------------------------------------------------------------------------
 
 # 5️⃣ DELETE Request (Remove Data)
+
+## Template implementation
 
 ```html
 <div class="card">
@@ -537,6 +552,8 @@ created a service method using http.patch rather than http.put. While PUT replac
 
 </div>
 ````
+
+## Post.component.ts
 
 ```ts
 post: Post[] = [];
@@ -567,42 +584,54 @@ post: Post[] = [];
 
 - Manual Synchronization: By updating the local this.post variable within the next block of the subscription, we ensured the UI re-rendered automatically to show the updated list without the deleted item.
 
+## Post.service.ts
+
 ``` ts
    DeleteRecord(id:number):Observable<void>{
     return this.http.delete<void>(`${this.api}/${id}`);
   }
 ```
 
+## Output
+
+<img width="679" height="789" alt="image" src="https://github.com/user-attachments/assets/f8b680c6-0155-4b5a-b780-3eab42e944e6" />
 
 
 ------------------------------------------------------------------------
 
-# Production-Level Service Example
+# Completed Production-Level Service Example
 
 ``` ts
-@Injectable({ providedIn: 'root' })
-export class ProductService {
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
 
-  private apiUrl = 'https://api.example.com/products';
-
-  constructor(private http: HttpClient) {}
-
-  getProducts() {
-    return this.http.get<any[]>(this.apiUrl);
+  getPost(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.api);
   }
 
-  addProduct(product: any) {
-    return this.http.post(this.apiUrl, product);
+  createPost(newPost: Partial<Post>): Observable<Post> {
+    return this.http.post<Post>(`${this.api}`, newPost);
   }
 
-  updateProduct(id: number, product: any) {
-    return this.http.put(`${this.apiUrl}/${id}`, product);
+  updatePost(id: number, updateData: Post): Observable<Post> {
+    const url = `${this.api}/${id}`;
+    return this.http.put<Post>(url, updateData);
   }
 
-  deleteProduct(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  PartialEdit(id:number,updateRecord:Partial<Post>):Observable<Post>{
+    const url = `${this.api}/${id}`
+    return this.http.patch<Post>(url,updateRecord);
   }
 
+  DeleteRecord(id:number):Observable<void>{
+    return this.http.delete<void>(`${this.api}/${id}`);
+  }
 }
 ```
 
