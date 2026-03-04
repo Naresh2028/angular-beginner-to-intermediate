@@ -304,7 +304,7 @@ Available types:
 
 ### 1. The Service Implementation (data.service.ts)
 
-In the service, we specify the responseType in the options object. Notice that for blob and arraybuffer, we often use Observable<Blob> or Observable<ArrayBuffer>.
+In the service, we specify the responseType in the options object. Notice that for blob and arraybuffer, we often use **Observable<Blob> or Observable<ArrayBuffer>**.
 
 ``` ts
 import { HttpClient } from '@angular/common/http';
