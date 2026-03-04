@@ -473,24 +473,43 @@ Used for:
 # Combined Production Example
 
 ``` ts
-getFilteredUsers(page: number, search: string) {
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
-  const params = new HttpParams()
-    .set('page', page)
-    .set('search', search);
+@Injectable({
+  providedIn: 'root',
+})
+export class UniversalService {
+  private api = 'https://jsonplaceholder.typicode.com/posts';
 
-  const headers = new HttpHeaders()
-    .set('Authorization', 'Bearer token');
+  constructor(private http: HttpClient) {}
 
-  return this.http.get<User[]>(
-    'https://api.example.com/users',
-    {
-      params,
-      headers,
-      responseType: 'json'
-    }
-  );
+  // One function to rule them all!
+  getFlexibleData(
+    userId: number,
+    limit: number,
+    format: 'json' | 'text' | 'blob',
+  ): Observable<any> {
+    // 1. Setup Query Parameters
+    const myParams = new HttpParams()
+      .set('userId', userId.toString())
+      .set('_limit', limit.toString());
+
+    // 2. Setup Headers
+    const myHeaders = new HttpHeaders()
+      .set('Authorization', 'Bearer my-token-123')
+      .set('X-Custom-Header', 'Angular-Demo');
+
+    // 3. Combine into the Options Object
+    return this.http.get(this.api, {
+      params: myParams,
+      headers: myHeaders,
+      responseType: format as any, // Casting as any to allow dynamic type
+    });
+  }
 }
+
 ```
 
 ------------------------------------------------------------------------
