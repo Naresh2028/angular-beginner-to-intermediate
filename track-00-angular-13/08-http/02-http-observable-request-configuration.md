@@ -302,25 +302,165 @@ Available types:
 
 ## Production-Level Example
 
-### Text Response
+### 1. The Service Implementation (data.service.ts)
+
+In the service, we specify the responseType in the options object. Notice that for blob and arraybuffer, we often use Observable<Blob> or Observable<ArrayBuffer>.
 
 ``` ts
-this.http.get(
-  'https://api.example.com/status',
-  { responseType: 'text' }
-);
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DataService {
+  private URL = 'https://jsonplaceholder.typicode.com/posts/1';
+
+  constructor(private http: HttpClient) {}
+
+  getJson(): Observable<any> {
+    return this.http.get<any>(this.URL, { responseType: 'json' });
+  }
+
+  getText(): Observable<string> {
+    return this.http.get(this.URL, { responseType: 'text' });
+  }
+
+  getBlob(): Observable<Blob> {
+    return this.http.get(this.URL, { responseType: 'blob' });
+  }
+
+  getArrayBuffer(): Observable<ArrayBuffer> {
+    return this.http.get(this.URL, { responseType: 'arraybuffer' });
+  }
+}
+
 ```
 
-------------------------------------------------------------------------
+### 2. The Component Logic (response-demo.component.ts)
 
-### File Download (Blob)
+The component will call each method and store the results. For Blob, we have to create a local URL so the browser can display the image.
 
 ``` ts
-this.http.get(
-  'https://api.example.com/report',
-  { responseType: 'blob' }
-);
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DataService } from 'src/app/Services/Data/data.service';
+
+@Component({
+  selector: 'app-response-demo',
+  templateUrl: './response-demo.component.html',
+  styleUrls: ['./response-demo.component.css'],
+})
+export class ResponseDemoComponent implements OnInit {
+  textResult: string = '';
+
+  bufferLength: number = 0;
+
+  blobResult!: SafeUrl;
+
+  jsonResult!: any;
+
+  constructor(
+    private dataService: DataService,
+    private sanitizer: DomSanitizer,
+  ) {}
+
+  ngOnInit(): void {}
+
+  showJson() {
+    this.dataService.getJson().subscribe({
+      next: (data) => {
+        if (data) {
+          this.jsonResult = data;
+        }
+      },
+    });
+  }
+
+  showText() {
+    this.dataService.getText().subscribe({
+      next: (data) => {
+        if (data) {
+          this.textResult = data;
+        }
+      },
+    });
+  }
+
+  showBlob() {
+    this.dataService.getBlob().subscribe({
+      next: (blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          this.blobResult = this.sanitizer.bypassSecurityTrustUrl(url);
+        }
+      },
+    });
+  }
+
+  showBuffer() {
+    this.dataService.getArrayBuffer().subscribe({
+      next: (buffer) => {
+        if (buffer) {
+          this.bufferLength = buffer.byteLength;
+        }
+      },
+    });
+  }
+}
+
 ```
+
+### 3. The Template View (response-demo.component.html)
+
+``` html
+<div class="container mt-4">
+  <div class="row text-center mb-4">
+    <div class="col"><button class="btn btn-primary" (click)="showJson()">Get JSON</button></div>
+    <div class="col"><button class="btn btn-secondary" (click)="showText()">Get Text</button></div>
+    <div class="col"><button class="btn btn-success" (click)="showBlob()">Get Blob (Image)</button></div>
+    <div class="col"><button class="btn btn-info" (click)="showBuffer()">Get Buffer</button></div>
+  </div>
+
+  <div class="card p-3 shadow-sm">
+    <div *ngIf="jsonResult">
+      <h6>JSON Data (Object):</h6>
+      <pre>{{ jsonResult | json }}</pre>
+    </div>
+
+    <div *ngIf="textResult" class="mt-3">
+      <h6>Text Data (String):</h6>
+      <div class="border p-2">{{ textResult }}</div>
+    </div>
+
+    <div *ngIf="blobResult" class="mt-3">
+      <h6>Blob Data (Rendered Image):</h6>
+      <img [src]="blobResult" class="img-thumbnail" style="width: 200px;">
+    </div>
+
+    <div *ngIf="bufferLength > 0" class="mt-3">
+      <h6>ArrayBuffer Data:</h6>
+      <p>Raw Binary Received. Total size: <strong>{{ bufferLength }} bytes</strong></p>
+    </div>
+  </div>
+</div>
+````
+
+### Output
+
+<img width="778" height="829" alt="image" src="https://github.com/user-attachments/assets/a35522a9-56f1-4928-8aff-17fefd9d9753" />
+
+
+# Angular HttpClient Response Types (When to use which?)
+
+| Response Type | Use Case                                      | Result in `.subscribe()`                |
+|---------------|-----------------------------------------------|-----------------------------------------|
+| **json**      | Standard APIs, CRUD operations.               | A JavaScript Object.                    |
+| **text**      | Reading a `.txt` file, `.csv`, or raw HTML.   | A simple string.                        |
+| **blob**      | Downloading images, PDFs, or Excel files.     | A Blob object (file-like).              |
+| **arraybuffer** | Low-level processing (audio/video manipulation). | Raw binary memory buffer.               |
+
 
 Used for:
 
