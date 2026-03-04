@@ -164,22 +164,111 @@ Common uses:
 
 ## Production-Level Example
 
+### 1. Service Implementation (post.service.ts)
+
+To add headers, you instantiate HttpHeaders and pass them into the "options" object of your HTTP method.
+
 ``` ts
-import { HttpHeaders } from '@angular/common/http';
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Post } from 'src/app/Interfaces/post';
+import { API_URL } from 'src/app/Class/token';
 
-getSecureData() {
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private api: string,
+  ) {}
 
-  const headers = new HttpHeaders({
-    'Authorization': 'Bearer my-token',
-    'Content-Type': 'application/json'
-  });
+  getPostWithHeaders():Observable<Post[]>{
+    const myHeaders = new HttpHeaders()
+    .set('Content-Type','application/json')
+    .set('Autherization','Bearer token')
+    .set('X-Content-Header','AngularLearning2026');
 
-  return this.http.get<any>(
-    'https://api.example.com/secure-data',
-    { headers }
-  );
+    return this.http.get<Post[]>(`${this.api}`,{headers:myHeaders});
+  }
+
 }
+
 ```
+
+### 2. Component Implementation (header.component.ts)
+
+In the component, the call remains simple. The header logic is hidden inside the service to keep the UI clean.
+
+``` ts
+import { Component, OnInit } from '@angular/core';
+import { Post } from 'src/app/Interfaces/post';
+import { PostService } from 'src/app/Services/Post/post.service';
+
+@Component({
+  selector: 'app-header-config',
+  templateUrl: './header-config.component.html',
+  styleUrls: ['./header-config.component.css'],
+})
+export class HeaderConfigComponent implements OnInit {
+  results: Post[] = [];
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.postService.getPostWithHeaders().subscribe({
+      next: (data) => {
+        if (data) {
+          this.results = data.splice(0, 1);
+        }
+      },
+    });
+  }
+}
+
+```
+### 3. Template implementation
+
+``` html
+<div class="card mt-3 shadow-sm" *ngIf="results.length > 0">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">Search Results</h5>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item" *ngFor="let result of results; index as i">
+      <h6 class="fw-bold text-uppercase mb-1">Title: {{ result.title }}</h6>
+      <p class="mb-0 text-muted">Body: {{ result.body }}</p>
+    </li>
+  </ul>
+
+  <div class="card-footer text-end">
+    <small class="text-secondary">Total Results: {{ results.length }}</small>
+  </div>
+</div>
+```
+
+### Output
+
+<img width="677" height="850" alt="image" src="https://github.com/user-attachments/assets/10834088-87bd-459e-b837-297277af2b0c" />
+
+
+### Important Information about Headers
+
+- Immutability: You must chain .set() calls or re-assign the variable (e.g., header = header.set(...)) because the original object never changes.
+
+- Case Insensitivity: HTTP header names are technically case-insensitive, but it is standard practice to use "Pascal-Case" (e.g., Authorization).
+
+- CORS Preflight: When you add custom headers (like X-Custom-Header), the browser may send an extra "OPTIONS" request (preflight) to the server to check if those headers are allowed.
+
+### Important Fact
+
+If you need to send an Authorization header with every single request, you shouldn't add it manually in every service method. Instead, you should use an **HttpInterceptor**, which "intercepts" outgoing requests and clones them with the added headers automatically.
 
 ------------------------------------------------------------------------
 
