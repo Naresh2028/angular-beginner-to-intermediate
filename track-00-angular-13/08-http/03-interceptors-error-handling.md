@@ -35,33 +35,103 @@ Interceptors process every request before it reaches the server.
 
 ### Step 1: Create Auth Interceptor
 
-``` ts
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+In Angular, requests are immutable. To change a request, you must .clone() it. Here, we retrieve a fake token and inject it into the headers.
 
+``` ts
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  authToken!: string | null;
+  constructor() {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<unknown>> {
+    this.authToken = localStorage.getItem('authToken');
 
-    const token = localStorage.getItem('authToken');
-
-    const modifiedReq = req.clone({
+    const authToken = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer : ${this.authToken}`,
+      },
     });
 
-    return next.handle(modifiedReq);
-  }
+    console.log('Interceptor: Token attached to request!!');
 
+    return next.handle(authToken);
+  }
 }
 ```
 
+### Component & Tempalte Implementation 
+
+```ts
+@Component({
+  selector: 'app-user',
+  template: `
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <ul class="list-group" *ngIf="users.length > 0">
+      <li class="list-group-item" *ngFor="let user of users">
+        {{ user | json }}
+      </li>
+    </ul>
+  `,
+})
+export class UserComponent implements OnInit {
+  users: User[] = [];
+  errorMessage: string = '';
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    localStorage.setItem('authToken', 'WELCOME_12345');
+
+    this.fetch();
+  }
+
+  fetch() {
+    this.userService.getUsers().subscribe({
+      next: (response) => {
+        if (response) {
+          this.users = response.splice(0,3);
+        } else {
+          this.errorMessage = response;
+        }
+      },
+      error: (err) => {
+        this.errorMessage = 'Network Error: ' + err.message;
+      },
+    });
+  }
+}
+````
+
+### The Simple Service Flow
+
+Because the interceptor handles the headers, your service stays completely clean!
+
+````ts
+@Injectable({
+  providedIn: 'root',
+})
+export class UserService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private url: string,
+  ) {}
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.url);
+  }
+}
+
+````
+
 ------------------------------------------------------------------------
 
-### Step 2: Provide Interceptor
+### Final Step Provide Interceptor
 
 ``` ts
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -73,6 +143,19 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 })
 export class AppModule {}
 ```
+
+### Output
+
+<img width="1297" height="685" alt="image" src="https://github.com/user-attachments/assets/c26faf26-33de-46e1-9840-8cc841c45b93" />
+
+
+### Why is this better?
+
+- Maintenance: If your token format changes, you only fix it in one file (the interceptor) instead of 50 different services.
+
+- Security: You ensure that every request is authenticated by default without relying on developers to remember to add headers manually.
+
+- Clean Code: Your business logic (getting posts) is separated from your security logic (adding tokens).
 
 ------------------------------------------------------------------------
 
