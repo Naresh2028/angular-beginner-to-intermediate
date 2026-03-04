@@ -511,28 +511,6 @@ export class UniversalService {
 }
 
 ```
-
-------------------------------------------------------------------------
-
-# Advanced: observe Full Response
-
-``` ts
-this.http.get<User[]>(
-  'https://api.example.com/users',
-  { observe: 'response' }
-).subscribe(response => {
-  console.log(response.status);
-  console.log(response.headers);
-  console.log(response.body);
-});
-```
-
-Useful when:
-
--   Reading pagination headers
--   Checking status codes
--   Accessing metadata
-
 ------------------------------------------------------------------------
 
 # Best Practices
