@@ -1,11 +1,5 @@
 # Advanced Features
 
-## 1️⃣ Interceptors
-
-## 2️⃣ Error Handling (HttpErrorResponse, catchError)
-
-------------------------------------------------------------------------
-
 # 1️⃣ HTTP Interceptors
 
 ## Definition
