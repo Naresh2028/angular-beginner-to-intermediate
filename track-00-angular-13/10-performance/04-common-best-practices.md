@@ -18,7 +18,9 @@ When using *ngFor to render large lists (like your Posts list), Angular usually 
 
 
 ```ts
-trackByFn(index: number, item: Post) { return item.id; }
+trackByFn(index: number, item: Post) {
+  return item.id;
+}
 ```
 
 ```html
