@@ -149,8 +149,34 @@ export class AppComponent implements OnInit, OnDestroy {
 Turns clicks or keystrokes into a continuous stream.
 
 ```ts
+export class AppComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
 
+  ngOnInit(): void {
+    const clickEvent = fromEvent(document,'click');
+
+    this.subscription = clickEvent.subscribe({
+      next:(data) => {
+        if(data){
+          console.log(`User Clicked : ${data.target}`)
+        }
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      console.log('UnSubscribed Successfully');
+      this.subscription.unsubscribe();
+    }
+  }
+}
 ```
+
+### Output
+
+<img width="1326" height="325" alt="image" src="https://github.com/user-attachments/assets/04966e06-fed8-4e83-b9af-aac71442bf3d" />
+
 
 ## Why is this better than a Promise?
 
