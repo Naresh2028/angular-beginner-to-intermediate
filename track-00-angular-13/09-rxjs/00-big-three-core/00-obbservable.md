@@ -115,8 +115,34 @@ export class AppComponent implements OnInit, OnDestroy {
 Turns an array into a stream where each item is emitted one by one.
 
 ```ts
+export class AppComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
 
+  ngOnInit(): void {
+    const fromValue = from([1,3,5,8]);
+
+    this.subscription = fromValue.subscribe({
+      next:(data) => {
+        console.log(`Numbers : ${data}`);
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      console.log('UnSubscribed Successfully');
+      this.subscription.unsubscribe();
+    }
+  }
+}
 ```
+
+### Output
+
+<img width="1163" height="386" alt="image" src="https://github.com/user-attachments/assets/48d2e135-02d5-4115-baea-ebc36e60cc2f" />
+
+
+---
 
 ### C. From a DOM Event: fromEvent()
 
