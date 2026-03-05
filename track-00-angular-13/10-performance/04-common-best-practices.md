@@ -17,7 +17,13 @@ When using *ngFor to render large lists (like your Posts list), Angular usually 
 - **The Result:** If you add one item, Angular only renders that one new item instead of the whole list.
 
 
+```ts
+trackByFn(index: number, item: Post) { return item.id; }
+```
 
+```html
+<div *ngFor="let post of posts; trackBy: trackByFn">...</div>
+```
 
 
 
