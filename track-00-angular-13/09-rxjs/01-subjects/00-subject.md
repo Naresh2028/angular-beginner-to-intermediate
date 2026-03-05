@@ -4,6 +4,8 @@ In RxJS, Subjects are a special type of Observable that allow values to be multi
 
 While a plain Observable is like a YouTube video (each person starts watching from the beginning at different times), a Subject is like a Radio Station (everyone hears the same song at the same time).
 
+**Important Facts:**
+A basic Subject has no "memory." It only broadcasts values to subscribers who are currently listening. If you subscribe after a value is sent, you miss it.
 
 ## 1. The Regular Subject (The "Live Concert" 🎸)
 If you arrive at a concert 30 minutes late, you do not hear the songs played in the first 30 minutes. You only hear what happens from the moment you sit down.
