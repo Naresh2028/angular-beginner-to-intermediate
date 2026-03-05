@@ -107,6 +107,9 @@ export class AppComponent implements OnInit, OnDestroy {
 }
 ```
 
+### Output
+<img width="868" height="487" alt="image" src="https://github.com/user-attachments/assets/9e0a4268-1614-464f-ac31-cafd4926bf99" />
+
 ### B. From an Array: from()
 
 Turns an array into a stream where each item is emitted one by one.
