@@ -86,7 +86,25 @@ In 90% of your Angular work, you won't use new Observable(). You will use Creati
 Useful for mocking data or returning a single item as a stream.
 
 ```ts
+export class AppComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
 
+  ngOnInit(): void {
+    const ofValue = of({ id: '1', userName: 'Naresh' });
+
+    this.subscription = ofValue.subscribe({
+      next: (data) =>
+        console.log(`User Details: ID:${data.id}, Name:${data.userName}`),
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      console.log('UnSubscribed Successfully');
+      this.subscription.unsubscribe();
+    }
+  }
+}
 ```
 
 ### B. From an Array: from()
