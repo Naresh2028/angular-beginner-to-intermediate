@@ -192,68 +192,138 @@ Think of a customer service desk.
 
 ------------------------------------------------------------------------
 
-# Using HttpErrorResponse
+## 1. Create a Communication Service (error-handler.service.ts)
+
+This service acts as a bridge. The interceptor sends the error to the service, and the template listens for the error from the service.
 
 ``` ts
-import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
-this.http.get('api/users').subscribe({
-  next: data => console.log(data),
-  error: (error: HttpErrorResponse) => {
-    console.log('Status:', error.status);
-    console.log('Message:', error.message);
+@Injectable({
+  providedIn: 'root',
+})
+export class GlobalService {
+  private errorSubject = new Subject<string>();
+
+  error$ = this.errorSubject.asObservable();
+
+  constructor() {}
+
+  showError(message: string) {
+    this.errorSubject.next(message);
   }
-});
-```
 
-------------------------------------------------------------------------
-
-# Using catchError (Recommended)
-
-``` ts
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-
-getUsers() {
-  return this.http.get<User[]>('api/users').pipe(
-    catchError((error: HttpErrorResponse) => {
-
-      if (error.status === 401) {
-        console.error('Unauthorized');
-      } else if (error.status === 500) {
-        console.error('Server Error');
-      }
-
-      return throwError(() => error);
-    })
-  );
+  clearError() {
+    this.errorSubject.next('');
+  }
 }
+
 ```
 
 ------------------------------------------------------------------------
 
-# Global Error Handling with Interceptor
+## 2. The Global Error Logic (error.interceptor.ts)
+
+We use the catchError operator from RxJS. This "listens" for any failed requests coming back from the server.
 
 ``` ts
 @Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
+export class GlobalErrorInterceptor implements HttpInterceptor {
+  errorMessage = '';
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
+  constructor(private route: Router) {}
 
-    return next.handle(req).pipe(
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<unknown>> {
+    return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-
         if (error.status === 401) {
-          console.error('Session Expired');
+          this.errorMessage = 'Session Experired, redirect to Login';
+          this.route.navigate(['/login']);
+        } else if (error.status === 404) {
+          this.errorMessage = 'Page Does not exist!, 404 NOT FOUND';
+        } else if (error.status === 500) {
+          this.errorMessage = 'Server is down! Please try Again Later...';
+        } else {
+          this.errorMessage = `Error Code ${error.status} \n Error Message ${error.message}`;
         }
 
-        return throwError(() => error);
-      })
+        alert(this.errorMessage);
+
+        return throwError(() => new Error(this.errorMessage));
+      }),
     );
   }
-
 }
+
 ```
+
+------------------------------------------------------------------------
+
+## 3. Register the Interceptor (app.module.ts)
+
+``` ts
+  providers: [
+    {provide:API_URL,useValue:'https://jsonplaceholder.typicode.com/posts4651456'},
+    {provide:HTTP_INTERCEPTORS,useClass:AuthInterceptor,multi:true},
+    {provide:HTTP_INTERCEPTORS,useClass:GlobalErrorInterceptor,multi:true}
+  ],
+```
+
+
+## 4. Create a Global Error Component
+This component will sit at the top of your app (usually in app.component.html) and wait for errors to appear.
+
+````ts
+@Component({
+  selector: 'app-global-component',
+  templateUrl: './global-component.component.html',
+  styleUrls: ['./global-component.component.css'],
+})
+export class GlobalComponentComponent implements OnInit {
+  message: string = '';
+
+  constructor(private globalService: GlobalService) {}
+
+  ngOnInit(): void {
+    this.globalService.showError(this.message);
+
+    if (this.message) {
+      setTimeout(() => this.globalService.clearError(), 50000);
+    }
+  }
+
+  close() {
+    this.globalService.clearError();
+  }
+}
+````
+
+### Template View
+
+````html
+<div *ngIf="message" class="alert alert-danger alert-dismissible fade show fixed-top m-3 shadow" role="alert">
+  <strong>Error:</strong> {{ message }}
+  <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+</div>
+````
+
+### Output
+
+#### 1. How to trigger a 404 Not Found
+
+Simply change your API URL to a path that doesn't exist.
+
+<img width="1306" height="610" alt="image" src="https://github.com/user-attachments/assets/b12daf80-ac53-4f5a-94b2-0c4689757a6b" />
+
+#### 2. How to trigger a Status 0 (Network Error)
+
+If you want to see what happens when the internet is down or the URL is completely wrong:
+
+<img width="962" height="500" alt="image" src="https://github.com/user-attachments/assets/a781faab-607b-48f5-9a6e-6cf7f75107cd" />
 
 ------------------------------------------------------------------------
 
