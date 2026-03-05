@@ -40,8 +40,42 @@ The stream becomes meaningful only when someone watches it.
 To create a custom Observable, we use the new Observable constructor. It takes a "subscriber" function that defines when to push data.
 
 ```ts
+export class AppComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
 
+  ngOnInit(): void {
+    const myObservable = new Observable((observer) => {
+      observer.next('Hello Naresh');
+      observer.next(30);
+
+      setInterval(() => {
+        observer.next('Stream is about to Complete');
+        observer.complete();
+      }, 2000);
+    });
+
+    this.subscription = myObservable.subscribe({
+      next: (data) => console.log('Recieved :', data),
+      complete() {
+        console.log('Stream Completed');
+      },
+      error: (err) => console.log('Error happened'),
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      console.log('UnSubscribed Successfully');
+      this.subscription.unsubscribe();
+    }
+  }
+}
 ```
+
+### Output
+
+<img width="1374" height="797" alt="image" src="https://github.com/user-attachments/assets/d60b54fd-5d31-4e0a-b433-32f2ea39ec47" />
+
 
 ## Creating Observables from "Existing Things"
 
