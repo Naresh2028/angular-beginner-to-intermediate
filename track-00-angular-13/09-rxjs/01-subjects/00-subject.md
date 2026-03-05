@@ -12,14 +12,15 @@ If you arrive at a concert 30 minutes late, you do not hear the songs played in 
   ngOnInit(): void {
     const concert$ = new Subject<string>();
 
-    concert$.next('Song 1');
-    concert$.next('Song 2');
+    concert$.next('Song 1'); // Played at 8:00 PM
+    concert$.next('Song 2'); // Played at 8:15 PM
 
+    // Subscriber B arrives at 8:20 PM (LATE)
     concert$.subscribe((song) =>
       console.log(`Late Person joins & hears : ${song}`),
     );
 
-    concert$.next('Song 3');
+    concert$.next('Song 3'); // Played at 8:30 PM
   }
 ````
 
