@@ -23,30 +23,22 @@ Think of **a Netflix subscription**.
 
 ---
 
-## Production‑Level Example
+## Example
 
 ```ts
-const subscription = dataStream$.subscribe(observer);
-```
+    // 1. Start the execution
+    const mySubscription = myObservable.subscribe(val => console.log(val));
 
-Output:
-
+    // 2. Stop the execution
+    mySubscription.unsubscribe();
 ```
-Received: Data 1
-Received: Data 2
-Received: Data 3
-Stream Completed
-```
+Its primary purpose is simple but vital: to stop the execution.
 
 ---
 
-## Unsubscribing
+### Why is unsubscribe() important?
 
-```ts
-subscription.unsubscribe();
-```
-
-Stops the Observable stream and prevents memory leaks.
+If your component fetches a list of posts every 5 seconds using interval(), and you navigate to a different page without unsubscribing, the browser will keep fetching those posts in the background. This leads to Memory Leaks and slow apps.
 
 ---
 
