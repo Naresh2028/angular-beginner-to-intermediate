@@ -90,7 +90,13 @@ export class UserComponent {
 
 #### One mistake developers make is using the AsyncPipe multiple times for the same object, which triggers multiple HTTP requests:
 
-- ❌ Bad: <h1>{{ (user$ | async)?.name }}</h1> <p>{{ (user$ | async)?.email }}</p> (Triggers 2 API calls!)
+- ❌ Bad:
+
+````html
+{{ (user$ | async)?.name }}
+
+<p>{{ (user$ | async)?.email }}</p> (Triggers 2 API calls!)
+````
 
 - ✅ Good: Use the as syntax to subscribe once and use the result everywhere in that block.
 
