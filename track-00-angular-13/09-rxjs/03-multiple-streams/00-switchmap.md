@@ -4,7 +4,7 @@ The switchMap() operator is often called the "Safe Search" or "Switching" operat
 
 ## 💡 What is switchMap()?
 
-- At its core, switchMap does two things simultaneously:
+At its core, switchMap does two things simultaneously:
 
 - Unsubscribes from the previous internal Observable (cancels the old task).
 
