@@ -1,5 +1,31 @@
+# RATE LIMITING (SEARCH FUNCTIONALITY)
 
+In modern web applications, Search Functionality is the bridge between a user's intent and your data. It allows users to filter through large datasets (like products, posts, or users) by typing a keyword.
 
+However, a "naive" search—where every single character typed triggers an API call—is a performance nightmare. It wastes server resources, drains mobile data, and can lead to "Race Conditions" where the UI shows the wrong results.
+
+### We achieve this by using three core operators in a specific sequence:
+
+#### 1. debounceTime(300) — The "Patience" Operator
+What it does: It waits for a specific pause in the stream (e.g., 300ms) before letting the data pass through.
+
+Why it's optimistic: It assumes the user isn't finished typing yet. By waiting, it consolidates multiple keystrokes into a single request.
+
+The Result: If you type "Angular" in 200ms, only one request is sent at the end, instead of seven individual requests.
+
+#### 2. distinctUntilChanged() — The "Memory" Operator
+What it does: it compares the current value with the previous one. If they are identical, it blocks the emission.
+
+Why it's optimistic: It assumes that if the search term hasn't changed, the results won't change either.
+
+The Result: If a user types "Search", hits backspace, then re-types "h" quickly, the final value is still "Search." This operator prevents a second, redundant API call for the same word.
+
+#### 3. switchMap() — The "Freshness" Operator
+What it does: When a new search term arrives, it cancels any previous HTTP request that is still "in-flight" and switches to the new one.
+
+Why it's optimistic: It prioritizes the latest user intent. It assumes the user only cares about the results for what they just typed, not what they typed a second ago.
+
+The Result: This eliminates "Race Conditions." You will never see results for "Apples" pop up after you've already moved on to searching for "Oranges."
 
 
 ## 1. The Service (data.service.ts)
