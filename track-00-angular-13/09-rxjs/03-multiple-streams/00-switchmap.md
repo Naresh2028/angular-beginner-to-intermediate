@@ -40,6 +40,8 @@ export class PostService {
 }
 ````
 
+- We add a manual delay to simulate a slow network so you can see switchMap in action!
+
 ## 2. The Component (dashboard.component.ts)
 
 ```ts
@@ -48,10 +50,11 @@ export class DashboardComponent implements OnInit {
 
   isActive: boolean = false;
 
+// The switchMap magic happens here
   posts$ = this.categoryAction.pipe(
-    tap(() => (this.isActive = true)),
+    tap(() => (this.isActive = true)), // Start loader
     switchMap((category) => this.postService.getProductsByCategory(category)),
-    tap(() => (this.isActive = false)),
+    tap(() => (this.isActive = false)), // Stop loader
   );
 
   constructor(private postService: PostService) {}
