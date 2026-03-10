@@ -77,6 +77,9 @@ The AsyncPipe listens for the results of the deletions.
 </div>
 ````
 
+## Output
+
+<img width="1400" height="922" alt="image" src="https://github.com/user-attachments/assets/af41c883-117d-45b9-98f9-0644d16fdef5" />
 
 
 ### Key Notes for mergeMap()
