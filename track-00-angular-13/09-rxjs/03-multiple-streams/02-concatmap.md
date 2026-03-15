@@ -13,24 +13,6 @@ Key characteristics:
 - Prevents concurrent execution
 
 It is commonly used when **order of operations matters**.
-
----
-
-## Scenario to Use (with Analogy)
-
-### Scenario
-
-Imagine an e‑commerce checkout workflow:
-
-1. Create Order
-2. Add Order Items
-3. Process Payment
-4. Send Confirmation Email
-
-Each step must happen **in sequence**. If payment happens before the order is created, the workflow fails.
-
-Using `concatMap` ensures that each step finishes **before the next begins**.
-
 ---
 
 ### Analogy
@@ -50,27 +32,74 @@ Think of a **bank queue**.
 ### Sequential API Requests
 
 ```ts
-import { from } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { Observable, concat, concatMap, from } from 'rxjs';
+import { API_URL } from 'src/app/Class/token';
+import { User } from 'src/app/Interfaces/user';
 
-const userIds = [1, 2, 3];
+@Injectable({
+  providedIn: 'root',
+})
+export class UserService {
+  constructor(
+    private http: HttpClient,
+    @Inject(API_URL) private url: string,
+  ) {}
 
-from(userIds)
-  .pipe(
-    concatMap(id => fetch(`https://api.example.com/users/${id}`))
-  )
-  .subscribe(response => {
-    console.log(response);
-  });
+  getSequentialOrder(): Observable<User> {
+    const id = [1, 2, 3, 4, 5];
+
+    return from(id).pipe(
+      concatMap((id) => this.http.get<User>(`${this.url}/${id}`)),
+    );
+  }
+}
+
 ```
 
-Execution order:
+### order.component.ts Component 
 
-```
-Request user 1 → completes
-Request user 2 → starts
-Request user 3 → starts
-```
+````ts
+export class OrderComponent implements OnInit {
+  Users: User[] = [];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {}
+
+  fetchRecord() {
+    this.Users = [];
+
+    this.userService.getSequentialOrder().subscribe({
+      next: (data) => {
+        if (data) {
+          console.log('Got the Api Reponse :' + data);
+          this.Users.push(data);
+        }
+      },
+    });
+  }
+}
+
+````
+
+### Order.component.html (Template)
+
+````html
+<button (click)="fetchRecord()" class="btn btn-primary">Fetch User
+    Record</button>
+
+<div class="card-header">
+    <ul class="card-body">
+        <li *ngFor="let user of Users">
+            {{user.id}}
+            {{user.name}}
+        </li>
+    </ul>
+</div>
+````
+
 
 Requests run **one after another**, never in parallel.
 
@@ -94,10 +123,14 @@ Each file upload waits until the **previous upload finishes**.
 
 ---
 
-## Key Takeaways
+## Why concatMap Is Used Here
 
-- `concatMap` ensures **sequential execution**
-- Maintains **original emission order**
-- Prevents concurrent API calls
-- Useful for **transaction workflows**
-- Ideal for **sequential HTTP requests**
+Use concatMap when:
+
+- Order must be preserved
+
+- API calls depend on sequence
+
+- Avoid overwhelming backend
+
+- Need predictable request flow
