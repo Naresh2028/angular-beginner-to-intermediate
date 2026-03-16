@@ -123,6 +123,15 @@ TestBed.configureTestingModule({
 
 ## Example
 
+````html
+<!-- Incorrect banana-in-a-box -->
+<input [(value)]="username">
+
+<!-- Correct usage -->
+<input [(ngModel)]="username">
+
+````
+
 Angular provides additional warnings for incorrect template usage.
 
 Example warnings include:
