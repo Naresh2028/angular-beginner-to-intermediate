@@ -1,4 +1,4 @@
-Major features include:
+## Major features include:
 
 1. Stable Standalone Components
 2. Standalone Router APIs
