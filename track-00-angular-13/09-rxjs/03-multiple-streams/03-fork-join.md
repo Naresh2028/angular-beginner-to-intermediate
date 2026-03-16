@@ -30,7 +30,7 @@ All requests run **simultaneously**, but the result arrives **only after everyth
 
 A dashboard may require data from multiple APIs:
 
-Instead of waiting for each request one by one, we run them **in parallel** and display the page when **all data is ready**.
+- Instead of waiting for each request one by one, we run them **in parallel** and display the page when **all data is ready**.
 
 ---
 
@@ -60,11 +60,12 @@ export class UserService {
   }
 }
 
-What happens here
-
-All three APIs run at the same time, but forkJoin emits only after all are completed.
-
 ```
+
+
+What happens here:
+
+- All three APIs run at the same time, but forkJoin emits only after all are completed.
 
 ## 2️⃣ Component — Consume the Service (app.component.ts)
 
