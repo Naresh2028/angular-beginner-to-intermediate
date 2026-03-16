@@ -1,18 +1,10 @@
-
-# forkJoin
+# FORKJOIN
 
 ## Definition
 
-`forkJoin` is an RxJS operator used to run **multiple observables in parallel** and wait until **all of them complete**.
+forkJoin is an RxJS operator used to run **multiple observables in parallel** and wait until **all of them complete**.
 
-Once every observable finishes, `forkJoin` emits a **single combined result** containing the **last emitted value from each observable**.
-
-Key characteristics:
-
-- Executes observables **in parallel**
-- Waits for **all observables to complete**
-- Emits **one final combined result**
-- Similar to **Promise.all()** in JavaScript
+In other words, forkJoin accepts an array or object of observables and returns a single observable that emits a combined result.
 
 ---
 
@@ -37,10 +29,6 @@ All requests run **simultaneously**, but the result arrives **only after everyth
 ### Scenario: Loading Dashboard Data
 
 A dashboard may require data from multiple APIs:
-
-- User profile
-- Notifications
-- Recent orders
 
 Instead of waiting for each request one by one, we run them **in parallel** and display the page when **all data is ready**.
 
