@@ -14,10 +14,7 @@ Common RxJS Creation Operators:
 -   fromEvent
 -   interval
 -   timer
--   defer
 -   ajax
--   generate
--   EMPTY
 -   throwError
 
 These operators are typically the **starting point of reactive
@@ -144,34 +141,9 @@ Used for:
 
 -   delayed actions
 -   countdown timers
-
 ------------------------------------------------------------------------
 
-## 6. defer()
-
-### Scenario
-
-Create an observable **only when subscribed**.
-
-``` ts
-import { defer, of } from 'rxjs';
-
-const observable$ = defer(() => of(Math.random()));
-
-observable$.subscribe(console.log);
-observable$.subscribe(console.log);
-```
-
-Each subscription produces a new value.
-
-Useful for:
-
--   lazy execution
--   dynamic data generation
-
-------------------------------------------------------------------------
-
-## 7. ajax()
+## 6. ajax()
 
 ### Scenario
 
@@ -188,26 +160,7 @@ Used in reactive HTTP workflows.
 
 ------------------------------------------------------------------------
 
-## 8. EMPTY
-
-### Scenario
-
-Create an observable that **completes immediately** without emitting
-values.
-
-``` ts
-import { EMPTY } from 'rxjs';
-
-EMPTY.subscribe({
-  complete: () => console.log("Completed")
-});
-```
-
-Useful for conditional streams.
-
-------------------------------------------------------------------------
-
-## 9. throwError()
+## 7. throwError()
 
 ### Scenario
 
