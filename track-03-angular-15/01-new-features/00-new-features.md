@@ -130,18 +130,84 @@ export class DataComponent implements OnInit {
 
 # 4. Directive Composition API
 
-## Example
+The Directive Composition API, introduced in Angular 15, is one of the most powerful features for code reuse.
 
-Angular 15 allows reusing directive behavior across components.
+## What it replaces
+
+1. Class Inheritance: You could extend a base class. However, in TypeScript, a class can only inherit from one parent. This made it impossible to share multiple independent behaviors.
+
+2. Manual Application: You had to manually add every directive to the HTML selector in every template (e.g., <my-comp appHover appLog appToolip>). This was repetitive and error-prone.
+
+## Example (Create the Reusable Directive)
+
+First, we create a standalone directive that adds a border and a "Secret" prefix to any text.
 
 ```ts
+import { Directive, HostBinding } from '@angular/core';
+
 @Directive({
-  selector: '[appHighlight]'
+  selector: '[appSecret]',
+  standalone: true,
 })
-export class HighlightDirective {}
+export class SecretDirective {
+  @HostBinding('style.border') border = '2px dashed red';
+  @HostBinding('style.padding') padding = '10px';
+}
+
 ```
 
+## 2. Compose it in a Component
+
+We apply the directive inside the decorator. The user of this component doesn't even need to know the directive exists!
+
+````ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SecretDirective } from 'src/app/Directives/secret.directive';
+
+@Component({
+  selector: 'app-card',
+  standalone: true,
+  imports: [CommonModule],
+  template: `<ng-content></ng-content>`,
+  styleUrls: ['./card.component.css'],
+  hostDirectives: [SecretDirective],
+})
+export class CardComponent {}
+
+````
+
+
+---
+
+## 3. Usage in App
+
+````ts
+@Component({
+  selector: 'app-root',
+  template: `
+    <h2>Angular 15 standalone Project Demo</h2>
+
+    <app-card> This content is automatically added & padded </app-card>
+
+    <router-outlet></router-outlet>
+  `,
+  standalone: true,
+  imports: [RouterOutlet, CardComponent],
+})
+export class AppComponent {
+  title = 'angular-15-app';
+}
+````
+
+
+
 Directive composition enables combining multiple directive behaviors.
+
+### Ouput
+
+<img width="515" height="416" alt="image" src="https://github.com/user-attachments/assets/10f4bb15-a5f9-49a8-916f-e57b6ce0ba6d" />
+
 
 ## Key Notes
 
