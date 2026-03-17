@@ -219,8 +219,6 @@ Directive composition enables combining multiple directive behaviors.
 
 # 5. NgOptimizedImage Directive
 
-## Example
-
 NgOptimizedImage is a standalone directive (using the ngSrc attribute) that optimizes image loading. It prevents common performance issues like Layout Shift (CLS) and slow Largest Contentful Paint (LCP) by enforcing attributes like aspect ratios and modern loading strategies.
 
 ## Why it was born (What it replaces)
