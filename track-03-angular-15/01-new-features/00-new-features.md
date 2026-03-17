@@ -22,7 +22,7 @@ Major features include:
 
 ## Example
 
-Standalone components became **fully stable** in Angular 15.
+In Angular 15, components, directives, and pipes can be marked as standalone: true. They manage their own dependencies via the imports array.
 
 ```ts
 import { Component } from '@angular/core';
@@ -47,17 +47,23 @@ export class DemoComponent {}
 
 ## Example
 
-Angular 15 allows router configuration without modules.
+Instead of RouterModule.forRoot() and HttpClientModule, Angular 15 introduced Provide Functions. These are used in your main.ts to configure the application during bootstrap.
 
 ```ts
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router, Routes } from '@angular/router';
+import { DataComponent } from './Components/data/data.component';
+import { provideHttpClient } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/platform-browser';
+import { HomeComponent } from './Components/home/home.component';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes)
-  ]
-});
+const routes: Routes = [
+  { path: 'data', component: DataComponent },
+  { path: '', component: HomeComponent, pathMatch: 'full' },
+];
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes)],
+};
 ```
 
 ## Key Notes
@@ -74,21 +80,51 @@ bootstrapApplication(AppComponent, {
 
 Angular 15 allows HTTP configuration without NgModules.
 
+#### @app.config.te
 ```ts
-import { provideHttpClient } from '@angular/common/http';
 
-bootstrapApplication(AppComponent, {
+export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient()
-  ]
-});
+]
+};
+
 ```
+
+---
+
+Here is how you consume the HTTP service inside a standalone component.
+
+````ts
+@Component({
+  selector: 'app-data',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './data.component.html',
+  styleUrls: ['./data.component.css'],
+})
+export class DataComponent implements OnInit {
+  post$!: Observable<Post>;
+
+  private http = inject(HttpClient);
+
+  ngOnInit(): void {
+    this.post$ = this.http.get<Post>('https://jsonplaceholder.typicode.com/posts/1');
+  }
+}
+
+````
 
 ## Key Notes
 
 - Eliminates the need for HttpClientModule
 - Simplifies dependency injection
-- Better integration with standalone architecture
+- Better integration with standalone architecture.
+
+### Output
+
+<img width="1319" height="357" alt="image" src="https://github.com/user-attachments/assets/9cb157dd-9752-4419-8544-c3958522fdfc" />
+
 
 ---
 
