@@ -259,30 +259,76 @@ export class CardComponent {}
 
 # 6. Functional Route Guards
 
+## Definition
+A Functional Route Guard is a plain JavaScript/TypeScript function that returns a boolean, a UrlTree, or an Observable/Promise of either. It uses the inject() function to access services like AuthService or Router directly inside the function body, rather than through a class constructor.
+
+## Why it was born
+
+Before Angular 15, route guards had to be Class-based. This required:
+
+- Implementing an interface (like CanActivate).
+
+- Declaring a class with @Injectable.
+
+- Injecting dependencies via a formal constructor.
+
 ## Example
 
-Angular 15 supports functional route guards.
+### 1. Generate the Guard
+
+Use the CLI to generate a functional guard. It will ask you which type (e.g., canActivate) you want.
+
+````ts
+ng generate guard auth --functional
+````
+
+### 2. The Functional Logic
+
+Instead of a class, you get a clean function. We use inject to get our AuthService.
+
 
 ```ts
-export const authGuard = () => {
-  return true;
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../Services/auth.service';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isHeLogged()) {
+    return true;
+  } else {
+    return router.parseUrl('/login');
+  }
 };
+
 ```
 
-Usage:
+### 3. Application in Routes
+
+You can now pass the function directly into the canActivate array.
 
 ```ts
-{
-  path: 'dashboard',
-  canActivate: [authGuard]
-}
+const routes: Routes = [
+  { path: 'data', component: DataComponent },
+  {path:'login',component:LoginComponent},
+  {path:'dashboard',component:DashboardComponent,canActivate:[authGuard]},
+];
 ```
+
+### Output
+
+<img width="867" height="246" alt="image" src="https://github.com/user-attachments/assets/9d2badae-bd48-4ae9-aca7-01f7a6afbef9" />
+
 
 ## Key Notes
 
 - Simplifies guard creation
-- Removes need for class-based guards
-- Works well with standalone APIs
+
+- Boilerplate Reduction: No more @Injectable or constructor.
+
+- The inject() Power: You can only use inject() during the "Injection Context" (like when the guard is first called by the router).
 
 ---
 
