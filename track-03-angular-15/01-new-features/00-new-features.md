@@ -221,17 +221,41 @@ Directive composition enables combining multiple directive behaviors.
 
 ## Example
 
-Angular introduced an optimized image directive for performance.
+NgOptimizedImage is a standalone directive (using the ngSrc attribute) that optimizes image loading. It prevents common performance issues like Layout Shift (CLS) and slow Largest Contentful Paint (LCP) by enforcing attributes like aspect ratios and modern loading strategies.
 
-```html
-<img ngSrc="logo.png" width="200" height="100">
-```
+## Why it was born (What it replaces)
 
-## Key Notes
+Before this directive, developers used the standard HTML <img> tag. This often led to poor performance because:
 
-- Automatic lazy loading
-- Image performance optimization
-- Improves Largest Contentful Paint (LCP)
+- Missing Dimensions: Forgetting width and height caused the page to "jump" as images loaded (Layout Shift).
+
+- LCP Issues: Important images (like banners) weren't prioritized, making the site feel slow.
+
+
+````ts
+@Component({
+  selector: 'app-card',
+  standalone: true,
+  imports: [CommonModule, NgOptimizedImage],
+  template: `
+    <img ngSrc="assets/Images/logo.png" width="225" height="225" priority />
+  `,
+  styleUrls: ['./card.component.css'],
+  hostDirectives: [SecretDirective],
+})
+export class CardComponent {}
+````
+
+
+## Keynotes
+
+- LCP Protection: If an image is identified as the Largest Contentful Paint but doesn't have the priority attribute, Angular will throw a warning in the console to help you fix it.
+
+<img width="1920" height="453" alt="image" src="https://github.com/user-attachments/assets/20ec04be-ac19-4e28-b358-dd1412eadd64" />
+
+
+- Aspect Ratio: It forces you to define width and height (or use fill mode), which completely eliminates image-related Cumulative Layout Shift (CLS).
+<img width="1920" height="466" alt="image" src="https://github.com/user-attachments/assets/100d722c-8703-412e-ac7f-1f5b0c6e4ea4" />
 
 ---
 
