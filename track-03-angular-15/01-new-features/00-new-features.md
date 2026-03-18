@@ -395,7 +395,34 @@ ng build --configuration production
 
 # 8. Improved Angular CLI
 
+The Improved Angular CLI refers to the updated Command Line Interface that supports the Standalone first-of-class architecture.
+
 ## Example
+
+### 1. Generating Standalone Components
+
+You no longer need to worry about which NgModule to declare a component in. The CLI handles it automatically with a single flag (or as the default in newer projects).
+
+````cmd
+
+# Generate a component that doesn't need a module
+ng generate component user-profile --standalone
+
+````
+
+### 2. Visual Browser Output
+
+When you run ng serve, the CLI now provides a more "Optimistic" and cleaner dashboard in the terminal.
+
+````cmd
+Initial Chunk Files | Names         |  Raw Size
+main.js             | main          |  95.42 kB | 
+polyfills.js        | polyfills     |  33.08 kB | 
+styles.css          | styles        |  74.20 kB | 
+
+Build at: 2026-03-18T08:21:50.000Z - Time: 2451ms
+State: Success
+````
 
 Angular CLI improvements include:
 
@@ -403,11 +430,6 @@ Angular CLI improvements include:
 - Faster dependency resolution
 - Simplified configuration
 
-## Key Notes
-
-- Improved developer experience
-- Faster builds and serving
-- Better project maintenance
 
 ---
 
