@@ -336,15 +336,60 @@ const routes: Routes = [
 
 # 7. ESBuild-based Build Improvements
 
+## Definition
+
+The ESBuild-based Build System is a high-performance JavaScript bundler written in Go. It leverages parallelization and efficient memory management to compile code significantly faster than traditional tools. In Angular 15, it is used for the ng build command to handle TypeScript compilation, minification, and bundling.
+
+
+## Why it was born (What it replaces)
+
+For years, Angular relied on Webpack. While feature-rich, Webpack often became a bottleneck in large projects because:
+
+- Slow Build Times: As the project grew, incremental and cold builds took several minutes.
+
+- Single-Threaded: It didn't fully utilize modern multi-core processors.
+
 ## Example
 
-Angular CLI introduced faster build pipelines using ESBuild internally.
+1. Enabling ESBuild in Angular 15
+
+To use this in Angular 15, you must manually update your angular.json file.
+
+Find the "build" section and change the "builder" line:
+
+````json
+"build": {
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "options": {
+            "outputPath": "dist/angular-15-app",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ]
+}}
+````
+
+2. Running the Build
+
+Run the standard build command. You will notice a significantly faster "Building..." phase.
+
+````cmd
+ng build --configuration production
+````
+
+### Output
+
+<img width="993" height="165" alt="image" src="https://github.com/user-attachments/assets/fa3a56a1-b9b8-4cae-987e-184f6d02c322" />
+
 
 ## Key Notes
 
-- Faster builds
-- Improved development performance
-- Reduced compilation time
+- Production Ready: By Angular 17, this became the default for all new projects.
+
+- Experimental in v15: In version 15, it was still in "Developer Preview," meaning some advanced features like certain plugins might not have worked yet.
+
+- Speed: It is consistently 10x to 100x faster than traditional bundlers in raw performance.
 
 ---
 
