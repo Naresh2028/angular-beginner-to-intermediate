@@ -136,7 +136,9 @@ The Directive Composition API, introduced in Angular 15, is one of the most powe
 
 1. Class Inheritance: You could extend a base class. However, in TypeScript, a class can only inherit from one parent. This made it impossible to share multiple independent behaviors.
 
-2. Manual Application: You had to manually add every directive to the HTML selector in every template (e.g., <my-comp appHover appLog appToolip>). This was repetitive and error-prone.
+2. Manual Application: You had to manually add every directive to the HTML selector in every template (e.g., < my-comp appHover appLog appToolip>). This was repetitive and error-prone.
+
+The Composition API replaces these patterns with a "Has-A" relationship (Composition) instead of an "Is-A" relationship (Inheritance).
 
 ## Example (Create the Reusable Directive)
 
