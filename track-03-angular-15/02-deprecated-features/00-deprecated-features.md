@@ -24,7 +24,8 @@ Angular is moving toward **Standalone APIs**, reducing the need for NgModules.
 ### Example
 
 ❌ Old
-
+```ts
+```
 @NgModule({
   bootstrap: [AppComponent]
 })
@@ -32,8 +33,10 @@ export class AppModule {}
 
 ✅ New
 
-bootstrapApplication(AppComponent);
 
+```ts
+bootstrapApplication(AppComponent);
+```
 ---
 
 # 2. RouterModule.forRoot / forChild
@@ -46,11 +49,17 @@ Standalone routing replaces NgModule-based routing.
 
 ❌ Old
 
+```ts
+
 RouterModule.forRoot(routes)
+```
 
 ✅ New
 
+```ts
+
 provideRouter(routes)
+```
 
 ---
 
@@ -64,11 +73,15 @@ Functional providers simplify setup.
 
 ❌ Old
 
+```ts
 imports: [HttpClientModule]
+```
 
 ✅ New
 
+```ts
 provideHttpClient()
+```
 
 ---
 
@@ -82,6 +95,8 @@ Functional guards are simpler and cleaner.
 
 ❌ Old
 
+```ts
+
 @Injectable()
 export class AuthGuard implements CanActivate {
   canActivate() {
@@ -89,15 +104,20 @@ export class AuthGuard implements CanActivate {
   }
 }
 
+```
+
 ✅ New
 
+```ts
 export const authGuard = () => true;
 
+```
 ---
 
 # 5. Legacy TestBed APIs
 
 ## Reason
+
 
 Modern Angular prefers `inject()`.
 
@@ -105,11 +125,17 @@ Modern Angular prefers `inject()`.
 
 ❌ Old
 
+```ts
+
 TestBed.get(Service)
+```
 
 ✅ New
 
+```ts
+
 TestBed.inject(Service)
+```
 
 ---
 
@@ -121,8 +147,10 @@ Angular fully uses Ivy.
 
 ### Example
 
-enableIvy: false  ❌ not needed
+```json
 
+enableIvy: false  ❌ not needed
+```
 ---
 
 # Key Notes
