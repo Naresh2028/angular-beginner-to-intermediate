@@ -25,11 +25,12 @@ Angular is moving toward **Standalone APIs**, reducing the need for NgModules.
 
 ❌ Old
 ```ts
-```
+
 @NgModule({
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+```
 
 ✅ New
 
