@@ -24,14 +24,21 @@ Angular is moving toward **Standalone APIs**.
 
 ❌ Old
 
+````ts
 @NgModule({
   declarations: [AppComponent]
 })
 export class AppModule {}
+````
+
 
 ✅ New
 
+````ts
+
 bootstrapApplication(AppComponent)
+````
+
 
 ---
 
@@ -45,13 +52,19 @@ Angular 16 introduces **takeUntilDestroyed()** and **DestroyRef**.
 
 ❌ Old
 
+````ts
 ngOnDestroy() {
   this.subscription.unsubscribe();
 }
+````
+
 
 ✅ New
 
+````ts
 observable.pipe(takeUntilDestroyed()).subscribe()
+````
+
 
 ---
 
@@ -65,11 +78,17 @@ Angular is moving toward **zone-less applications** using signals.
 
 ❌ Old
 
+````ts
 Relies heavily on Zone.js change detection
+````
+
 
 ✅ New
 
+````ts
 Signals-driven reactivity (no zone dependency)
+````
+
 
 ---
 
@@ -83,11 +102,16 @@ Angular promotes `inject()` function.
 
 ❌ Old
 
+````ts
 constructor(private service: MyService) {}
+````
+
 
 ✅ New
 
+````ts
 const service = inject(MyService);
+````
 
 ---
 
@@ -101,11 +125,15 @@ Signals provide simpler state management.
 
 ❌ Old
 
+````ts
 subject.next(value)
+````
 
 ✅ New
 
+````ts
 signal.set(value)
+````
 
 ---
 
