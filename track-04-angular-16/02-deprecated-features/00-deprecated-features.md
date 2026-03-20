@@ -92,7 +92,14 @@ Signals-driven reactivity (no zone dependency)
 
 ---
 
-# 4. Constructor-only Injection Pattern
+# 4. Constructor Injection (Still Valid)
+
+Reason:
+Angular introduces inject() as an alternative, not a replacement.
+
+Use Case:
+- Constructor → class-based DI
+- inject() → functional / standalone usage
 
 ## Reason
 
