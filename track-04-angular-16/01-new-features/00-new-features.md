@@ -18,9 +18,9 @@ Key features:
 
 ---
 
-# 1. Signals (New Reactivity System)
+# 1. SIGNALS (NEW REATIVITY)
 
-## Before Signals The Problem
+### Before Signals The Problem
 
 We are going to build a Cart Component. It has two fields:
 
@@ -34,7 +34,7 @@ Total Price (Uses a standard TypeScript get getter).
 
 The problem is that changing the Product Name causes the Total Price getter to run every single time change detection triggers, even though the price didn't change!
 
-## 1. The Component (cart-naive.component.ts)
+### 1. The Component (cart-naive.component.ts)
 
 We will use NgModel and console.count() to show the re-rendering problem in the console.
 
@@ -58,7 +58,7 @@ export class AppCardComponent {
 ````
 
 
-## Template (app.card.component.html)
+### Template (app.card.component.html)
 
 ````html
 <div class="p-4 border rounded">
@@ -103,14 +103,14 @@ export class AppCardComponent {
 
 ---
 
-## SIGNAL() Example 
+# SIGNAL() 
 
 To fix the "unnecessary re-computation" problem we saw in the previous example, we will rewrite the component using Angular 16 Signals.
 
 In this version, we replace standard properties with signal() and the getter with computed(). The result is a "smart" component that only recalculates the total when the price or quantity actually changes—typing in the "Product Name" field will no longer trigger the calculation.
 
 
-## The Optimized Signal Component 
+### The Optimized Signal Component 
 
 ```ts
 @Component({
@@ -138,7 +138,7 @@ export class AppCardComponent {
 
 ```
 
-## Template (app.card.component.html)
+### Template (app.card.component.html)
 
 ````html
 
@@ -176,7 +176,7 @@ export class AppCardComponent {
 <img width="991" height="983" alt="image" src="https://github.com/user-attachments/assets/8092574f-2bfa-41d5-aa48-1144e091e621" />
 
 
-## Visualizing the Difference in the Browser
+### Visualizing the Difference in the Browser
 
 When you run this code
 
