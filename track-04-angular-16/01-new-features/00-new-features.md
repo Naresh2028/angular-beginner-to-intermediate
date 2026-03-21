@@ -428,6 +428,9 @@ export class UserCardComponent {
 
 <img width="1060" height="536" alt="image" src="https://github.com/user-attachments/assets/4c499782-8087-4c1b-a775-b4ee7c7413ca" />
 
+The Angular Compiler would immediately stop the build and tell you exactly which line in app.component.ts is missing the data. It turns a Runtime Crash into a Compile-time Warning.
+
+---
 
 
 # 2. DestroyRef API
