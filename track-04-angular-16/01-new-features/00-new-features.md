@@ -19,6 +19,89 @@ Key features:
 
 # 1. Signals (New Reactivity System)
 
+## Before Signals The Problem
+
+We are going to build a Cart Component. It has two fields:
+
+- Product Name (Simple string input).
+
+- Product Price (Simple number input).
+
+It has one derived field:
+
+Total Price (Uses a standard TypeScript get getter).
+
+The problem is that changing the Product Name causes the Total Price getter to run every single time change detection triggers, even though the price didn't change!
+
+## 1. The Component (cart-naive.component.ts)
+
+We will use NgModel and console.count() to show the re-rendering problem in the console.
+
+````ts
+@Component({
+  selector: 'app-app-card',
+  templateUrl: './app-card.component.html',
+  styleUrls: ['./app-card.component.css'],
+})
+export class AppCardComponent {
+  productName: string = 'Angular Hoodie';
+  unitPrice: number = 29.99;
+
+  
+  get totalPrice(): number {
+    console.count('Naive Getter Called');
+    return this.unitPrice * 10;
+  }
+}
+
+````
+
+
+## Template (app.card.component.html)
+
+````html
+<div class="p-4 border rounded">
+    <h3>Visualizing Naive Change Detection</h3>
+
+    <div class="mb-3">
+        <label>Product Name (Does not affect total):</label>
+        <input type="text" [(ngModel)]="productName" class="form-control"
+            placeholder="Change me...">
+    </div>
+
+    <div class="mb-3">
+        <label>Unit Price (Affects total):</label>
+        <input type="number" [(ngModel)]="unitPrice" class="form-control">
+    </div>
+
+    <hr>
+
+    <div class="alert alert-info">
+        <p><strong>Product Name:</strong> {{ productName }}</p>
+        <p><strong>Unit Price:</strong> {{ unitPrice | currency }}</p>
+
+        <p class="text-danger fw-bold">
+            Calculated Total (Naive Getter): {{ totalPrice | currency }}
+        </p>
+    </div>
+</div>
+````
+
+### Output
+
+<img width="1017" height="973" alt="image" src="https://github.com/user-attachments/assets/6a2e5801-816b-4b26-804e-be96b3f12020" />
+
+
+## Here:
+
+- The totalPrice getter is re-calculating (or re-rendering) dozens of times per second, even though the unitPrice never changed.
+
+- The browser is being asked to re-render the Total Price DOM node unnecessarily.
+
+- In a massive grid or complex dashboard, this is the #1 cause of poor performance.
+
+---
+
 ## Example (Why it was introduced)
 
 ```ts
@@ -40,6 +123,8 @@ console.log(count());
 - No subscriptions required
 - Synchronous updates
 - Automatically updates UI
+
+
 
 ---
 
