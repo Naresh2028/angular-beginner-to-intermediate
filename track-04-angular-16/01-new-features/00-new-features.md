@@ -186,9 +186,8 @@ When you run this code
 
 3. Change "Unit Price": You will immediately see Computed calculating total Price... because the dependency (unitPrice) changed.
 
-### Why introduced
 
-# Angular Signals Overview
+## Angular Signals Overview
 
 | Feature   | How it works in this example                                                                 |
 |-----------|-----------------------------------------------------------------------------------------------|
@@ -197,7 +196,146 @@ When you run this code
 | **effect()**   | Useful for logging, manual DOM operations, or analytics. It stays in sync automatically.      |
 
 
+# 2. Route data with @Input()
 
+## Definition
+
+Router Input Binding is a feature that automatically maps route information—including Path Parameters, Query Parameters, and Resolved Data—directly to properties decorated with @Input() in your component. Instead of manually extracting data from the ActivatedRoute service, the Angular Router "pushes" the values into your component inputs for you.
+
+## Why it was Born (What it replaces)
+
+Before Angular 16, accessing a simple ID from a URL (like /products/5) required a significant amount of boilerplate code.
+
+What it Replaces: 
+
+- It replaces the need to inject the ActivatedRoute service and subscribe to its observables (paramMap, queryParamMap, or data).
+
+- The Problem: * Boilerplate: You had to write ngOnInit logic just to subscribe and unsubscribe.
+
+- Complexity: Subscriptions required manual cleanup or pipe-handling (like takeUntilDestroyed).
+
+- Coupling: Your component became "tightly coupled" to the router, making it harder to reuse as a standard child component elsewhere.
+
+## Example: Fixing the "ActivatedRoute Subscription" Problem
+
+1. The "Before" Problem (The Old Way)
+
+### Product-list.component.ts
+
+````ts
+@Component({
+  selector: 'app-product-list',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <h2>Binding Id value from Product Component</h2>
+
+    <p>Retrieved Id Value is {{ id }}</p>
+  `,
+})
+export class ProductListComponent {
+  id!: string | null;
+
+  private router = inject(ActivatedRoute);
+
+  constructor() {
+    console.log('Getting id value');
+
+    this.router.paramMap.subscribe((params) => {
+      this.id = params.get('id');
+    });
+  }
+}
+````
+
+### Product.component.ts
+
+In this scenario, we have to inject the service and subscribe just to get an ID. This is 10+ lines of code for one variable.
+
+````ts
+@Component({
+  selector: 'app-products',
+  standalone: true,
+  imports: [CommonModule, AppRoutingModule],
+  template: `
+    <ul>
+      <li *ngFor="let product of Products">
+        <a [routerLink]="['/products', product.id]">{{ product.name }}</a>
+      </li>
+    </ul>
+  `,
+})
+export class ProductsComponent implements OnInit {
+  Products: any[] = [];
+
+  ngOnInit(): void {
+    this.Products = [
+      { id: 1, name: 'Naresh', isPresent: true },
+      { id: 2, name: 'Vishanth', isPresent: false },
+      { id: 3, name: 'Karthick', isPresent: true },
+    ];
+  }
+}
+````
+
+### Output
+
+<img width="634" height="310" alt="image" src="https://github.com/user-attachments/assets/0eb2dca0-171f-42d7-b095-042c4ceb839c" />
+
+
+
+### 2. The "After" Fix (The Angular 16 Way)
+
+First, you enable the feature in your app.config.ts or main.ts:
+
+````ts
+const routes: Routes = [
+  { path: 'product', component: ProductsComponent },
+  { path: 'products/:id', component: ProductListComponent },
+];
+
+bootstrapApplication(AppComponent, {
+  providers: [provideRouter(routes, withComponentInputBinding())],
+}).catch((err) => console.error(err));
+
+````
+
+### Product.list.component.ts
+
+Now, your component is clean. Angular sees the :id in the route path and looks for an @Input() with the one name:
+
+````ts
+@Component({
+  selector: 'app-product-list',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <h2>Binding Id value from Product Component</h2>
+
+    <p>Retrieved Id Value is {{ id }}</p>
+  `,
+})
+export class ProductListComponent {
+  @Input() id!: string;
+}
+````
+
+### Output
+
+<img width="622" height="286" alt="image" src="https://github.com/user-attachments/assets/f4b6257f-a91a-48b5-bd4a-ab107725bd15" />
+
+
+## Keynotes
+
+Multi-Source Binding: This works for everything:
+
+Path Params: /product/:id -> @Input() id
+
+Query Params: ?search=phone -> @Input() search
+
+Static Data: { data: { title: 'Home' } } -> @Input() title
+
+Name Matching: The @Input() property name must exactly match the key used in your route definition.
 
 
 # 2. DestroyRef API
