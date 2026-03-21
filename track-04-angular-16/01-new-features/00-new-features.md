@@ -639,6 +639,10 @@ export class DataComponent {
 
 ````
 
+### Output
+
+
+
 No Subject, no OnDestroy.
 
 takeUntilDestroyed() hooks into Angular’s lifecycle via DestroyRef.
