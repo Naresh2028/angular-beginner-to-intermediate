@@ -433,19 +433,98 @@ The Angular Compiler would immediately stop the build and tell you exactly which
 ---
 
 
-# 2. DestroyRef API
+# 2. DESTROYREF API
 
-## Example
+### Definition
+
+DestroyRef is an injectable service that allows you to register "destroy callbacks" at any point during a component, directive, or pipe's lifecycle. It provides an onDestroy() method that takes a function to be executed when the surrounding "injection context" (usually the component) is destroyed.
+
+1. Unlike ngOnDestroy, which is a method you must define on a class.
+
+2. DestroyRef is a service you inject and use wherever you need it.
+
+## Why it was Born (What it replaces)
+
+Before Angular 16, the only way to clean up resources (like unsubscribing from an Observable or clearing a setInterval) was the ngOnDestroy lifecycle hook.
+
+What it Replaces: It replaces the mandatory use of the OnDestroy interface and the ngOnDestroy() class method.
+
+### Example: Fixing the "Subscription Leak" Problem
+
+1. The "Before" Problem (The Boilerplate Way)
+
+In this version, we have to keep a reference to the subscription and remember to kill it in a separate method. If we forget implements OnDestroy, the code fails silently and leaks memory.
+
+### Data Component
 
 ```ts
-import { DestroyRef, inject } from '@angular/core';
+@Component({
+  selector: 'app-data',
+  standalone: true,
+  imports: [CommonModule],
+  template: ` <p>Data Component is Works!</p> `,
+})
+export class DataComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
 
-const destroyRef = inject(DestroyRef);
-
-destroyRef.onDestroy(() => {
-  console.log('cleanup');
-});
+  ngOnInit(): void {
+    this.subscription = interval(1000).subscribe((val) => {
+      console.log(val);
+    });
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+}
 ```
+
+### 2. The "After" Fix (The Angular 16 Way)
+
+With DestroyRef, we can keep the "start" and "stop" logic together in the same place. This is especially powerful when using the new takeUntilDestroyed operator.
+
+````ts
+import {
+  Component,
+  DestroyRef,
+  inject
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { interval, Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-data',
+  standalone: true,
+  imports: [CommonModule],
+  template: ` <p>Data Component is Works!</p> `,
+})
+export class DataComponent {
+  subscription!: Subscription;
+
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+
+    interval(1000)
+      .pipe(takeUntilDestroyed())
+      .subscribe((val) => console.log(val));
+
+    destroyRef.onDestroy(() => {
+      console.log('Destroyed the component....');
+    });
+  }
+}
+
+`````
+
+### Ouptu
+
+<img width="957" height="731" alt="image" src="https://github.com/user-attachments/assets/18a16a9f-4846-4edf-9ba9-92aa01fa4dc0" />
+
+### Keynotes
+
+-  Multiple Callbacks: You can call destroyRef.onDestroy() multiple times to register different cleanup tasks. They will execute in the order they were registered.
+
+- RxJS Integration: The takeUntilDestroyed pipe operator is the most common use case, drastically reducing the lines of code needed for safe subscriptions.  
 
 ### Why introduced
 
