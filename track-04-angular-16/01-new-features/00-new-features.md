@@ -433,7 +433,7 @@ The Angular Compiler would immediately stop the build and tell you exactly which
 ---
 
 
-# 2. DESTROYREF API
+# 4. DESTROYREF API
 
 ### Definition
 
@@ -443,7 +443,7 @@ DestroyRef is an injectable service that allows you to register "destroy callbac
 
 2. DestroyRef is a service you inject and use wherever you need it.
 
-## Why it was Born (What it replaces)
+### Why it was Born (What it replaces)
 
 Before Angular 16, the only way to clean up resources (like unsubscribing from an Observable or clearing a setInterval) was the ngOnDestroy lifecycle hook.
 
@@ -516,7 +516,7 @@ export class DataComponent {
 
 `````
 
-### Ouptu
+### Ouptut
 
 <img width="957" height="731" alt="image" src="https://github.com/user-attachments/assets/18a16a9f-4846-4edf-9ba9-92aa01fa4dc0" />
 
@@ -524,7 +524,38 @@ export class DataComponent {
 
 -  Multiple Callbacks: You can call destroyRef.onDestroy() multiple times to register different cleanup tasks. They will execute in the order they were registered.
 
-- RxJS Integration: The takeUntilDestroyed pipe operator is the most common use case, drastically reducing the lines of code needed for safe subscriptions.  
+- RxJS Integration: The takeUntilDestroyed pipe operator is the most common use case, drastically reducing the lines of code needed for safe subscriptions.
+
+---
+
+# SELF-CLOSING TAG UPDATES
+
+### Definition
+
+Self-Closing Tags allow you to use a single tag ending in /> for Angular components that do not have any nested content (projected content). Previously, even if a component was empty, you were strictly required to write both an opening and a closing tag.
+
+
+### Example
+
+````ts
+@Component({
+  selector: 'app-root',
+  template: `
+    <div class="toolbar">
+      <app-logo />
+    </div>
+
+    <router-outlet></router-outlet>
+  `,
+  standalone: true,
+  imports: [RouterOutlet, LogoComponent],
+})
+export class AppComponent {
+  title = 'angular-16';
+}
+````
+
+---
 
 ### Why introduced
 
