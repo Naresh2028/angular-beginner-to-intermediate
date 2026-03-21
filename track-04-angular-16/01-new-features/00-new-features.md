@@ -180,14 +180,14 @@ export class AppCardComponent {
 
 When you run this code
 
-1. Initial Load: You see 🚀 Computed Total Running... once.
+1. Initial Load: You see Computed calculating total Price... once.
 
 2. Type in "Product Name": You will see the effect log update the name, but you will NOT see the "Computed Total" log. The total is "memoized" (cached).
 
 3. Change "Unit Price": You will immediately see Computed calculating total Price... because the dependency (unitPrice) changed.
 
 
-## Angular Signals Overview
+### Angular Signals Overview
 
 | Feature   | How it works in this example                                                                 |
 |-----------|-----------------------------------------------------------------------------------------------|
@@ -195,6 +195,7 @@ When you run this code
 | **computed()** | The “Problem Solver.” It tracks which signals are used inside it. If you don’t call `productName()` inside the computed block, it knows it doesn’t need to re-run when the name changes. |
 | **effect()**   | Useful for logging, manual DOM operations, or analytics. It stays in sync automatically.      |
 
+---
 
 # 2. Route data with @Input()
 
