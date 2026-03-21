@@ -7,13 +7,12 @@ Angular 16 is a major release introducing a new reactivity model and improving d
 Key features:
 
 1. Signals (New Reactivity System)
-2. Computed & Effect APIs
-3. DestroyRef API
-4. takeUntilDestroyed() (RxJS Interop)
-5. Required Inputs
-6. Standalone APIs Enhancements
-7. Server-Side Rendering (SSR) Improvements
-8. Zone-less Angular (Experimental)
+2. DestroyRef API
+3. takeUntilDestroyed() (RxJS Interop)
+4. Required Inputs
+5. Standalone APIs Enhancements
+6. Server-Side Rendering (SSR) Improvements
+7. Zone-less Angular (Experimental)
 
 ---
 
@@ -102,63 +101,104 @@ export class AppCardComponent {
 
 ---
 
-## Example (Why it was introduced)
+## SIGNAL() Example 
+
+To fix the "unnecessary re-computation" problem we saw in the previous example, we will rewrite the component using Angular 16 Signals.
+
+In this version, we replace standard properties with signal() and the getter with computed(). The result is a "smart" component that only recalculates the total when the price or quantity actually changes—typing in the "Product Name" field will no longer trigger the calculation.
+
+
+## The Optimized Signal Component 
 
 ```ts
-import { signal } from '@angular/core';
+@Component({
+  selector: 'app-app-card',
+  templateUrl: './app-card.component.html',
+  standalone: true,
+  imports: [FormsModule,CommonModule],
+  styleUrls: ['./app-card.component.css'],
+})
+export class AppCardComponent {
+  productName = signal('Angular Hoodie');
+  unitPrice = signal(29.99);
 
-const count = signal(0);
-count.set(1);
-console.log(count());
+  totalPrice = computed(() => {
+    console.count("Computed calculating total Price...")
+    return this.unitPrice() * 10;
+  });
+
+  constructor(){
+    effect(() => {
+      console.log('Current Product Name is : ' + this.productName()) //Optional
+    });
+  }
+}
+
 ```
+
+## Template (app.card.component.html)
+
+````html
+
+<div class="p-4 border rounded">
+    <h3>Visualizing Naive Change Detection</h3>
+
+    <div class="mb-3">
+        <label>Product Name (Does not affect total):</label>
+        <input type="text" [ngModel]="productName()" (ngModelChange)="productName.set($event)" class="form-control"
+            placeholder="Change me...">
+    </div>
+
+    <div class="mb-3">
+        <label>Unit Price (Affects total):</label>
+        <input type="number" [ngModel]="unitPrice()" (ngModelChange)="unitPrice.set($event)" class="form-control">
+    </div>
+
+    <hr>
+
+    <div class="alert alert-info">
+        <p><strong>Product Name:</strong> {{ productName() }}</p>
+        <p><strong>Unit Price:</strong> {{ unitPrice()  }}</p>
+
+        <p class="text-danger fw-bold">
+            Calculated Total (Naive Getter): {{ totalPrice()  | currency }}
+        </p>
+    </div>
+</div>
+
+````
+
+
+### Output
+
+<img width="991" height="983" alt="image" src="https://github.com/user-attachments/assets/8092574f-2bfa-41d5-aa48-1144e091e621" />
+
+
+## Visualizing the Difference in the Browser
+
+When you run this code
+
+1. Initial Load: You see 🚀 Computed Total Running... once.
+
+2. Type in "Product Name": You will see the effect log update the name, but you will NOT see the "Computed Total" log. The total is "memoized" (cached).
+
+3. Change "Unit Price": You will immediately see Computed calculating total Price... because the dependency (unitPrice) changed.
 
 ### Why introduced
 
-- Replace simple RxJS state use cases
-- Provide fine-grained reactivity
-- Improve performance
+# Angular Signals Overview
 
-## Key Notes
-
-- No subscriptions required
-- Synchronous updates
-- Automatically updates UI
+| Feature   | How it works in this example                                                                 |
+|-----------|-----------------------------------------------------------------------------------------------|
+| **signal()**   | Replaces standard variables. You update it using `.set()` or `.update()`.                     |
+| **computed()** | The “Problem Solver.” It tracks which signals are used inside it. If you don’t call `productName()` inside the computed block, it knows it doesn’t need to re-run when the name changes. |
+| **effect()**   | Useful for logging, manual DOM operations, or analytics. It stays in sync automatically.      |
 
 
 
----
 
-# 2. Computed & Effect APIs
 
-## Example
-
-```ts
-import { signal, computed, effect } from '@angular/core';
-
-const count = signal(1);
-
-const double = computed(() => count() * 2);
-
-effect(() => {
-  console.log(count());
-});
-```
-
-### Why introduced
-
-- Derived state (computed)
-- Side effects (effect)
-- Cleaner reactive programming
-
-## Key Notes
-
-- computed → derived values
-- effect → side effects
-- Works without RxJS
-
----
-
-# 3. DestroyRef API
+# 2. DestroyRef API
 
 ## Example
 
@@ -184,7 +224,7 @@ destroyRef.onDestroy(() => {
 
 ---
 
-# 4. takeUntilDestroyed()
+# 3. takeUntilDestroyed()
 
 ## Example
 
@@ -208,7 +248,7 @@ this.http.get('/api')
 
 ---
 
-# 5. Required Inputs
+# 4. Required Inputs
 
 ## Example
 
@@ -229,7 +269,7 @@ user!: string;
 
 ---
 
-# 6. Standalone APIs Enhancements
+# 5. Standalone APIs Enhancements
 
 ## Example
 
