@@ -3,12 +3,11 @@
 Key features:
 
 1. Signals (New Reactivity System)
-2. Computed & Effect APIs
-3. DestroyRef API
-4. Self‑closing tag updates
-5. takeUntilDestroyed() (RxJS Interop)
-6. Required Inputs
-7. Route data with @Input()
-8. Standalone APIs Enhancements
-9. Server-Side Rendering (SSR) Improvements
-10. Zone-less Angular (Experimental)
+2. Route data with @Input()
+3. Required Inputs
+4. DestroyRef API
+5. Self‑closing tag updates
+6. takeUntilDestroyed() (RxJS Interop)
+7. Standalone APIs Enhancements
+8. Server-Side Rendering (SSR) Improvements
+9. Zone-less Angular (Experimental)
