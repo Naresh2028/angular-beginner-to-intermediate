@@ -339,7 +339,7 @@ Multi-Source Binding: This works for everything:
 Name Matching: The @Input() property name must exactly match the key used in your route definition.
 
 
-# REQUIRED INPUTS
+# 3. REQUIRED INPUTS
 
 ### DEFINATION
 
@@ -528,7 +528,7 @@ export class DataComponent {
 
 ---
 
-# SELF-CLOSING TAG UPDATES
+# 5. SELF-CLOSING TAG UPDATES
 
 ### Definition
 
@@ -569,113 +569,87 @@ export class AppComponent {
 
 ---
 
-# 3. takeUntilDestroyed()
+# 6. TAKEUNTILDESTROYED() (RxJS Interop)
 
-## Example
+### Defination
 
-```ts
+takeUntilDestroyed() is an RxJS operator introduced in Angular 16 under the package @angular/core/rxjs-interop.
+It automatically unsubscribes from an observable when the Angular context (component, directive, or service) is destroyed.
+
+### Reason of Born
+
+Before Angular 16:
+
+- Developers had to manage cleanup manually with OnDestroy and a Subject (destroy$).
+
+- This was repetitive, error‑prone, and easy to forget, leading to memory leaks.
+
+- Angular introduced DestroyRef and takeUntilDestroyed() to simplify lifecycle‑aware RxJS interop, reduce boilerplate, and make apps safer by default.
+
+Example — Fixing a Problem
+
+#### ❌ Old Way (Angular 15 and below)
+
+````ts
+
+@Component({
+  selector: 'app-data',
+  template: `{{ counter }}`
+})
+export class DataComponent implements OnDestroy {
+  counter = 0;
+  private destroy$ = new Subject<void>();
+
+  constructor() {
+    interval(1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(val => this.counter = val);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+````
+- Requires Subject, ngOnDestroy, and manual cleanup.
+
+#### ✅ New Way (Angular 16+ with takeUntilDestroyed())
+
+````ts
+import { Component } from '@angular/core';
+import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-this.http.get('/api')
-  .pipe(takeUntilDestroyed())
-  .subscribe();
-```
+@Component({
+  selector: 'app-data',
+  standalone: true,
+  template: `{{ counter }}`
+})
+export class DataComponent {
+  counter = 0;
 
-### Why introduced
+  constructor() {
+    interval(1000)
+      .pipe(takeUntilDestroyed()) // 👈 Automatically cleans up
+      .subscribe(val => this.counter = val);
+  }
+}
 
-- Simplify subscription management
-- Prevent memory leaks
 
-## Key Notes
+````
 
-- No manual unsubscribe needed
-- Cleaner RxJS integration
+No Subject, no OnDestroy.
 
----
+takeUntilDestroyed() hooks into Angular’s lifecycle via DestroyRef.
 
-# 4. Required Inputs
+When the component is destroyed, the subscription is disposed automatically.
 
-## Example
 
-```ts
-@Input({ required: true })
-user!: string;
-```
 
-### Why introduced
 
-- Ensure required inputs are passed
-- Prevent runtime errors
 
-## Key Notes
 
-- Compile-time validation
-- Improves reliability
 
----
 
-# 5. Standalone APIs Enhancements
 
-## Example
-
-```ts
-bootstrapApplication(AppComponent);
-```
-
-### Why introduced
-
-- Remove dependency on NgModules
-- Simplify Angular apps
-
-## Key Notes
-
-- NgModules optional
-- Cleaner structure
-
----
-
-# 7. SSR Improvements
-
-## Example
-
-Improved hydration support
-
-### Why introduced
-
-- Faster loading
-- Better SEO
-
-## Key Notes
-
-- Better Angular Universal support
-
----
-
-# 8. Zone-less Angular (Experimental)
-
-## Example
-
-Signal-driven updates without Zone.js
-
-### Why introduced
-
-- Improve performance
-- Reduce unnecessary change detection
-
-## Key Notes
-
-- Experimental
-- Future direction
-
----
-
-# Summary
-
-Angular 16 introduces:
-
-- Signals
-- Better lifecycle APIs
-- Improved RxJS interop
-- Stronger standalone architecture
-
-This version marks the shift toward modern Angular.
