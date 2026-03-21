@@ -197,7 +197,7 @@ When you run this code
 
 ---
 
-# 2. Route data with @Input()
+# 2. ROUTE DATA WITH @Input()
 
 ## Definition
 
@@ -283,7 +283,7 @@ export class ProductsComponent implements OnInit {
 
 <img width="634" height="310" alt="image" src="https://github.com/user-attachments/assets/0eb2dca0-171f-42d7-b095-042c4ceb839c" />
 
-
+#
 
 ### 2. The "After" Fix (The Angular 16 Way)
 
@@ -330,13 +330,104 @@ export class ProductListComponent {
 
 Multi-Source Binding: This works for everything:
 
-Path Params: /product/:id -> @Input() id
+1. Path Params: /product/:id -> @Input() id
 
-Query Params: ?search=phone -> @Input() search
+2. Query Params: ?search=phone -> @Input() search
 
-Static Data: { data: { title: 'Home' } } -> @Input() title
+3. Static Data: { data: { title: 'Home' } } -> @Input() title
 
 Name Matching: The @Input() property name must exactly match the key used in your route definition.
+
+
+# REQUIRED INPUTS
+
+### DEFINATION
+
+Required Inputs are component or directive properties marked with the { required: true } metadata inside the @Input decorator. When an input is marked as required, the Angular compiler will throw an error if the parent component attempts to use that selector without binding a value to that specific property.
+
+### Why it was Born (What it replaces)
+
+Before Angular 16, all @Input() properties were technically optional. This led to several "silent" failures and developer frustrations:
+
+What it Replaces: 
+
+- It replaces manual runtime validation logic (like if (!this.data) throw Error(...)) and the "non-null assertion operator" (!) which only tricked TypeScript but didn't stop the app from breaking.
+
+1. Silent Bugs: A developer might use a <user-card> but forget to pass the user object. The app would run, but the UI would be blank or throw "Cannot read property of undefined" errors in the console.
+
+2. Opaque APIs: When using someone else's component, you had to check the documentation or the code to know which inputs were actually mandatory.
+
+3. Boilerplate: You often had to write defensive code in ngOnInit to ensure data was present before running logic.
+
+### Example (The "Before" Problem (The Unsafe Way)
+
+1. Create the Child Component (The "Unsafe" Way)
+
+In this component, we use the ! (non-null assertion) to tell TypeScript "don't worry, the data will be there." But we don't actually force the parent to provide it.
+
+### user.card.component.ts
+
+````ts
+@Component({
+  selector: 'app-user-card',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div style="border: 2px solid red; padding: 10px; margin: 10px;">
+      <h4>User Profile</h4>
+
+      <p>Name : {{ Users.name }}</p>
+      <p>Role : {{ Users.role }}</p>
+    </div>
+  `,
+})
+export class UserCardComponent {
+  @Input() Users!: User;
+}
+
+````
+
+### Parent Component (app.component.ts)
+
+Here, we deliberately "forget" to bind the [user] property to the component.
+
+````ts
+@Component({
+  selector: 'app-root',
+  template: `
+  <app-user-card></app-user-card>
+  `,
+  standalone:true,
+  imports: [  UserCardComponent]
+})
+export class AppComponent {
+  title = 'angular-16';
+}
+````
+
+### Output
+
+<img width="1343" height="716" alt="image" src="https://github.com/user-attachments/assets/a39873db-722f-4f3e-a5f0-27ced2206f4d" />
+
+
+- The Screen: You will likely see a blank white page or only the "Admin Dashboard" header.
+
+- The Console (F12): You will see a massive red error:
+
+## The Solution (Required Input)
+
+If you simply change the child component to:
+
+````ts
+export class UserCardComponent {
+  @Input({required:true}) Users!: User;
+}
+````
+
+### Result
+
+<img width="1060" height="536" alt="image" src="https://github.com/user-attachments/assets/4c499782-8087-4c1b-a775-b4ee7c7413ca" />
+
 
 
 # 2. DestroyRef API
