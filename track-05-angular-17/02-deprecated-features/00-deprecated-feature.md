@@ -20,7 +20,7 @@ Angular has not removed *ngIf or *ngFor in Angular 17 — they are still core 
 
 - Signals + new template syntax could eventually replace structural directives with more explicit, reactive APIs.
 
-- It works with three parts:
+- NgSwitch works with three parts:
 
 1. *ngSwitch → container directive.
 
@@ -141,7 +141,21 @@ Change detection is predictable and fine‑grained.
 
 ---
 
-# Key Notes
+## 3. NgModule based Architecture (Deprecated)
+
+NgModules were the traditional way to organize Angular applications.
+
+They grouped components, directives, pipes, and services into cohesive units (AppModule, SharedModule, FeatureModule).
+
+### Reason
+
+1. Standalone APIs (introduced in Angular 14 and enhanced in Angular 16/17) make modules optional.
+
+2. NgModules added extra complexity: developers had to remember declarations, imports, exports, and providers.
+
+3. Standalone components are simpler: you declare dependencies directly in the component, not in a separate module.
+
+### Key Notes
 
 - These are discouraged patterns, not fully removed
 - Existing code continues to work
@@ -150,7 +164,7 @@ Change detection is predictable and fine‑grained.
 
 ---
 
-# Summary
+### Summary
 
 Angular 17 focuses on:
 
