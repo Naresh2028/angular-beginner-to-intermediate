@@ -4,11 +4,9 @@
 
 Angular 17 does not introduce strict removals, but strongly discourages older patterns in favor of modern syntax and architecture.
 
-1. Structural Directives (*ngIf, *ngFor, *ngSwitch) for control flow
-2. NgSwitch (legacy approach)
-3. Microsyntax-heavy templates
-4. NgModule-centric architecture (discouraged)
-5. Heavy reliance on Zone.js (future shift)
+1. Structural Directives (*ngIf, *ngFor, NgSwitch) for control flow
+2. NgModule-centric architecture (discouraged)
+3. Heavy reliance on Zone.js (future shift)
 
 ---
 
