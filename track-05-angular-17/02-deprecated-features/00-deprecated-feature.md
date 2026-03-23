@@ -77,7 +77,23 @@ Angular has not removed *ngIf or *ngFor in Angular 17 — they are still core 
 
 ---
 
-# 5. Zone.js Dependency
+## 2. NgModule based Architecture (Deprecated)
+
+NgModules were the traditional way to organize Angular applications.
+
+They grouped components, directives, pipes, and services into cohesive units (AppModule, SharedModule, FeatureModule).
+
+### Reason
+
+1. Standalone APIs (introduced in Angular 14 and enhanced in Angular 16/17) make modules optional.
+
+2. NgModules added extra complexity: developers had to remember declarations, imports, exports, and providers.
+
+3. Standalone components are simpler: you declare dependencies directly in the component, not in a separate module.
+
+---
+
+3 5. Zone.js Dependency
 
 Zone.js is a library Angular has historically relied on to patch async APIs (like setTimeout, Promise, DOM events) and automatically trigger change detection.
 
@@ -88,8 +104,6 @@ Angular is moving toward signal-based and zone-less change detection.
  
 
 ### Old way:
-
-
 
 ````ts
 @Component({
@@ -138,22 +152,6 @@ No Zone.js needed.
 Signals handle reactivity explicitly.
 
 Change detection is predictable and fine‑grained.
-
----
-
-## 3. NgModule based Architecture (Deprecated)
-
-NgModules were the traditional way to organize Angular applications.
-
-They grouped components, directives, pipes, and services into cohesive units (AppModule, SharedModule, FeatureModule).
-
-### Reason
-
-1. Standalone APIs (introduced in Angular 14 and enhanced in Angular 16/17) make modules optional.
-
-2. NgModules added extra complexity: developers had to remember declarations, imports, exports, and providers.
-
-3. Standalone components are simpler: you declare dependencies directly in the component, not in a separate module.
 
 ### Key Notes
 
