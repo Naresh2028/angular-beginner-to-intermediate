@@ -12,106 +12,134 @@ Angular 17 does not introduce strict removals, but strongly discourages older pa
 
 ---
 
-# 1. Structural Directives (*ngIf, *ngFor)
+# 1. Structural Directives (*ngIf, *ngFor, NgSwitch)
 
 ## Reason
 
-Angular 17 introduces new control flow syntax that is more readable and maintainable.
+Angular has not removed *ngIf or *ngFor in Angular 17 — they are still core features.
 
-### Example
+- Angular’s new Signals reactivity system makes DOM updates more predictable and fine‑grained.
 
-Old:
+- Signals + new template syntax could eventually replace structural directives with more explicit, reactive APIs.
 
-<div *ngIf="isVisible">Content</div>
+- It works with three parts:
 
-New:
+1. *ngSwitch → container directive.
 
-@if (isVisible) {
-  <div>Content</div>
-}
+2. *ngSwitchCase → matches a specific value.
 
----
+3. *ngSwitchDefault → fallback when no case matches.
 
-# 2. NgFor (Microsyntax)
+### Old:
 
-## Reason
+````html
 
-New @for syntax improves readability and performance.
+<div *ngIf="isLoggedIn">Welcome back!</div>
 
-### Example
-
-Old:
-
-<div *ngFor="let item of items">{{ item }}</div>
-
-New:
-
-@for (item of items; track item) {
-  <div>{{ item }}</div>
-}
-
----
-
-# 3. NgSwitch
-
-## Reason
-
-Replaced by cleaner @switch syntax.
-
-### Example
-
-Old:
+<ul>
+  <li *ngFor="let user of users">{{ user.name }}</li>
+</ul>
 
 <div [ngSwitch]="status">
-  <div *ngSwitchCase="'success'">Success</div>
+  <p *ngSwitchCase="'active'">Active</p>
+  <p *ngSwitchCase="'inactive'">Inactive</p>
+  <p *ngSwitchDefault>Unknown</p>
 </div>
 
-New:
+````
 
-@switch (status) {
-  @case ('success') {
-    <div>Success</div>
+### New:
+
+
+````html
+@if (isLoggedIn()) {
+  <div>Welcome back!</div>
+}
+
+<ul>
+  @for (user of users(); track user.name) {
+    <li>{{ user.name }}</li>
+  }
+</ul>
+
+@switch (status()) {
+  @case ('active') {
+    <p>Active</p>
+  }
+  @case ('inactive') {
+    <p>Inactive</p>
+  }
+  @default {
+    <p>Unknown</p>
   }
 }
 
----
 
-# 4. NgModule-heavy Architecture
-
-## Reason
-
-Standalone APIs simplify Angular applications.
-
-### Example
-
-Old:
-
-@NgModule({
-  declarations: [AppComponent]
-})
-export class AppModule {}
-
-New:
-
-bootstrapApplication(AppComponent);
+````
 
 ---
 
 # 5. Zone.js Dependency
 
+Zone.js is a library Angular has historically relied on to patch async APIs (like setTimeout, Promise, DOM events) and automatically trigger change detection.
+
 ## Reason
 
 Angular is moving toward signal-based and zone-less change detection.
 
-### Example
+ 
 
-Old:
+### Old way:
 
-Automatic change detection using Zone.js
 
-New:
 
-Signal-driven updates (future direction)
+````ts
+@Component({
+  selector: 'app-counter',
+  template: `{{ count }}`
+})
+export class CounterComponent {
+  count = 0;
+
+  ngOnInit() {
+    setTimeout(() => {
+      this.count++; // Zone.js patches setTimeout, triggers change detection
+    }, 1000);
+  }
+}
+
+````
+
+#### Here,
+
+- Zone.js automatically detects the async update and refreshes the template.
+
+### New way:
+
+````ts
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-counter',
+  template: `{{ count() }}`
+})
+export class CounterComponent {
+  count = signal(0);
+
+  ngOnInit() {
+    setTimeout(() => {
+      this.count.update(c => c + 1); // Signals trigger view update directly
+    }, 1000);
+  }
+}
+
+````
+
+No Zone.js needed.
+
+Signals handle reactivity explicitly.
+
+Change detection is predictable and fine‑grained.
 
 ---
 
