@@ -1,4 +1,4 @@
-<img width="1155" height="854" alt="image" src="https://github.com/user-attachments/assets/fff54d5f-8c81-4129-95cd-b4554845e105" /># NEW FEATURES (Angular 16)
+# NEW FEATURES (Angular 16)
 
 ## List the Features
 
