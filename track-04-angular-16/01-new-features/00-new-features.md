@@ -710,9 +710,41 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 ````
 
+### Register it in main.ts
 
+````ts
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
+import { AppModule } from './app/app.module';
+import { AppComponent } from './app/app.component';
+import {
+  provideRouter,
+  Routes,
+  withComponentInputBinding,
+} from '@angular/router';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { ProductsComponent } from './app/products/products.component';
+import { ProductListComponent } from './app/product-list/product-list.component';
+import { UserCardComponent } from './app/user-card/user-card.component';
+import { DataComponent } from './app/data/data.component';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './app/Interceptors/Auth-interceptors';
 
+const routes: Routes = [
+  { path: 'product', component: ProductsComponent },
+  { path: 'products/:id', component: ProductListComponent },
+  { path: 'userCard', component: UserCardComponent },
+  { path: 'data', component: DataComponent },
+];
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(withInterceptors([authInterceptor])), // Simplified Configuration
+  ],
+});
+
+````
 
 
 
