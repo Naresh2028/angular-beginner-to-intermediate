@@ -1,7 +1,5 @@
 # Migration Notes (Angular 16 → Angular 17)
 
-## How can I transform my Angular 16 project into Angular 17?
-
 Follow these steps to safely upgrade your Angular 16 project to Angular
 17.
 
