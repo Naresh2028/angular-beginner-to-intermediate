@@ -651,8 +651,9 @@ export class DataComponent {
 
 3. When the component is destroyed, the subscription is disposed automatically.
 
+---
 
-# STANDALONE APIs ENHANCEMENTS
+# 7. STANDALONE APIs ENHANCEMENTS
 
 In Angular 16, the Standalone story reached maturity. While Angular 15 introduced the architecture, Angular 16 provided the "glue" to make it work seamlessly across the entire ecosystem without needing NgModules.
 
@@ -746,7 +747,10 @@ bootstrapApplication(AppComponent, {
 
 ````
 
-# SERVER SIDE RENDERING (SSR) IMPROVEMENTS
+---
+
+
+# 8. SERVER SIDE RENDERING (SSR) IMPROVEMENTS
 
 In Angular 16, Server-Side Rendering (SSR) underwent its most significant transformation since the launch of Angular Universal.
 
@@ -785,16 +789,6 @@ For 10 years, Angular used a library called Zone.js.
 - The Monkey-Patching Problem: Zone.js intercepts (monkey-patches) every click, setTimeout, and fetch. Even if a click does nothing to the UI, Zone.js tells Angular: "Hey, something happened! Re-check the entire app."
 
 - Bundle Size: zone.js adds about 13KB (gzipped) to every single Angular app before you even write one line of code.
-
-
-
-
-
-
-
-
-
-
 
 
 
