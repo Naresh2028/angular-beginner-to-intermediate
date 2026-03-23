@@ -1,4 +1,4 @@
-# NEW FEATURES (Angular 16)
+<img width="1155" height="854" alt="image" src="https://github.com/user-attachments/assets/fff54d5f-8c81-4129-95cd-b4554845e105" /># NEW FEATURES (Angular 16)
 
 ## List the Features
 
@@ -588,7 +588,7 @@ Before Angular 16:
 
 Example — Fixing a Problem
 
-#### ❌ Old Way (Angular 15 and below)
+## ❌ Old Way (Angular 15 and below)
 
 ````ts
 
@@ -614,7 +614,7 @@ export class DataComponent implements OnDestroy {
 ````
 - Requires Subject, ngOnDestroy, and manual cleanup.
 
-#### ✅ New Way (Angular 16+ with takeUntilDestroyed())
+## ✅ New Way (Angular 16+ with takeUntilDestroyed())
 
 ````ts
 import { Component } from '@angular/core';
@@ -641,13 +641,92 @@ export class DataComponent {
 
 ### Output
 
+<img width="1155" height="854" alt="image" src="https://github.com/user-attachments/assets/d537ca16-78e3-42b4-844b-03cf876a4e88" />
+
+#### Here,
+
+1. No Subject, no OnDestroy.
+
+2. takeUntilDestroyed() hooks into Angular’s lifecycle via DestroyRef.
+
+3. When the component is destroyed, the subscription is disposed automatically.
 
 
-No Subject, no OnDestroy.
+# STANDALONE APIs ENHANCEMENTS
 
-takeUntilDestroyed() hooks into Angular’s lifecycle via DestroyRef.
+In Angular 16, the Standalone story reached maturity. While Angular 15 introduced the architecture, Angular 16 provided the "glue" to make it work seamlessly across the entire ecosystem without needing NgModules.
 
-When the component is destroyed, the subscription is disposed automatically.
+## List the APIs
+
+Angular 16 enhanced several core APIs to support a "Module-less" world:
+
+1. provideRouter: Replaces RouterModule.forRoot().
+
+2. provideHttpClient: Replaces HttpClientModule.
+
+3. withInterceptors: A new functional way to handle HTTP interceptors.
+
+4. withComponentInputBinding: The router feature.
+
+
+## Examples (bootstrapApplication)
+
+Everything is configured in a single, clean array inside bootstrapApplication.
+
+````ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes),             // ✅ No more RouterModule
+    provideHttpClient(),               // ✅ No more HttpClientModule
+    provideAnimations(),               // ✅ No more BrowserAnimationsModule
+  ]
+});
+````
+
+
+### withInterceptors Functional Implementation
+
+One of the best "Enhancements" is how we handle Interceptors now. No more Injectable classes with implements HttpInterceptor.
+
+````ts
+import { HttpInterceptorFn } from '@angular/common/http';
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authToken = 'my-token';
+
+  const authReq = req.clone({
+    setHeaders: {
+      Authorization: `Bearer: ${authToken}`,
+    },
+  });
+
+  return next(authReq);
+};
+
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
