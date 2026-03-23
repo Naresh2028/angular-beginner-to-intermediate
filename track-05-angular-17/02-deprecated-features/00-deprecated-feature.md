@@ -93,7 +93,7 @@ They grouped components, directives, pipes, and services into cohesive units (Ap
 
 ---
 
-3 5. Zone.js Dependency
+# 3  Zone.js Dependency
 
 Zone.js is a library Angular has historically relied on to patch async APIs (like setTimeout, Promise, DOM events) and automatically trigger change detection.
 
