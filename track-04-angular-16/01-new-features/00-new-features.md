@@ -772,8 +772,19 @@ bootstrapApplication(AppComponent, {
 });
 ````
 
+---
 
+# 9. ZONE LESS ANGULAR
 
+In Angular 16, the groundwork was laid for the most ambitious change in the framework's history: Zone-less Angular.
+
+### Reason (The "Zone" Problem)
+
+For 10 years, Angular used a library called Zone.js.
+
+- The Monkey-Patching Problem: Zone.js intercepts (monkey-patches) every click, setTimeout, and fetch. Even if a click does nothing to the UI, Zone.js tells Angular: "Hey, something happened! Re-check the entire app."
+
+- Bundle Size: zone.js adds about 13KB (gzipped) to every single Angular app before you even write one line of code.
 
 
 
