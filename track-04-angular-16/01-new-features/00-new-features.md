@@ -746,12 +746,31 @@ bootstrapApplication(AppComponent, {
 
 ````
 
+# SERVER SIDE RENDERING (SSR) IMPROVEMENTS
 
+In Angular 16, Server-Side Rendering (SSR) underwent its most significant transformation since the launch of Angular Universal.
 
+## Improvements:
 
+The primary leap in v16 was the introduction of Non-destructive Hydration.
 
+### 1. Non-destructive Hydration
 
+The Old Way (Destructive): Angular would render the page on the server, send the HTML to the browser, and then delete the entire DOM and re-render it from scratch on the client. This caused a visible "flicker" and destroyed the user's scroll position or focused input fields.
 
+The New Way (Hydration): Angular now "walks" the existing HTML sent by the server and simply attaches event listeners and state to the existing nodes. No flickering, no wasted CPU cycles re-creating the DOM.
+
+## Examples:- Enabling Hydration (The Modern Way)
+
+````ts
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideClientHydration()
+  ],
+});
+````
 
 
 
