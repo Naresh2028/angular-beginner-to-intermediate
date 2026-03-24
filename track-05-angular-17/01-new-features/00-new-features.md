@@ -61,6 +61,8 @@ export class ControlFlowComponent {
 
 ### New way
 
+No imports. Cleaner, more readable syntax that looks like standard JavaScript.
+
 ````ts
 @Component({
   selector: 'app-control-flow',
