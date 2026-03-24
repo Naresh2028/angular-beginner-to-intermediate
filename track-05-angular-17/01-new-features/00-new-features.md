@@ -28,7 +28,7 @@ Built-in Control Flow is a new, block-based syntax (@if, @for, @switch) used in 
 It is "built-in," meaning it is available in every component automatically without any extra configuration or imports.
 
 
-## @if vs *ngIf Example
+## 1. Conditional Rendering (*ngIf vs @if)
 
 ### Older Way (v16 and below):
 
@@ -85,7 +85,95 @@ export class ControlFlowComponent {
 }
 ````
 
+**Reason To Change**
+
 - The old way was visually noisy and required managing "template references" (#loading) which are hard to track in large files.
+
+---
+
+## 2. Looping (*ngFor vs @for)
+
+Old Way:
+Manual trackBy function in the .ts file was mandatory for performance but often ignored.
+
+
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [NgForOf, NgIf],  // Import Required
+  template: `
+    <div *ngIf="Users.length > 0">
+      <div *ngFor="let user of Users">
+        <p>{{ user.userName }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="Users.length === 0">
+      <p>User data is Empty</p>
+    </div>
+  `,
+})
+export class ControlFlowComponent {
+  Users = [
+    { id: 1, userName: 'Naresh', isWorking: true },
+    { id: 2, userName: 'alien', isWorking: false },
+    { id: 3, userName: 'Larthick', isWorking: true },
+  ];
+
+  constructor() {}
+}
+````
+
+### New Way
+
+The track property is now mandatory, and there is a built-in block for empty lists.
+
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [],
+  template: `
+
+  <ul>
+    @for (item of Users; track item.id) {
+      <li>{{item.userName}}</li>
+    } @empty {
+      <li>No items to display...</li>
+    }
+  </ul>
+  `,
+})
+export class ControlFlowComponent {
+  Users = [
+    { id: 1, userName: 'Naresh', isWorking: true },
+    { id: 2, userName: 'alien', isWorking: false },
+    { id: 3, userName: 'Larthick', isWorking: true },
+  ];
+
+  constructor() {}
+}
+````
+ 
+**Reason to Change**
+
+- By making track mandatory, Angular prevents common performance bugs where the entire list re-renders unnecessarily. 
+
+- The @empty block also removes the need for a separate *ngIf="items.length === 0" check.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
