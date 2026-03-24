@@ -17,183 +17,83 @@ Key features:
 
 ---
 
-# 1. New Control Flow Syntax (@if, @for, @switch)
+# 1. NEW CONTROL FLOW
 
-## Example (Why it was introduced)
+In Angular 17, the framework introduced a Built-in Control Flow that moves conditional logic and loops directly into the compiler. While it launched in "Developer Preview" in v17.
 
-```ts
-@if (isVisible) {
-  <div>Content</div>
-}
-```
+### Defination
 
-### Why introduced
+Built-in Control Flow is a new, block-based syntax (@if, @for, @switch) used in Angular templates to handle dynamic rendering. Unlike the older structural directives (*ngIf, *ngFor) which are based on HTML attributes and require CommonModule imports.
 
-- Replace complex microsyntax (*ngIf, *ngFor)
-- Improve readability
-- Reduce mental overhead
+It is "built-in," meaning it is available in every component automatically without any extra configuration or imports.
 
-## Key Notes
 
-- More intuitive syntax
-- Optional but recommended
-- Works with Signals
+## @if vs *ngIf Example
 
----
+### Older Way (v16 and below):
 
-# 2. @for Loop Syntax
+You had to use a separate <ng-template> and a reference variable to handle the "else" case.
 
-## Example
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div *ngIf="isLoaded; else loading">
+      <p>Data is here!</p>
+    </div>
 
-```ts
-@for (item of items; track item) {
-  <div>{{ item }}</div>
-}
-```
+    <ng-template #loading>
+      <p>Loading...</p>
+    </ng-template>
+  `,
+})
+export class ControlFlowComponent {
+  isLoaded = false;
 
-### Why introduced
-
-- Better performance than *ngFor
-- Simpler tracking
-
-## Key Notes
-
-- Built-in tracking
-- Cleaner iteration
-- More predictable rendering
-
----
-
-# 3. @switch Syntax
-
-## Example
-
-```ts
-@switch (status) {
-  @case ('success') {
-    <div>Success</div>
-  }
-  @default {
-    <div>Unknown</div>
+  constructor() {
+    setTimeout(() => (this.isLoaded = true), 2000);
   }
 }
-```
+````
 
-### Why introduced
 
-- Replace ngSwitch complexity
-- Improve readability
+### New way
 
-## Key Notes
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [],
+  template: `
 
-- Cleaner branching logic
-- Easier maintenance
+    @if (isLoaded) {
+      <p>Data is here</p>
+    } @else {
+      <p>Loading...</p>
+    }
 
----
+  `,
+})
+export class ControlFlowComponent {
+  isLoaded = false;
 
-# 4. Deferrable Views (@defer)
-
-## Example
-
-```ts
-@defer {
-  <heavy-component />
+  constructor() {
+    setTimeout(() => (this.isLoaded = true), 2000);
+  }
 }
-```
+````
 
-### Why introduced
+- The old way was visually noisy and required managing "template references" (#loading) which are hard to track in large files.
 
-- Lazy load UI parts
-- Improve performance
 
-## Key Notes
 
-- Improves Core Web Vitals
-- Reduces bundle size
-- Ideal for dashboards
 
----
 
-# 5. Improved Performance
 
-## Example
 
-- Faster builds using modern tooling
 
-### Why introduced
 
-- Improve developer productivity
-- Faster builds
 
-## Key Notes
 
-- Faster ng serve
-- Faster rebuilds
-
----
-
-# 6. Vite-based Dev Server
-
-## Example
-
-Angular CLI integrates Vite internally.
-
-### Why introduced
-
-- Faster development experience
-
-## Key Notes
-
-- Faster startup
-- Faster HMR
-
----
-
-# 7. SSR & Hydration Improvements
-
-## Example
-
-Improved hydration support.
-
-### Why introduced
-
-- Better SEO
-- Faster load
-
-## Key Notes
-
-- Improved SSR performance
-- Better rendering
-
----
-
-# 8. Signals Enhancements
-
-## Example
-
-```ts
-const count = signal(0);
-count.set(1);
-```
-
-### Why introduced
-
-- Continue reactive model shift
-
-## Key Notes
-
-- Works with control flow
-- Reduces RxJS complexity
-
----
-
-# Summary
-
-Angular 17 focuses on:
-
-- Cleaner templates (@if, @for, @switch)
-- Performance improvements
-- Better developer experience
-- Lazy UI loading
-
-This makes Angular more modern and efficient.
