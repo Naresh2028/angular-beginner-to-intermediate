@@ -6,7 +6,7 @@ Angular 17 focuses on **simplifying templates, improving performance, and enhanc
 
 Key features:
 
-1. New Control Flow Syntax (@if, @for, @switch)
+1. New Control Flow Syntax (@if, @for, @switch) (Developer preview)
 2. Deferrable Views (@defer)
 3. Improved Performance (Build & Runtime)
 4. Vite-based Dev Server
