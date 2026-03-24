@@ -16,9 +16,10 @@ Angular 17 does not introduce strict removals, but strongly discourages older pa
 
 Angular has not removed *ngIf or *ngFor in Angular 17 — they are still core features.
 
-- Angular’s new Signals reactivity system makes DOM updates more predictable and fine‑grained.
+- *ngIf → conditionally includes a template.
 
-- Signals + new template syntax could eventually replace structural directives with more explicit, reactive APIs.
+- *ngFor → repeats a template for each item in a collection.
+They are prefixed with * because Angular transforms them into <ng-template> under the hood.
 
 - NgSwitch works with three parts:
 
