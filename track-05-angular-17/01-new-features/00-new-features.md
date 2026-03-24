@@ -163,18 +163,73 @@ export class ControlFlowComponent {
 - The @empty block also removes the need for a separate *ngIf="items.length === 0" check.
 
 
+---
 
+## 3. Switching: @switch vs *ngSwitch
 
+### Older Way (v16 and below):
 
+Required an attribute on a container and then specific directives on each child element.
 
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [NgSwitch, NgSwitchCase, NgSwitchDefault],
+  template: `
+    <div [ngSwitch]="UserRole">
+      <div *ngSwitchCase="'admin'">
+        <p>Welcome Admin..</p>
+      </div>
+      <div *ngSwitchCase="'user'">
+        <p>Welcome User..</p>
+      </div>
+      <div *ngSwitchDefault>
+        <p>Welcome Guest...</p>
+      </div>
+    </div>
+  `,
+})
+export class ControlFlowComponent {
+  UserRole = ['admin', 'user'];
+}
+````
 
+### New Way (v17+):
 
+this is now a "pure" standalone component with zero external dependencies for its logic.
 
+````ts
+@Component({
+  selector: 'app-control-flow',
+  standalone: true,
+  imports: [],
+  template: `
+    @switch (UserRole) {
+      @case ('admin') {<p>Welcome Admin!</p>}
+      @case ('user') {<p>Welcome User!</p>}
+      @default {
+        <p>Welcome Guest!</p>
+      }
+    }
+  `,
+})
+export class ControlFlowComponent {
+  UserRole: 'admin' | 'user' | 'guest' = 'guest';
+}
+````
 
+**Reason to Change**
 
+- The old *ngSwitch was technically a set of separate directives working together, which was slower to process. 
 
+- The new @switch is a single block of logic, making it significantly faster for the browser to execute.
 
+### Key Take Aways
 
+- Performance: Up to 90% faster execution for complex loops and conditionals.
+
+- Bundle Size: Because these are built into the compiler, they don't require the extra code associated with the NgIf and NgFor classes.
 
 
 
