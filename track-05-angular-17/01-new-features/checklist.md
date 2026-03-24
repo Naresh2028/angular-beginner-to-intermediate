@@ -2,9 +2,11 @@
 
 Key features:
 
-1. New Control Flow Syntax (@if, @for, @switch)
+1. New Control Flow Syntax (@if, @for, @switch) (Developer preview)
 2. Deferrable Views (@defer)
-3. Improved Performance (Build & Runtime)
-4. Vite-based Dev Server
-5. SSR & Hydration Improvements
-6. Continued Signals Integration
+3. Hydration (Production Ready)
+4. Standalone by Default (ng new my-app)
+5. Improved Build & Runtime Performance (SSG, & SSR 87%)
+6. esbuild and Vite-based Dev Server enabled by default
+7. Continued Signals Integration
+8. Custom Input Transforms 
