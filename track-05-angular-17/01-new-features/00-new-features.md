@@ -10,7 +10,7 @@ Key features:
 2. Deferrable Views (@defer)
 3. Improved Performance (Build & Runtime)
 4. Vite-based Dev Server
-5. SSR & Hydration Improvements
+5. SSR & Hydration Improvements (Production Ready)
 6. Continued Signals Integration
 
 ---
