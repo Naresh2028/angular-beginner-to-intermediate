@@ -11,7 +11,7 @@ Key features:
 3. Hydration Improvements (Production Ready)
 4. Standalone by Default (ng new my-app)
 5. Improved Performance (Build & Runtime)
-6. Vite-based Dev Server
+6. esbuild and Vite-based Dev Server enabled by default
 7. Continued Signals Integration
 
 ---
