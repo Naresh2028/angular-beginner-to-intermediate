@@ -265,6 +265,15 @@ The Process:
 
 4. Browser: Executes JS → Calls .NET API → Gets JSON → Builds the HTML tags inside <app-root>.
 
+### The Reality of the CSR "Conversation"
+ 
+Think of CSR like ordering a "Build-Your-Own" Pizza kit online:
+
+Step 1 (The Box): You request the site. The server sends you the "Box" (index.html). It's empty.
+
+Step 2 (The Manual): Inside the box is a note saying, "Go get the instructions." Your browser then makes a second request to download the main.js.
+
+Step 3 (The Ingredients): Once the main.js is running, it realizes it needs data. It makes a third request to your .NET API to get the JSON "Ingredients."
 
 ----
 
