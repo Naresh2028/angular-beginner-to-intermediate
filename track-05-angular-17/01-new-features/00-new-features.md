@@ -10,7 +10,7 @@ Key features:
 2. Deferrable Views (@defer)
 3. Hydration (Production Ready)
 4. Standalone by Default (ng new my-app)
-5. Improved Build & Runtime Performance (SSG, & SSR 87%)
+5. SSG (Improved build time), & SSR (Runtime performance)
 6. esbuild and Vite-based Dev Server enabled by default
 7. Continued Signals Integration
 8. Custom Input Transforms 
@@ -234,10 +234,122 @@ export class ControlFlowComponent {
 - Bundle Size: Because these are built into the compiler, they don't require the extra code associated with the NgIf and NgFor classes.
 
 
+---
+
+# 5. SSR (RUNTIME PERFORMANCE), & SSG (IMPROVED BUILD TIME)
+
+Before knowing SSR, and SSG. We should be have aware of CSR terminology.
+
+## 1. CSR (Client-Side Rendering)
+
+Definition: In CSR, the server sends a "hollow" HTML shell. The browser downloads a large JavaScript bundle (the "Lego bricks") and then builds the entire UI on the user's computer.
+
+## Example: The "Hollow" Response
+When you visit a CSR site, if you "View Page Source," this is all you see:
+
+```html
+<html>
+  <body>
+    <app-root></app-root> 
+    <script src="main.js"></script> </body>
+</html>
+````
+
+The Process:
+
+1. Browser: Requests index.html.
+
+2. Server: Sends the empty shell above.
+
+3. Browser: Downloads main.js.
+
+4. Browser: Executes JS → Calls .NET API → Gets JSON → Builds the HTML tags inside <app-root>.
 
 
+----
+
+## 2. SSR (Server-Side Rendering)
+
+Definition: In SSR, the server (Node.js) runs your Angular code, fetches the data, and constructs the Full HTML before sending it to the browser. The user sees the content immediately.
 
 
+## Example: The "Finished" Response
+
+When you visit an SSR site, the "View Page Source" shows the actual content:
+
+````html
+<html>
+  <body>
+    <app-root>
+      <nav>Home | Products</nav>
+      <h1>iPhone 15 Pro</h1> <p>Price: $999</p>
+    </app-root>
+    <script src="main.js"></script>
+  </body>
+</html>
+````
+
+The Process:
+
+1. Browser: Requests index.html.
+
+2. Server (Node): Runs Angular → Calls .NET API → Fills HTML with data.
+
+3. Server: Sends the completed HTML.
+
+4. Browser: Displays HTML immediately → Downloads JS → Hydrates (connects buttons).
+
+----
+
+## 2. SSR (Server-Side Rendering)
+
+SSG is a technique where the Angular CLI runs your application during the ng build process to create a set of static .html files for every route you specify. When a user visits your site, the server simply hands over these pre-made files. 
+
+- There is no "cooking" (rendering) involved at the moment of the request.
+
+## Why it was Introduced (The Purpose)
+
+1. **SSR Server Costs** : SSR requires a live Node.js server to "render" on every request. SSG creates files once, so you can host them on cheap "static" hosts (like GitHub Pages or Azure Static Web Apps) without Node.js.
+
+2. **Security** : There is no server-side code running when the user visits, so there is no "attack surface" for hackers to exploit during the page request.
+
+## Example ( How it works in Angular 17)
+
+### 1. Enabling SSG
+
+When you create a new project with ng new --ssr, Angular enables both SSR and SSG by default. You can control SSG specifically in your angular.json.
+
+angular.json configuration:
+
+```json
+"prerender": {
+  "routes": [
+    "/",
+    "/about",
+    "/contact"
+  ]
+}
+```
+
+### 2. The Build Output
+
+When you run ng build, look at your dist/browser folder. You will see something like this:
+
+- index.html (Home page)
+
+- about/index.html (Pre-rendered About page)
+
+- contact/index.html (Pre-rendered Contact page)
+
+
+### Rendering Approaches Comparison
+
+| Feature              | CSR (Client-Side Rendering)         | SSR (Server-Side Rendering)         | SSG (Static Site Generation)         |
+|----------------------|-------------------------------------|-------------------------------------|--------------------------------------|
+| When is HTML built?  | In the Browser (Runtime).           | On the Server (Runtime).            | At Build Time (Deploy time).         |
+| Best For             | Dashboards / Apps.                  | Real-time content (News/Prices).    | Blogs / Documentation / Marketing.   |
+| SEO                  | ⚠️ Risky.                           | ✅ Excellent.                        | ✅ Excellent.                         |
+| Server Requirement   | Any File Server.                    | Must have Node.js.                  | Any File Server.                      |
 
 
 
