@@ -310,7 +310,7 @@ The Process:
 
 ----
 
-## 2. SSR (Server-Side Rendering)
+## 23 SSG (Server-Side Generation)
 
 SSG is a technique where the Angular CLI runs your application during the ng build process to create a set of static .html files for every route you specify. When a user visits your site, the server simply hands over these pre-made files. 
 
