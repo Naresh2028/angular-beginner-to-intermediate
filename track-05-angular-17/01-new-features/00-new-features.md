@@ -236,6 +236,152 @@ export class ControlFlowComponent {
 
 ---
 
+# DEFFERABLE VIEWS
+
+In Angular 17, Deferrable Views (using the @defer syntax) replaced the complex, manual "Lazy Loading" of components with a simple, declarative block in the HTML.
+
+### Defination
+
+Deferrable Views are a template-based mechanism that allows you to delay the loading of a component (and its associated JavaScript/CSS) until a specific condition or "trigger" is met.
+
+Instead of loading the entire page's code at once, Angular only fetches the "deferred" part when the user actually needs to see it—such as when they scroll to it or click a button.
+
+### Example
+
+### 1. Create the Heavy Component
+
+This is the component we want to "delay" until the user scrolls to it.
+
+````ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-heavy-chart',
+  standalone: true,
+  imports: [],
+  template: `
+    <div style="height: 300px; background: #f0f0f0; border: 2px solid blue;">
+      <h2>📊 Live Data Chart</h2>
+      <p>This component's code was downloaded ONLY when you scrolled here!</p>
+    </div>
+  `,
+})
+export class HeavyChartComponent {}
+
+````
+
+### 2. Create the Main Dashboard
+
+This is where we use the @defer block. Notice that we still import the component, but Angular is smart enough to handle the "lazy" part under the hood.
+
+````html
+<div style="padding: 20px;">
+      <h1>My Big Dashboard</h1>
+      
+      <div style="height: 1500px; background: lightyellow;">
+        <p>Scroll down to see the magic...</p>
+      </div>
+
+      <hr>
+
+      @defer (on viewport) {
+        <app-heavy-chart></app-heavy-chart>
+      }
+      @placeholder(minimum 500ms) {
+        <div style="background: #eee; padding: 20px;">
+            <p>The chart will appear when it enters the viewport</p>
+        </div>
+      }
+      @loading(after 100ms; minimum 1s) {
+        <div>Download chart code...</div>
+      }
+      @error {
+        <div>Something went wrong..</div>
+      }
+
+      </div>    
+````
+
+````ts
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [HeavyChartComponent],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
+})
+export class DashboardComponent {}
+````
+
+### Output
+
+<img width="983" height="972" alt="image" src="https://github.com/user-attachments/assets/e59a4167-9640-424e-8324-5fb42ceb6eb8" />
+
+
+---
+
+### 1. What is the Viewport?
+
+The Viewport is simply the "Window" of your browser.
+
+- Imagine you are looking through a physical window at a tall building. You can only see the floors that are directly in front of the window.
+
+- As you "scroll" (move the window down), new floors enter your view.
+
+- In Angular: (on viewport) means "Wait until this specific part of the page enters the window before doing anything."
+
+---
+
+### 2. What is the @defer block?
+
+- This is the "Actual Content." * It is the heavy component (like a Chart or a Google Map) that you want to hide initially to save memory and speed.
+
+---
+
+### 3. What is the @placeholder block?
+
+- This is the "Waiting Room."
+
+- Since the actual component isn't loaded yet, Angular needs to show something in that spot so the page doesn't look broken.
+
+- It is usually a simple box or a text message like "Scroll here to see the chart."
+
+---
+
+### 4. What is the @loading block?
+
+- This is the "In-Between" state.
+
+- After the user scrolls to the placeholder, the browser starts downloading the JavaScript file from the server.
+
+- This download might take 0.5 seconds or 2 seconds depending on the internet speed.
+
+---
+
+### 5. What is the @error block?
+
+- This is the "Safety Net."
+
+- If the user's internet cuts out or the server crashes while trying to download that specific piece of code, this block shows up.
+
+---
+
+| Trigger Name | Plain English Meaning |
+| --- | --- |
+| **on viewport** | *“I see it!”* — Starts when the placeholder scrolls into the visible screen. |
+| **on idle** | *“I’m bored!”* — Starts automatically as soon as the main page finishes loading and the browser isn’t busy. |
+| **on interaction** | *“I touched it!”* — Starts only when the user clicks or types inside the placeholder area. |
+| **on hover** | *“I’m looking!”* — Starts when the mouse pointer moves over the placeholder. |
+| **on timer (5s)** | *“Wait for it…”* — Starts exactly 5 seconds after the page loads, no matter where the user is. |
+
+### Key Notes
+
+- Lower Initial Bundle Size: If your homepage has a heavy "Comments" section at the bottom, @defer ensures that the code for the comments isn't downloaded until the user scrolls there. This makes the initial page load much faster.
+
+- The "Trigger" System: Developers often struggled to implement "Load on Scroll" or "Load on Hover" logic. @defer provides these triggers (on viewport, on hover, on idle, on interaction) out of the box. 
+
+---
+
 # 5. SSR (RUNTIME PERFORMANCE), & SSG (IMPROVED BUILD TIME)
 
 Before knowing SSR, and SSG. We should be have aware of CSR terminology.
