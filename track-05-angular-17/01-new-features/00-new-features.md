@@ -647,6 +647,49 @@ When you run ng build, look at your dist/browser folder. You will see something 
 | SEO                  | ⚠️ Risky.                           | ✅ Excellent.                        | ✅ Excellent.                         |
 | Server Requirement   | Any File Server.                    | Must have Node.js.                  | Any File Server.                      |
 
+---
+
+# 7. ESBUILD & VITE-BASED DEV SERVER
+
+1. Angular 16: The team added "Experimental Support" for Esbuild. You had to manually change your angular.json to try it out.
+
+2. Angular 17: They added Vite as the Dev Server and made the Esbuild + Vite combination the default for all new projects.
+
+Before Angular 16, the framework used an old tool called Webpack. It was powerful but slow—like a heavy truck. In Angular 17, they replaced it with Esbuild (the engine) and Vite (the delivery driver).
+
+### ESBUILD
+
+Esbuild is a "Bundler" written in a language called Go.
+
+- It takes your TypeScript code, your CSS, and your HTML and "crunches" them into small JavaScript files that the browser can understand.
+
+- Think of Esbuild like the C# Compiler (csc.exe). It’s the low-level tool that actually builds the binaries (or in this case, JS files).
+
+ ### What is Vite? (The Dev Server)
+
+When you run ng serve, Vite starts a local web server. It manages "Hot Module Replacement" (HMR)—which is the magic that refreshes only the part of the page you changed without a full reload.
+
+- Think of Vite like "Hot Reload" in Visual Studio. It ensures that as soon as you hit Ctrl+S, the browser shows the change instantly.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
