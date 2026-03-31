@@ -234,9 +234,10 @@ export class ControlFlowComponent {
 - Bundle Size: Because these are built into the compiler, they don't require the extra code associated with the NgIf and NgFor classes.
 
 
----
+--------------------------------------------------------
 
-# DEFFERABLE VIEWS
+
+# 2. DEFFERABLE VIEWS
 
 In Angular 17, Deferrable Views (using the @defer syntax) replaced the complex, manual "Lazy Loading" of components with a simple, declarative block in the HTML.
 
@@ -380,7 +381,65 @@ The Viewport is simply the "Window" of your browser.
 
 - The "Trigger" System: Developers often struggled to implement "Load on Scroll" or "Load on Hover" logic. @defer provides these triggers (on viewport, on hover, on idle, on interaction) out of the box. 
 
+-------------------------------------------
+
+# 3. HYDRATION
+
+### Definition
+
+Hydration is the process where Angular "restores" a server-rendered HTML page in the browser.
+
+Instead of the old way of deleting the HTML and starting over, Non-destructive Hydration allows Angular to look at the existing HTML sent by the server, find the 
+components, and simply "attach" itself to them. 
+
+## Example
+
+### 1. Older Approach (Pre‑Hydration)
+
+````ts
+
+// main.ts (Angular <=15)
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule);
+
+````
+
+- SSR would render HTML on the server.
+
+- But when the client bootstrapped, Angular discarded the SSR DOM and rebuilt everything.
+
+- Result: slower interactivity, wasted rendering work.
+
 ---
+
+### 2. New Approach (Angular 17 with Hydration)
+
+In Angular 17, this is handled smoothly with a single configuration line. Angular "wakes up" the existing HTML.
+
+````ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideClientHydration } from '@angular/platform-browser';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes), 
+    provideClientHydration()],
+};
+````
+
+- Angular now hydrates the SSR DOM.
+
+- It attaches event listeners and reuses the existing HTML.
+
+- Faster startup, smoother UX, better SEO.
+
+
+<br/>
+-------------------------------------------
 
 # 5. SSR (RUNTIME PERFORMANCE), & SSG (IMPROVED BUILD TIME)
 
