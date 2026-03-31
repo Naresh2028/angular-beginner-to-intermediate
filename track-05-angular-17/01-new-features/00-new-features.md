@@ -437,10 +437,92 @@ export const appConfig: ApplicationConfig = {
 
 - Faster startup, smoother UX, better SEO.
 
-
-<br/>
 -------------------------------------------
 
+# STANDALONE BY DEFAULT
+
+### Definition
+
+In Angular 17, when you create a new project using the CLI (ng new my-app), the app is standalone by default.
+
+- This means Angular no longer generates an AppModule.
+
+- Instead, the root component and routing are configured using standalone APIs (bootstrapApplication, provideRouter).
+
+- Standalone components declare their own dependencies directly, reducing boilerplate and complexity.
+
+## Example
+
+### 1. Older Approach (NgModule‑centric, Angular ≤14)
+
+`````ts
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { DashboardComponent } from './dashboard.component';
+
+@NgModule({
+  declarations: [AppComponent, DashboardComponent],
+  imports: [BrowserModule, RouterModule.forRoot([{ path: 'dashboard', component: DashboardComponent }])],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+``````
+
+```ts
+// main.ts
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule);
+
+````
+
+### 2. New Approach (Standalone by Default, Angular 17+)
+
+
+
+````ts
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  template: `<h1>Hello Angular 17!</h1>`
+})
+export class AppComponent {}
+````
+
+````ts
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { AppComponent } from './app/app.component';
+import { DashboardComponent } from './app/dashboard.component';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter([{ path: 'dashboard', component: DashboardComponent }])
+  ]
+});
+
+````
+
+- No AppModule.
+
+- Components are declared as standalone: true.
+
+- Routing and providers are configured directly in bootstrapApplication.
+
+
+
+
+
+---
 # 5. SSR (RUNTIME PERFORMANCE), & SSG (IMPROVED BUILD TIME)
 
 Before knowing SSR, and SSG. We should be have aware of CSR terminology.
@@ -515,7 +597,7 @@ The Process:
 
 ----
 
-## 23 SSG (Server-Side Generation)
+## 3 SSG (Server-Side Generation)
 
 SSG is a technique where the Angular CLI runs your application during the ng build process to create a set of static .html files for every route you specify. When a user visits your site, the server simply hands over these pre-made files. 
 
