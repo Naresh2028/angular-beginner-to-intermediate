@@ -671,25 +671,175 @@ When you run ng serve, Vite starts a local web server. It manages "Hot Module Re
 
 - Think of Vite like "Hot Reload" in Visual Studio. It ensures that as soon as you hit Ctrl+S, the browser shows the change instantly.
 
+---
 
 
+# 7 SIGNAL (Stable)
+
+In Angular 17, Signals moved from developer preview to a stable, core feature.
 
 
+### Definition
+
+A Signal is a wrapper around a value that notifies anyone "listening" whenever that value changes.
+
+### Example
+
+1. The Older Way (Plain Variables)
+
+Before Signals, we used standard TypeScript variables. Angular relied on "Zone.js" to run a "Check" on the whole page every time you clicked a button.
+
+````ts
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-counter',
+  standalone: true,
+  imports: [FormsModule],
+  template: `
+    <div>
+      <label>Counter</label>
+      <input type="number" placeholder="Enter Number" [(ngModel)]="count" />
+      <button class="btn btn-primary" (click)="Increament()">Increase</button>
+    </div>
+  `,
+})
+export class CounterComponent {
+  count: number = 0;
+
+  Increament() {
+    this.count++;
+    console.log(this.count);
+  }
+}
+
+````
+
+### 2. The New Way (Signals)
+
+Now, we wrap the value in a signal(). To read the value, we call it like a function count().
+
+````ts
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-counter',
+  standalone: true,
+  imports: [FormsModule],
+  template: `
+    <div>
+      <label>Counter</label>
+      <p>{{ count() }}</p>
+      <button class="btn btn-primary" (click)="Increament()">Increase</button>
+    </div>
+  `,
+})
+export class CounterComponent {
+  count = signal(0);
+
+  Increament() {
+    this.count.update((x) => x + 1);
+    console.log(this.count());
+  }
+}
+
+````
+
+### Output
+
+<img width="911" height="882" alt="image" src="https://github.com/user-attachments/assets/82ffc22f-1fe5-4db7-866e-652e9b0a8ff2" />
 
 
+# CUSTOM INPUT TRANSFORMS
+
+In Angular 17, Custom Input Transforms were introduced to solve a very common "Data Type" mismatch between HTML attributes and TypeScript properties.
+
+### Defination
+
+Input Transforms are a feature that allows you to "preprocess" or format a value automatically when it is passed from a parent component to a child component via an @Input.
+
+It acts like a Gatekeeper or a Converter that runs exactly at the moment the data enters the component, ensuring the internal variable always has the correct data type (like converting the string "true" to the boolean true).
+
+1. HTML Limitation: If you write <app-user isPremium="true">, the browser sends the text "true".
+
+2. TypeScript Conflict: Your component expects a boolean. In older versions, passing an empty attribute <app-user isPremium> would actually pass an empty string "", which is "truthy" but technically the wrong type.
+
+### Example
+
+### 1. The Older Way (Manual Getter/Setter)
+
+To ensure an input was always a boolean, you had to write a full setter function. This was very repetitive.
+
+````ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  standalone: true,
+  imports: [],
+  templateUrl: './user.component.html',
+  styleUrl: './user.component.css',
+})
+export class UserComponent {
+  private isDisabled = false;
+
+  @Input()
+  get _isDisabled(): boolean {
+    return this.isDisabled;
+  }
+
+  set _isDisabled(value: string | boolean) {
+    if (value === '') {
+      this._isDisabled = true;
+    } else {
+      this._isDisabled = String(value) === 'true';
+    }
+  }
+}
+
+````
 
 
+### 2. The New Way (Input Transforms)
+
+In Angular 17, you use the transform property directly inside the @Input decorator. Angular even provides built-in functions like booleanAttribute and numberAttribute.
+
+### Child Componrnt
+
+````ts
+export class UserComponent implements OnInit{
+  @Input({ transform: booleanAttribute }) isDisabled!: boolean;
+
+  @Input({ transform: numberAttribute }) count = 0;
+
+  ngOnInit() {
+    console.log(this.isDisabled);
+  }
+}
+
+````
+
+### Parent Component
+
+```ts
+@Component({
+  selector: 'app-counter',
+  standalone: true,
+  imports: [FormsModule, UserComponent],
+  template: ` <app-user [isDisabled]="true"></app-user> `,
+  styleUrl: 'counter.Component.css',
+})
+export class CounterComponent {}
+````
 
 
+###  Summary for the Beginner
+The Problem: HTML sends strings; TypeScript wants specific types.
 
+The Old Solution: Lots of "Get/Set" code to manually convert data.
 
-
-
-
-
-
-
-
-
+The v17 Solution: A simple transform property that handles the conversion automatically as the data enters the component.
 
 
