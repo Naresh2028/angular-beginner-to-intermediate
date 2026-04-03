@@ -5,6 +5,26 @@ This allows you to remove zone.js from your project. Angular 18 introduced a new
 
 How: Use provideExperimentalZonelessChangeDetection() in your app config.
 
+### Example :
+
+````ts
+import { ApplicationConfig, provideExperimentalZonelessChangeDetection, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideClientHydration } from '@angular/platform-browser';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+     provideRouter(routes),
+      provideClientHydration(),
+      provideExperimentalZonelessChangeDetection()
+    ]
+};
+
+````
+
 Result: Better performance and smaller bundles for the application.
 
 ---
