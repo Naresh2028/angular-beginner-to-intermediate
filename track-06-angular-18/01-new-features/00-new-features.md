@@ -95,6 +95,11 @@ export class DashboardComponent implements OnInit {
 
 ````
 
+### Output
+
+<img width="1275" height="925" alt="image" src="https://github.com/user-attachments/assets/954e305c-53e7-4784-930c-e72041292ebb" />
+
+
 ---
 
 ## 3. Signal-Based Component APIs (Stable)
