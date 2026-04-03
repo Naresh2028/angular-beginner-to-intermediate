@@ -106,9 +106,135 @@ export class DashboardComponent implements OnInit {
 
 The way you handle data in and out of components has been "Signal-ified":
 
-input(): Reactive inputs that you can use in computed() signals.
+### input()
 
-output(): A simpler, lighter way to emit events to parent components.
+- A function used in a Child Component to receive data from a Parent.
+
+- It is a one-way bridge from the Parent to the Child.
+
+
+### Parent Component 
+
+````ts
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, UsercardComponent],
+  template:`
+  <app-usercard [userName]="title"> </app-usercard>
+<router-outlet />
+
+  `
+})
+export class AppComponent {
+  title = 'Angular 18';
+}
+
+````
+
+
+### Child Component
+
+````ts
+@Component({
+  selector: 'app-usercard',
+  standalone: true,
+  imports: [],
+  template:`
+  <p> <b>Application version : </b>{{userName()}}</p>
+  `
+})
+export class UsercardComponent {
+  userName = input<string>('guest');
+}
+
+````
+
+### Output
+
+<img width="608" height="304" alt="image" src="https://github.com/user-attachments/assets/26657df6-ed8b-4c3c-a403-744f8215583a" />
+
+## Key points
+
+1. Parent holds the "Source of Truth" (the title variable).
+
+2. Angular detects when the Parent's title changes.
+
+3. The Child "reacts" instantly because input() is a Signal. The Child cannot change this value itself; it can only listen to what the Parent sends.
+
+---
+
+## output()
+
+In Angular 18, output() is the reactive successor to the @Output() decorator and EventEmitter.
+
+### Definition
+
+output() is a function used in a Child Component to define an "event producer." It allows the child to send data or notifications back up to its Parent Component. Unlike the old EventEmitter, it is not an RxJS Observable by default, making it lighter and more efficient.
+
+### example
+
+### Child Component
+
+````ts
+@Component({
+  selector: 'app-action',
+  standalone: true,
+  imports: [],
+  template: `
+    <p>Child Compoenent</p>
+    <button (click)="sendMessage()">Send Message</button>
+  `,
+})
+export class ActionComponent {
+  dataEmitter = output<string>();
+
+  sendMessage() {
+    this.dataEmitter.emit('Hello from Child component...');
+  }
+}
+
+````
+
+### Parent Component
+
+````ts
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { UsercardComponent } from '../Components/usercard/usercard.component';
+import { ActionComponent } from '../Components/action/action.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, ActionComponent],
+  template: `
+    <app-action (dataEmitter)="recieveMessage($event)">
+      <router-outlet />
+    </app-action>
+  `,
+})
+export class AppComponent {
+  recieveMessage(event: string) {
+    console.log(`Data Recieved : ${event}`);
+  }
+}
+
+````
+
+
+### Output
+<img width="1161" height="566" alt="image" src="https://github.com/user-attachments/assets/0e943597-ac51-4506-8d30-9e8349f7210c" />
+
+
+### Key Difference from input()
+
+- input(): Data flows Down (Parent → Child).
+
+- output(): Data flows Up (Child → Parent).
+
+---
 
 model(): Enables easy two-way data binding with signals.
 
