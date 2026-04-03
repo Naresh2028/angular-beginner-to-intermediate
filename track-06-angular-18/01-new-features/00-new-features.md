@@ -35,6 +35,66 @@ Angular 18 added a new .events property to all form controls (FormControl, FormG
 
 Why it's cool: Instead of subscribing to valueChanges and statusChanges separately, you get one stream of events like PristineChangeEvent, TouchedChangeEvent, and ValueChangeEvent.
 
+
+### Example
+
+````ts
+
+import { Component, OnInit } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  ControlEvent,
+  ReactiveFormsModule,
+  TouchedChangeEvent,
+  ValueChangeEvent,
+  StatusChangeEvent,
+  PristineChangeEvent,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  template: `
+    <form [formGroup]="userForm" (ngSubmit)="SubmittedForm()" novalidate>
+      <input
+        id="userName"
+        name="userName"
+        placeholder="userName"
+        formControlName="userName"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  `,
+  styleUrl: './dashboard.component.css',
+})
+export class DashboardComponent implements OnInit {
+  userForm = new FormGroup({
+    userName: new FormControl<string>(''),
+  });
+
+  ngOnInit(): void {
+    this.userForm.events.subscribe((event: ControlEvent) => {
+      if (event instanceof ValueChangeEvent) {
+        console.log(`Value chnaged ${event.value}`);
+      } else if (event instanceof StatusChangeEvent) {
+        console.log(`Status Changed ${event.status}`);
+      } else if (event instanceof PristineChangeEvent) {
+        console.log(`Control is Pristine mode : ${event.pristine}`);
+      } else if (event instanceof TouchedChangeEvent) {
+        console.log(`Control is pure mode : ${event.touched}`);
+      }
+    });
+  }
+
+  SubmittedForm() {
+    console.log(this.userForm.get('userName')?.value);
+  }
+}
+
+````
+
 ---
 
 ## 3. Signal-Based Component APIs (Stable)
