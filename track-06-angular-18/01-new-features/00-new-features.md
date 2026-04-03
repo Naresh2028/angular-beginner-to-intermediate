@@ -5,7 +5,7 @@ This allows you to remove zone.js from your project. Angular 18 introduced a new
 
 How: Use provideExperimentalZonelessChangeDetection() in your app config.
 
-Result: Better performance and smaller bundles for your global SMB tools.
+Result: Better performance and smaller bundles for the application.
 
 ---
 
@@ -26,6 +26,7 @@ Why it's cool: Instead of subscribing to valueChanges and statusChanges separate
 ---
 
 ## 4. Signal-Based Component APIs (Stable)
+
 The way you handle data in and out of components has been "Signal-ified":
 
 input(): Reactive inputs that you can use in computed() signals.
@@ -33,3 +34,5 @@ input(): Reactive inputs that you can use in computed() signals.
 output(): A simpler, lighter way to emit events to parent components.
 
 model(): Enables easy two-way data binding with signals.
+
+effect(): An effect() is a block of code that registers itself as a consumer of any Signal used inside it.
