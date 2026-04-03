@@ -29,15 +29,7 @@ Result: Better performance and smaller bundles for the application.
 
 ---
 
-## 2. Stable Control Flow (@if, @for, @switch)
-
-The block syntax is now the official production standard.
-
-The Big Win: The @empty block within @for loops, which elegantly handles cases where your dashboard data arrays are empty.
-
----
-
-## 3. Unified Form Events
+## 2. Unified Form Events
 
 Angular 18 added a new .events property to all form controls (FormControl, FormGroup).
 
@@ -45,7 +37,7 @@ Why it's cool: Instead of subscribing to valueChanges and statusChanges separate
 
 ---
 
-## 4. Signal-Based Component APIs (Stable)
+## 3. Signal-Based Component APIs (Stable)
 
 The way you handle data in and out of components has been "Signal-ified":
 
