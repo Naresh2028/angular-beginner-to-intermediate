@@ -241,6 +241,122 @@ export class AppComponent {
 
 ---
 
-model(): Enables easy two-way data binding with signals.
+## model()
 
-effect(): An effect() is a block of code that registers itself as a consumer of any Signal used inside it.
+### Definition
+A model() is a special type of signal that defines both an Input (to receive data) and an Output (to send data back) in a single line of code.
+
+It is "writable," meaning the child component can change the value directly, and the parent component will be notified automatically. It uses the new Signals API under the hood to ensure the UI updates instantly and efficiently.
+
+### The Problem: The "Traditional" Way Drawback
+
+Before model(), if you wanted to create a custom component with two-way binding (like a toggle switch), you had to write a "Pattern" called **De-sugaring**.
+
+### The Drawbacks:
+
+1. Boilerplate: You had to define an @Input() to get the value AND an @Output() to send it back.
+
+2. Manual Updates: You had to manually call this.checkedChange.emit(newValue) every time the user interacted with the UI.
+
+### Child Component
+
+```ts
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-toggle',
+  standalone: true,
+  imports: [],
+  template: `
+    <button (click)="ChangeToggle()">Click</button>
+    <P>STAUS : {{ checked }}</P>
+  `,
+})
+export class ToggleComponent {
+  @Input() checked = false;
+  @Output() checkedChange = new EventEmitter<boolean>();
+
+  ChangeToggle() {
+    this.checked = !this.checked;
+    this.checkedChange.emit(this.checked);
+    console.log('clicked : ' + this.checked);
+  }
+}
+
+````
+
+### Parent Component
+
+````ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [ToggleComponent],
+  template: `
+    <app-toggle [(checked)]="isAdmin"></app-toggle>
+    <div>Current Status : {{ isAdmin }}</div>
+  `,
+})
+export class AppComponent {
+  isAdmin: boolean = true;
+}
+````
+
+## 2. The New model() Way (v17.2+)
+
+This is the Signal-based version. It removes the need for EventEmitter and decorators.
+
+### Child Component (app-toggle.component.ts)
+
+```ts
+@Component({
+  selector: 'app-toggle',
+  standalone: true,
+  imports: [],
+  template: `
+    <button (click)="ChangeToggle()">Click</button>
+    <P>STAUS : {{ checked() }}</P>
+  `,
+})
+export class ToggleComponent {
+  //Replaced @Input(), @Outpu(), & Event Emitter in a sinlge Line code.
+  checked = model(false);
+
+  ChangeToggle() {
+    this.checked.update((val) => !val);
+    console.log(this.checked());
+  }
+}
+```
+
+
+### Parent-Component 
+
+```ts
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [ToggleComponent],
+  template: `
+    <app-toggle [(checked)]="isAdmin"></app-toggle>
+    <div>Current Status : {{ isAdmin() }}</div>
+  `,
+})
+export class AppComponent {
+  isAdmin = signal(true);
+}
+```
+
+
+### Output
+
+<img width="1105" height="691" alt="image" src="https://github.com/user-attachments/assets/72a0511a-70e5-4d68-b57b-1523fc0b5695" />
+
+###  Summary
+
+- model() is the "Smart" version of an Input(), and Output().
+
+- Auto-Sync: When the child changes the value, the parent's variable updates automatically.
+
+- The Rule: You must use the "Banana-in-a-box" syntax [( )] in the HTML to turn on the two-way sync.
+
